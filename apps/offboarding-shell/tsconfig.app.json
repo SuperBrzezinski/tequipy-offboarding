@@ -9,6 +9,9 @@
   "references": [
     {
       "path": "../../libs/feature-offboarding"
+    },
+    {
+      "path": "../../libs/data-access"
     }
   ]
 }

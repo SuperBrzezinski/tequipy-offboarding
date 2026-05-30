@@ -1,11 +1,10 @@
 import { provideRouter, Router } from '@angular/router';
 import { render, screen, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
-import { OFFBOARDING_REPO } from '@org/data-access';
+import { OFFBOARDING_REPO, OffboardingStore } from '@org/data-access';
 import type { AssignedItem, Employee, IOffboardingRepository } from '@org/domain';
 import { describe, expect, it, vi } from 'vitest';
 import { OffboardingSessionPageComponent } from './offboarding-session-page.component';
-import { OffboardingStore } from '../offboarding.store';
 
 const EMPLOYEE: Employee = {
   id: 'emp-test',

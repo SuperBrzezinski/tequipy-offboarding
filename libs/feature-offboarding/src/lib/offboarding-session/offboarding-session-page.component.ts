@@ -11,6 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { SkeletonModule } from 'primeng/skeleton';
 import { OFFBOARDING_REPO } from '@org/data-access';
 import {
   canComplete,
@@ -20,11 +21,11 @@ import {
 } from '@org/domain';
 import type { ReturnCondition } from '@org/domain';
 import { EquipmentListComponent, formatDate, SummaryPanelComponent } from '@org/ui';
-import { OffboardingStore } from '../offboarding.store';
+import { OffboardingStore } from '@org/data-access';
 
 @Component({
   selector: 'lib-offboarding-session-page',
-  imports: [EquipmentListComponent, SummaryPanelComponent, ConfirmDialog],
+  imports: [EquipmentListComponent, SummaryPanelComponent, ConfirmDialog, SkeletonModule],
   templateUrl: './offboarding-session-page.component.html',
   styleUrl: './offboarding-session-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

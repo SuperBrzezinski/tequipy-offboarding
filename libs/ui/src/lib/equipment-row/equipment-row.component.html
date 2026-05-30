@@ -113,6 +113,12 @@
         <lib-status-badge [status]="item().status" />
         <span class="equipment-row__label"> Return condition: {{ item().returnCondition }} </span>
       </div>
+      @if (item().returnCondition) {
+        <lib-condition-diff-badge
+          [assignedCondition]="item().item.assignedCondition"
+          [returnCondition]="item().returnCondition!"
+        />
+      }
       @if (!readOnly()) {
         <div class="equipment-row__actions">
           <p-button

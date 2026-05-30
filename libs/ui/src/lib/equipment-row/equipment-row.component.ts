@@ -6,12 +6,14 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
+import { ConditionDiffBadgeComponent } from '../condition-diff-badge/condition-diff-badge.component';
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 
 @Component({
   selector: 'lib-equipment-row',
   imports: [
     ButtonModule,
+    ConditionDiffBadgeComponent,
     FormsModule,
     SelectModule,
     TagModule,

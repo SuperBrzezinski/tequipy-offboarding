@@ -19,7 +19,12 @@
   <section class="summary-panel" aria-label="Offboarding summary">
     <h2 class="summary-panel__heading">Equipment summary</h2>
 
-    <ul class="summary-panel__counts" aria-label="Item counts by status">
+    <ul
+      class="summary-panel__counts"
+      aria-label="Item counts by status"
+      aria-live="polite"
+      aria-atomic="false"
+    >
       <li aria-label="Pending: {{ pendingCount() }}">
         <span class="count-chip count-chip--pending" aria-hidden="true">
           <span class="count-chip__label">Pending</span>

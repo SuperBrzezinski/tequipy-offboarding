@@ -5,7 +5,10 @@
     </button>
 
     @if (sessionResource.isLoading()) {
-      <div class="session-header__title-skeleton" aria-busy="true">Loading…</div>
+      <div class="session-header__info" aria-busy="true" aria-label="Loading employee details">
+        <p-skeleton height="1.75rem" width="14rem" />
+        <p-skeleton height="1rem" width="10rem" styleClass="mt-2" />
+      </div>
     } @else if (sessionResource.error()) {
       <p class="session-error" role="alert">Failed to load employee session.</p>
     } @else if (sessionResource.value()?.employee; as employee) {
@@ -20,7 +23,7 @@
     }
   </header>
 
-  <main class="session-main">
+  <main class="session-main" aria-label="Equipment return session">
     @if (!sessionResource.isLoading() && !sessionResource.error() && session(); as sess) {
       <lib-equipment-list
         [items]="sess.items"

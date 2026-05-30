@@ -4,3 +4,4 @@ export * from './lib/equipment-row/equipment-row.component';
 export * from './lib/equipment-list/equipment-list.component';
 export { SummaryPanelComponent } from './lib/summary-panel/summary-panel.component';
 export { formatDate } from './lib/utils/format-date';
+export { ConditionDiffBadgeComponent } from './lib/condition-diff-badge/condition-diff-badge.component';

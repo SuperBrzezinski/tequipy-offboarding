@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import type { ItemStatus } from '@org/domain';
 import { TagModule } from 'primeng/tag';
 
-type TagSeverity = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast';
-
-const SEVERITY_MAP: Record<ItemStatus, TagSeverity> = {
+const SEVERITY_MAP: Record<ItemStatus, 'warn' | 'success' | 'danger'> = {
   Pending: 'warn',
   Returned: 'success',
   Issue: 'danger',
@@ -19,5 +17,5 @@ const SEVERITY_MAP: Record<ItemStatus, TagSeverity> = {
 export class StatusBadgeComponent {
   readonly status = input.required<ItemStatus>();
 
-  protected readonly severity = computed<TagSeverity>(() => SEVERITY_MAP[this.status()]);
+  protected readonly severity = computed(() => SEVERITY_MAP[this.status()]);
 }

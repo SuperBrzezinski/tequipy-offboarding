@@ -1,10 +1,20 @@
 # Active context
 
-- **Project phase:** BUILDING — EPIC: Summary + completion COMPLETE. Next = EPIC: Bonus + polish.
+- **Project phase:** COMPLETE — All epics shipped. Submission-ready.
 - **Mode:** dev
-- **Active epic:** none (next = EPIC: Bonus + polish)
-- **Last checkpoint:** `feat(dev-010)` — Summary + completion: SummaryPanelComponent, completeOffboarding, readOnly mode, completion dialog, code+design review fixes (2026-05-30).
-- **Next action:** EPIC: Bonus + polish → `task-breakdown` → implement.
+- **Active epic:** none — all epics done
+- **Last checkpoint:** `feat(dev-011)` — Bonus + polish: ConditionDiffBadgeComponent, a11y pass, responsive, README, navigation guard, OffboardingStore moved to data-access (2026-05-30).
+- **Next action:** checkpoint → submit.
+
+## Architecture addendum (dev-011 change)
+
+- `OffboardingStore` moved from `libs/feature-offboarding` to `libs/data-access`.
+  Reason: the `canDeactivateSession` guard in the app shell needs a static import of
+  the store. `feature-offboarding` is lazy-loaded by the app shell (via `loadComponent`),
+  making static imports of it forbidden by `@nx/enforce-module-boundaries`.
+  `data-access` is non-lazy and already imported statically by the app shell — correct layer.
+- `canDeactivateSession` guard lives in `apps/offboarding-shell/src/app/offboarding-session.guard.ts`
+  and imports `OffboardingStore` from `@org/data-access`.
 
 ## Architecture decisions (ADR-0004)
 

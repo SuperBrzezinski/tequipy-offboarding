@@ -169,4 +169,48 @@ epic** (never all up front). Use the `backlog-planning` and `task-breakdown` ski
        note" button wired to `suggestNote()`; a11y pass (WCAG 2.1 AA); responsive ≥768px;
        README as deliverable; walkthrough script; rubric red-team. _Done = submission-ready._
 
+   **Note:** `suggestNote` button is already wired (dev-009/dev-010). Tasks below cover what
+   remains.
+
+   **Tasks (JIT breakdown 2026-05-30):**
+
+   - [ ] **B-1** — `ConditionDiffBadgeComponent` (secondary bonus): new dumb component in
+         `libs/ui`; signal inputs `assignedCondition: ReturnCondition` and
+         `returnCondition: ReturnCondition`; renders `"Was: X → Now: Y"` chip only when
+         conditions differ; uses `isConditionWorse` from `@org/domain`; PrimeNG `<p-tag>`
+         with `severity="warn"` when worse, neutral otherwise; exported from `libs/ui/src/index.ts`;
+         wired into `EquipmentRowComponent` Returned state (below the "Return condition:" label).
+         Tests: renders when conditions differ + worse (warn severity); renders when differ +
+         not worse (no warn); hidden when conditions are the same.
+         DoD: `nx test ui && nx lint ui` green.
+
+   - [ ] **B-2** — A11y pass — WCAG 2.1 AA: add `aria-live="polite"` region wrapping the
+         count chips in `SummaryPanelComponent` so screen readers announce live updates; add
+         `<main>` landmark (or `role="main"`) to both page components; add `<header>` semantic
+         element to page headers; verify every interactive element has an accessible name
+         (already have `ariaLabel` on buttons — confirm); verify status badges have text content
+         not just colour (already have text labels — confirm `aria-label` or visible text
+         satisfies colour-not-alone); confirm PrimeNG ConfirmDialog traps focus (built-in —
+         verify it works).
+         DoD: `nx lint` clean; manual a11y checklist ticked.
+
+   - [ ] **B-3** — Responsive ≥768px polish: `equipment-row__header` wraps on narrow viewports
+         (`flex-wrap: wrap`); session-page header stacks back-button + info block vertically at
+         `≤768px` (via media query); `summary-panel` chips wrap at narrow width; `employee-card`
+         switches to column layout at `≤640px`. No horizontal scroll at 768px viewport.
+         DoD: layout correct at 768px; no horizontal overflow in the browser.
+
+   - [ ] **B-4** — README as deliverable: spawn `tech-writer`; write comprehensive README with
+         project overview, architecture section (layer diagram, lib split, signal store, zoneless),
+         key decisions (ADR-0001–0004 summary), feature highlights (bonus features), how to run
+         (`pnpm install && pnpm nx serve offboarding-shell`), testing section, "What's next"
+         (LLM extension point for suggestNote). README must read like a senior engineer's portfolio
+         piece — reviewer can grasp the project in 3 minutes.
+         DoD: README merged, accurate, covers all ADRs, spell-checked.
+
+   - [ ] **B-5** — Walkthrough script + rubric audit: run `demo-walkthrough` skill to produce
+         3–5 min recorded/written script hitting highest-signal decisions; run `rubric-alignment`
+         skill for final red-team pass against the Tequipy assessment rubric; fix any gaps found.
+         DoD: `docs/rubric-map.md` updated; walkthrough script written; all rubric criteria green.
+
 _Epics get their task breakdown when picked up, not before._

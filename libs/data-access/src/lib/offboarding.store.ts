@@ -207,6 +207,14 @@ export class OffboardingStore {
   }
 
   /**
+   * Discards any open edit unconditionally. Used by the navigation guard when
+   * the admin confirms they want to leave despite an uncommitted form.
+   */
+  cancelAnyEdit(): void {
+    this._editingItem.set(null);
+  }
+
+  /**
    * Finalises the offboarding session. Throws if no session exists for
    * `employeeId` or if `canComplete` returns false (i.e. a Pending item or an
    * Issue item without a note still exists — the domain rule, not the store's).
