@@ -2,6 +2,20 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `feat(dev-011)` — EPIC: Bonus + polish. All 5 tasks complete:
+  B-1: `ConditionDiffBadgeComponent` (secondary bonus) — "Was: X → Now: Y" tag on Returned
+  items; severity="warn" on downgrade, default otherwise; `@if hasDiff()` guard; `data-severity`
+  attr for stable tests; 4 tests covering equal/worse/better/'Missing accessories' paths.
+  B-2: A11y pass — `aria-live="polite"` on summary counts, `aria-label` on session `<main>`,
+  `StatusBadgeComponent` TagSeverity alias removed (inline union).
+  B-3: Responsive — session header stacks at ≤600px; employee-card gap; global box-sizing reset.
+  B-4: README as deliverable — architecture diagram, lib boundary table, signal store rationale,
+  ADR summary table, bonus features, testing strategy table, AI tooling note, "What's next".
+  B-5: Navigation guard + rubric audit — `canDeactivateSession` (window.confirm, spec §FlowA);
+  `OffboardingStore` moved to `@org/data-access` (non-lazy, avoids static-import lint violation);
+  session page loading now uses `<p-skeleton>` instead of plain text; `docs/rubric-map.md` written.
+  Total: 155 tests, lint 0 errors, build green. **Submission-ready.**
+
 - `feat(dev-010)` — EPIC: Summary + completion. Four tasks delivered:
   C-1: `OffboardingStore.completeOffboarding()` — guards with `canComplete()`, sets
   `completedAt` ISO timestamp, clears `isDirty`; 5 unit tests (happy, Issue-with-notes,
