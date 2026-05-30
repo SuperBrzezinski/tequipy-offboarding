@@ -5,6 +5,10 @@ Append-only. Newest at the top. One line per shipped increment, referencing the 
 - `feat(meta-006)` — add design layer: `ui-designer` sub-agent, `visual-design` playbook,
   `design-review` skill + command; wired into roster, indexes, primeng-usage, rubric-map.
 
+- `docs(dev-004)` — spec v1.1 signed off: state machine (incl. Returned→Pending undo),
+  completion predicate, all edge flows, bonus ACs; ADR-0002 + ADR-0003 written.
+  Next: architecture ADR (ADR-0004) → backlog.
+
 - `feat(dev-003)` — agent layer complete: 7 sub-agents, 14 skills, 7 commands, DEV+META
   memory, 7 playbooks, rubric-map. **Application build not started** — next is the
   Discovery+Spec+Architecture epic.
