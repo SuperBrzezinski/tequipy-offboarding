@@ -15,10 +15,34 @@ epic** (never all up front). Use the `backlog-planning` and `task-breakdown` ski
        `feature-offboarding`, `ui`) + `apps/offboarding-shell` with `@nx/enforce-module-boundaries`
        tags, ESLint (incl. `prefer-on-push`), Prettier, Husky+lint-staged, commitlint, CI.
        _Done ✓ — lint/test/build 5/5 green; hooks fire. `build(dev-006)`._
-3. [ ] **EPIC: Domain core** — `ReturnStatus`/`ReturnCondition` string unions; `AssignedItem`,
+3. [x] **EPIC: Domain core** — `ReturnStatus`/`ReturnCondition` string unions; `AssignedItem`,
        `ReturnItem` (composition), `EmployeeSession` types; `CONDITION_SEVERITY`,
        `isConditionWorse`, `canComplete`, `hasOpenIssues`, `suggestNote` pure functions;
        `IOffboardingRepository` port interface; exhaustive unit tests. _Done = all domain logic green._
+
+   **Tasks (JIT breakdown 2026-05-30):**
+
+   - [ ] **D-1** — Types, constants, port interface: all string unions (`ReturnCondition`,
+         `ItemStatus`, `OffboardingStatus`), all interfaces (`Employee`, `AssignedItem`,
+         `ReturnItem`, `EmployeeSession`), `CONDITION_SEVERITY` constant, `IOffboardingRepository`
+         port. Exported from `libs/domain/src/index.ts`. No Angular imports anywhere in domain.
+         DoD: `nx build domain` + `nx lint domain` green.
+
+   - [ ] **D-2** — Condition logic + tests: `assertNever` exhaustiveness guard,
+         `isConditionWorse(assigned, returned)` pure function. Unit tests: all 9 condition pairs
+         (3×3), same condition = not worse, Good→Damaged = worse, etc.
+         DoD: `nx test domain` green.
+
+   - [ ] **D-3** — Completion predicates + tests: `canComplete(items)` and `hasOpenIssues(items)`
+         pure functions. Unit tests: empty array, all pending, all resolved with notes, open issues
+         without notes, partial states, items.length=0 guard.
+         DoD: `nx test domain` green.
+
+   - [ ] **D-4** — `suggestNote` template engine + tests: `suggestNote(type, assignedCondition)`
+         pure function. Templates covering all `type × condition` combos in the planned mock dataset
+         (Laptop, Monitor, Headset, Keyboard, Mouse, Docking Station). Unit tests: every combination
+         returns a non-empty string; unknown type falls back gracefully.
+         DoD: `nx test domain` green.
 4. [ ] **EPIC: Data + employee list** — `OffboardingRepository` (in-memory behind port); mock
        dataset (≥5 employees, ≥2 items each, one empty, one completed); employee list view with
        Pending/Completed badge; clicking an employee loads session. _Done = list renders + selection navigates._

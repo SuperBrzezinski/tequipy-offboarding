@@ -2,6 +2,16 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `feat(dev-007)` — EPIC: Domain core complete. Pure-TS lib with zero Angular imports:
+  string unions (ReturnCondition/ItemStatus/OffboardingStatus), all interfaces (Employee,
+  AssignedItem, ReturnItem as composition, EmployeeSession), CONDITION_SEVERITY constant,
+  assertNever exhaustiveness guard, isConditionWorse, canComplete, hasOpenIssues, suggestNote
+  template engine (6 types × 3 conditions + fallback, switch-guarded with assertNever),
+  IOffboardingRepository read-only port. 54 unit tests, all green. Code review passed
+  (APPROVE-WITH-NITS); nits addressed (assertNever wired into suggestNote switch,
+  it.each label fixed, content spot-checks + assertNever test added).
+  Next: EPIC: Data + employee list.
+
 - `feat(meta-006)` — add design layer: `ui-designer` sub-agent, `visual-design` playbook,
   `design-review` skill + command; wired into roster, indexes, primeng-usage, rubric-map.
 

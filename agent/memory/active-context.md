@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** BUILDING — EPIC: Setup COMPLETE. Next = EPIC: Domain core.
+- **Project phase:** BUILDING — EPIC: Domain core COMPLETE. Next = EPIC: Data + employee list.
 - **Mode:** dev
-- **Active epic:** none (next = EPIC: Domain core)
-- **Last checkpoint:** `build(dev-006)` — Nx workspace + DevEx scaffolded (2026-05-30).
-- **Next action:** EPIC: Domain core → `task-breakdown` → `frontend-engineer`.
+- **Active epic:** none (next = EPIC: Data + employee list)
+- **Last checkpoint:** `feat(dev-007)` — Domain core: all types, pure functions, 54 tests green (2026-05-30).
+- **Next action:** EPIC: Data + employee list → `task-breakdown` → `frontend-engineer`.
 
 ## Architecture decisions (ADR-0004)
 
