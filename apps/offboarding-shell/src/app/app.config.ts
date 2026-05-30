@@ -6,6 +6,7 @@ import {
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import { InMemoryOffboardingRepository } from '@org/data-access';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -19,5 +20,6 @@ export const appConfig: ApplicationConfig = {
         options: { darkModeSelector: '.dark' },
       },
     }),
+    InMemoryOffboardingRepository,
   ],
 };
