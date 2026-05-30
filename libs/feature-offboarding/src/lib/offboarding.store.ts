@@ -7,6 +7,7 @@ import type {
   ReturnCondition,
   ReturnItem,
 } from '@org/domain';
+import { canComplete } from '@org/domain';
 
 export type StoredSession = Omit<EmployeeSession, 'isDirty'>;
 
@@ -202,6 +203,33 @@ export class OffboardingStore {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _itemId: string,
   ): void {
+    this._editingItem.set(null);
+  }
+
+  /**
+   * Finalises the offboarding session. Throws if no session exists for
+   * `employeeId` or if `canComplete` returns false (i.e. a Pending item or an
+   * Issue item without a note still exists — the domain rule, not the store's).
+   */
+  completeOffboarding(employeeId: string): void {
+    const session = this._sessions().get(employeeId);
+    if (!session) {
+      throw new Error(`completeOffboarding: no session loaded for employee ${employeeId}.`);
+    }
+    if (!canComplete(session.items)) {
+      throw new Error(
+        `completeOffboarding: session for ${employeeId} cannot be completed — ` +
+          `one or more items are still Pending, or an Issue item is missing a note.`,
+      );
+    }
+
+    this._sessions.update((map) =>
+      new Map(map).set(employeeId, {
+        ...session,
+        offboardingStatus: 'Completed',
+        completedAt: new Date().toISOString(),
+      }),
+    );
     this._editingItem.set(null);
   }
 

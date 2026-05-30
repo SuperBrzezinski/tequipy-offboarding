@@ -8,6 +8,7 @@
         [isEditing]="isEditing(returnItem.item.id)"
         [editMode]="getEditMode(returnItem.item.id)"
         [suggestedNote]="noteHints()[returnItem.item.id] || null"
+        [readOnly]="readOnly()"
         (beginReturn)="beginReturn.emit($event)"
         (confirmReturn)="confirmReturn.emit($event)"
         (cancelReturn)="cancelReturn.emit($event)"

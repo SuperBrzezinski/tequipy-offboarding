@@ -304,6 +304,85 @@ describe('OffboardingStore', () => {
   });
 
   // -------------------------------------------------------------------------
+  // 11. completeOffboarding
+  // -------------------------------------------------------------------------
+
+  describe('completeOffboarding', () => {
+    it('marks the session Completed with a non-null ISO completedAt when all items are returned', () => {
+      store.loadSession(makeEmployee(), [makeItem('item-1'), makeItem('item-2')]);
+      store.beginReturn('emp-1', 'item-1');
+      store.confirmReturn('emp-1', 'item-1', 'Good');
+      store.beginReturn('emp-1', 'item-2');
+      store.confirmReturn('emp-1', 'item-2', 'Damaged');
+
+      store.completeOffboarding('emp-1');
+
+      const session = assertSession(store.getSession('emp-1')());
+      expect(session.offboardingStatus).toBe('Completed');
+      expect(session.completedAt).not.toBeNull();
+      // completedAt must be a valid ISO 8601 string
+      expect(new Date(session.completedAt!).toISOString()).toBe(session.completedAt);
+    });
+
+    it('leaves items array unchanged after completion', () => {
+      store.loadSession(makeEmployee(), [makeItem('item-1')]);
+      store.beginReturn('emp-1', 'item-1');
+      store.confirmReturn('emp-1', 'item-1', 'Good');
+
+      store.completeOffboarding('emp-1');
+
+      const session = assertSession(store.getSession('emp-1')());
+      expect(session.items).toHaveLength(1);
+      expect(session.items[0].status).toBe('Returned');
+      expect(session.items[0].returnCondition).toBe('Good');
+    });
+
+    it('throws when at least one item is still Pending', () => {
+      store.loadSession(makeEmployee(), [makeItem('item-1'), makeItem('item-2')]);
+      store.beginReturn('emp-1', 'item-1');
+      store.confirmReturn('emp-1', 'item-1', 'Good');
+      // item-2 remains Pending
+
+      expect(() => store.completeOffboarding('emp-1')).toThrow();
+    });
+
+    it('throws when the session does not exist', () => {
+      expect(() => store.completeOffboarding('nonexistent-id')).toThrow();
+    });
+
+    it('succeeds when all items are Issue status with non-empty notes', () => {
+      store.loadSession(makeEmployee(), [makeItem('item-1'), makeItem('item-2')]);
+      store.beginIssue('emp-1', 'item-1');
+      store.confirmIssue('emp-1', 'item-1', 'Broken hinge');
+      store.beginIssue('emp-1', 'item-2');
+      store.confirmIssue('emp-1', 'item-2', 'Missing charger');
+
+      store.completeOffboarding('emp-1');
+
+      const session = assertSession(store.getSession('emp-1')());
+      expect(session.offboardingStatus).toBe('Completed');
+    });
+
+    it('clears editingItem so isDirty is false after completion', () => {
+      // Set up two items: confirm both returns, then re-open begin on one to
+      // simulate the admin having the return panel open when they hit "Complete".
+      store.loadSession(makeEmployee(), [makeItem('item-1'), makeItem('item-2')]);
+      store.beginReturn('emp-1', 'item-1');
+      store.confirmReturn('emp-1', 'item-1', 'Good');
+      store.beginReturn('emp-1', 'item-2');
+      store.confirmReturn('emp-1', 'item-2', 'Good');
+
+      // Re-open the return panel for item-1 — puts store in dirty state
+      store.beginReturn('emp-1', 'item-1');
+      expect(store.isDirty()).toBe(true);
+
+      store.completeOffboarding('emp-1');
+
+      expect(store.isDirty()).toBe(false);
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // 12. Session cache — navigation between employees
   // -------------------------------------------------------------------------
 

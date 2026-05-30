@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   input,
@@ -11,14 +12,19 @@ import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { OFFBOARDING_REPO } from '@org/data-access';
-import { isConditionWorse, suggestNote as suggestNoteFn } from '@org/domain';
+import {
+  canComplete,
+  hasOpenIssues,
+  isConditionWorse,
+  suggestNote as suggestNoteFn,
+} from '@org/domain';
 import type { ReturnCondition } from '@org/domain';
-import { EquipmentListComponent } from '@org/ui';
+import { EquipmentListComponent, formatDate, SummaryPanelComponent } from '@org/ui';
 import { OffboardingStore } from '../offboarding.store';
 
 @Component({
   selector: 'lib-offboarding-session-page',
-  imports: [EquipmentListComponent, ConfirmDialog],
+  imports: [EquipmentListComponent, SummaryPanelComponent, ConfirmDialog],
   templateUrl: './offboarding-session-page.component.html',
   styleUrl: './offboarding-session-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,6 +58,50 @@ export class OffboardingSessionPageComponent {
   // Note hints for the suggest-note feature: keyed by itemId.
   protected readonly noteHints = signal<Record<string, string>>({});
 
+  // --- Summary panel computed state -----------------------------------------
+
+  protected readonly pendingCount = computed(
+    () => this.session()?.items.filter((i) => i.status === 'Pending').length ?? 0,
+  );
+  protected readonly returnedCount = computed(
+    () => this.session()?.items.filter((i) => i.status === 'Returned').length ?? 0,
+  );
+  protected readonly issueCount = computed(
+    () => this.session()?.items.filter((i) => i.status === 'Issue').length ?? 0,
+  );
+
+  protected readonly sessionCanComplete = computed(() => {
+    const items = this.session()?.items ?? [];
+    return canComplete(items);
+  });
+
+  protected readonly sessionHasOpenIssues = computed(() => {
+    const items = this.session()?.items ?? [];
+    return hasOpenIssues(items);
+  });
+
+  /**
+   * Human-readable explanation for why the Complete button is disabled.
+   * Null when the session is completable.
+   */
+  protected readonly pendingReason = computed<string | null>(() => {
+    if (this.sessionCanComplete()) return null;
+    const pending = this.pendingCount();
+    if (pending > 0) return `${pending} item${pending === 1 ? '' : 's'} still pending`;
+    if ((this.session()?.items.length ?? 0) === 0) return 'No equipment assigned';
+    // All items have been actioned but some Issue items are still missing a note.
+    const issueWithoutNote = (this.session()?.items ?? []).filter(
+      (i) => i.status === 'Issue' && !i.note.trim(),
+    ).length;
+    if (issueWithoutNote > 0)
+      return `${issueWithoutNote} issue item${issueWithoutNote === 1 ? '' : 's'} need${issueWithoutNote === 1 ? 's' : ''} a note`;
+    return null;
+  });
+
+  protected readonly isCompleted = computed(
+    () => this.session()?.offboardingStatus === 'Completed',
+  );
+
   constructor() {
     // When resource loads, seed the store. loadSession is idempotent —
     // navigating back is a no-op that preserves in-progress work.
@@ -72,15 +122,42 @@ export class OffboardingSessionPageComponent {
     this.router.navigate(['/']);
   }
 
-  protected formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  }
+  // Arrow referencing the shared pure function; no showTime needed for the header date.
+  protected readonly formatDate = formatDate;
 
   // --- Event handlers -------------------------------------------------------
+
+  /**
+   * Triggers offboarding completion. When open-issue items exist the admin must
+   * explicitly acknowledge them via the confirm dialog before we call the store.
+   * Without open issues the action is immediate — no extra friction.
+   */
+  protected onComplete(): void {
+    const sess = this.session();
+    if (!sess) return;
+    if (!this.sessionCanComplete()) return;
+
+    if (this.sessionHasOpenIssues()) {
+      const issueReturnItems = sess.items.filter((i) => i.status === 'Issue');
+      const n = issueReturnItems.length;
+      const issueLines = issueReturnItems
+        .map(
+          (i) =>
+            `• ${this.escapeHtml(i.item.name)}${i.note ? ` — ${this.escapeHtml(i.note)}` : ''}`,
+        )
+        .join('<br>');
+
+      this.confirmationService.confirm({
+        message: `Complete offboarding with ${n} unresolved issue${n === 1 ? '' : 's'}?<br>${issueLines}<br><br>This action cannot be undone.`,
+        header: 'Unresolved issues',
+        acceptLabel: 'Complete anyway',
+        rejectLabel: 'Go back',
+        accept: () => this.store.completeOffboarding(this.employeeId()),
+      });
+    } else {
+      this.store.completeOffboarding(this.employeeId());
+    }
+  }
 
   protected onBeginReturn(itemId: string): void {
     this.store.beginReturn(this.employeeId(), itemId);
@@ -139,5 +216,15 @@ export class OffboardingSessionPageComponent {
     // flows down to the correct EquipmentRowComponent via noteHints input.
     const suggestion = suggestNoteFn(ri.item.type, ri.item.assignedCondition);
     this.noteHints.update((h) => ({ ...h, [itemId]: suggestion }));
+  }
+
+  // Sanitises user-supplied strings before they are injected into the
+  // ConfirmDialog message (which renders via [innerHTML]).
+  private escapeHtml(s: string): string {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 }

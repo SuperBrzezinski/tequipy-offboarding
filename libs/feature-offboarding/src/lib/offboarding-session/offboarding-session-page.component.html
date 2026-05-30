@@ -26,6 +26,7 @@
         [items]="sess.items"
         [editingItem]="store.editingItem()"
         [noteHints]="noteHints()"
+        [readOnly]="isCompleted()"
         (beginReturn)="onBeginReturn($event)"
         (confirmReturn)="onConfirmReturn($event)"
         (cancelReturn)="onCancelReturn($event)"
@@ -34,6 +35,16 @@
         (confirmIssue)="onConfirmIssue($event)"
         (cancelIssue)="onCancelIssue($event)"
         (suggestNote)="onSuggestNote($event)"
+      />
+      <lib-summary-panel
+        [pendingCount]="pendingCount()"
+        [returnedCount]="returnedCount()"
+        [issueCount]="issueCount()"
+        [canComplete]="sessionCanComplete()"
+        [pendingReason]="pendingReason()"
+        [offboardingStatus]="sess.offboardingStatus"
+        [completedAt]="sess.completedAt"
+        (complete)="onComplete()"
       />
     }
   </main>

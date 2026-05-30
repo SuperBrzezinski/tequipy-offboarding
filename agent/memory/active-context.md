@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** BUILDING — EPIC: Return actions COMPLETE. Next = EPIC: Summary + completion.
+- **Project phase:** BUILDING — EPIC: Summary + completion COMPLETE. Next = EPIC: Bonus + polish.
 - **Mode:** dev
-- **Active epic:** none (next = EPIC: Summary + completion)
-- **Last checkpoint:** `feat(dev-009)` — Return actions: OffboardingStore, dumb components, smart page wiring, condition-downgrade dialog, suggest note (2026-05-30).
-- **Next action:** EPIC: Summary + completion → `task-breakdown` → implement.
+- **Active epic:** none (next = EPIC: Bonus + polish)
+- **Last checkpoint:** `feat(dev-010)` — Summary + completion: SummaryPanelComponent, completeOffboarding, readOnly mode, completion dialog, code+design review fixes (2026-05-30).
+- **Next action:** EPIC: Bonus + polish → `task-breakdown` → implement.
 
 ## Architecture decisions (ADR-0004)
 

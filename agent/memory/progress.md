@@ -2,6 +2,41 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `feat(dev-010)` — EPIC: Summary + completion. Four tasks delivered:
+  C-1: `OffboardingStore.completeOffboarding()` — guards with `canComplete()`, sets
+  `completedAt` ISO timestamp, clears `isDirty`; 5 unit tests (happy, Issue-with-notes,
+  throws-on-pending, throws-no-session, clears-dirty).
+  C-2: `SummaryPanelComponent` (dumb, `libs/ui`) — live Pending/Returned/Issue count
+  chips with WCAG-AA colour tokens; "Complete offboarding" `<p-button>` (disabled +
+  `pendingReason` text when `!canComplete`); completed read-only banner with sticky
+  positioning, `var(--p-green-700)` contrast-corrected icon, `<time>` + null fallback;
+  11 tests.
+  C-3: `readOnly = input<boolean>(false)` on `EquipmentRowComponent` — suppresses all
+  action buttons; status badge shown for Pending rows in readOnly too; relayed through
+  `EquipmentListComponent`; 3 tests.
+  C-4: `OffboardingSessionPageComponent` wired — 7 computed signals (`pendingCount`,
+  `returnedCount`, `issueCount`, `sessionCanComplete`, `sessionHasOpenIssues`,
+  `pendingReason`, `isCompleted`); `onComplete()` with `escapeHtml` guard and
+  open-issue confirmation dialog listing item names + notes; `readOnly` bound to
+  `isCompleted()`; 4 integration tests.
+  Code review: CHANGES-REQUESTED → HTML injection, pendingReason fallthrough,
+  missing guard, double-filter, formatDate duplication, 2 test gaps — all resolved.
+  Design review: REWORK → sticky CTA (blocker fixed), WCAG contrast on icon, token
+  cleanup (0.8/0.9rem → 0.875rem, border-radius token, #fff → CSS custom property).
+  Final gates: 48 feature-offboarding + 36 ui tests, lint clean, build green.
+  Next: EPIC: Bonus + polish.
+
+- `feat(dev-009)` — EPIC: Return actions complete. `OffboardingStore` (plain signal
+  service): session map, `editingItem`, `isDirty` computed; all 5 state transitions
+  with guards + 20 unit tests. Dumb components in `libs/ui`: `StatusBadgeComponent`
+  (colour-coded badge, not colour-only), `EquipmentRowComponent` (condition select,
+  note field, suggest note, all outputs), `EquipmentListComponent` (relay layer).
+  `OffboardingSessionPageComponent` (smart): resource() loads employee+items, seeds
+  store, delegates all outputs; condition-downgrade soft-confirm via PrimeNG
+  ConfirmationService; `isDirty` navigation guard; `CanDeactivateFn` on route;
+  `suggestNote` fills noteHints signal. Code review resolved 4 blockers + 8 should
+  items. Design review resolved 3 should items. All gates green. Next: Summary + completion.
+
 - `feat(dev-008)` — EPIC: Data + employee list complete. Domain: `Employee.offboardingStatus`
   added (needed for list badge). Data-access: `InMemoryOffboardingRepository` behind
   `OFFBOARDING_REPO` InjectionToken (single DI instance via `inject()`); mock dataset (6

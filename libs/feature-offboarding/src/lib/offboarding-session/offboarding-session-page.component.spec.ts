@@ -3,9 +3,9 @@ import { render, screen, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 import { OFFBOARDING_REPO } from '@org/data-access';
 import type { AssignedItem, Employee, IOffboardingRepository } from '@org/domain';
-import { ConfirmationService } from 'primeng/api';
 import { describe, expect, it, vi } from 'vitest';
 import { OffboardingSessionPageComponent } from './offboarding-session-page.component';
+import { OffboardingStore } from '../offboarding.store';
 
 const EMPLOYEE: Employee = {
   id: 'emp-test',
@@ -173,5 +173,120 @@ describe('OffboardingSessionPageComponent', () => {
     await user.click(backBtn);
 
     expect(navigate).toHaveBeenCalledWith(['/']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Summary panel + completion flow — fresh OffboardingStore per test
+// ---------------------------------------------------------------------------
+
+/**
+ * Renders the page with a scoped OffboardingStore so state from one test
+ * cannot leak into another (the store is providedIn: 'root' by default, so
+ * explicitly listing it here makes DI create a new instance per render).
+ */
+async function renderPageWithStore(repo: IOffboardingRepository, employeeId = 'emp-test') {
+  return render(OffboardingSessionPageComponent, {
+    inputs: { employeeId },
+    providers: [provideRouter([]), { provide: OFFBOARDING_REPO, useValue: repo }, OffboardingStore],
+  });
+}
+
+describe('Summary panel and completion flow', () => {
+  it('summary counts update reactively when an item is returned', async () => {
+    const repo = makeRepo();
+    const { fixture } = await renderPageWithStore(repo);
+    await waitFor(() => screen.getByRole('heading', { name: 'Jane Tester' }));
+
+    const page = fixture.componentInstance as OffboardingSessionPageComponent;
+
+    // Initially both items are Pending.
+    expect(page['pendingCount']()).toBe(2);
+    expect(page['returnedCount']()).toBe(0);
+
+    // Mark i-1 as returned (beginReturn → confirmReturn).
+    page['store'].beginReturn('emp-test', 'i-1');
+    page['store'].confirmReturn('emp-test', 'i-1', 'Good');
+
+    expect(page['returnedCount']()).toBe(1);
+    expect(page['pendingCount']()).toBe(1);
+  });
+
+  it('completes without a dialog when there are no open issues', async () => {
+    const repo = makeRepo();
+    const { fixture } = await renderPageWithStore(repo);
+    await waitFor(() => screen.getByRole('heading', { name: 'Jane Tester' }));
+
+    const page = fixture.componentInstance as OffboardingSessionPageComponent;
+    const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+
+    // Return all items so canComplete is true with no issues.
+    page['store'].beginReturn('emp-test', 'i-1');
+    page['store'].confirmReturn('emp-test', 'i-1', 'Good');
+    page['store'].beginReturn('emp-test', 'i-2');
+    page['store'].confirmReturn('emp-test', 'i-2', 'Good');
+
+    page['onComplete']();
+
+    expect(confirmSpy).not.toHaveBeenCalled();
+    expect(page['session']()?.offboardingStatus).toBe('Completed');
+  });
+
+  it('shows a dialog listing item names when there are open issues', async () => {
+    const repo = makeRepo();
+    const { fixture } = await renderPageWithStore(repo);
+    await waitFor(() => screen.getByRole('heading', { name: 'Jane Tester' }));
+
+    const page = fixture.componentInstance as OffboardingSessionPageComponent;
+    const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+
+    // Mark i-1 as Issue with a note, and i-2 as Returned.
+    page['store'].beginIssue('emp-test', 'i-1');
+    page['store'].confirmIssue('emp-test', 'i-1', 'Cracked screen');
+    page['store'].beginReturn('emp-test', 'i-2');
+    page['store'].confirmReturn('emp-test', 'i-2', 'Good');
+
+    page['onComplete']();
+
+    expect(confirmSpy).toHaveBeenCalledOnce();
+    const call = confirmSpy.mock.calls[0][0];
+    expect(call.message).toContain('MacBook');
+    expect(call.message).toContain('Cracked screen');
+  });
+
+  it('pendingReason shows pending count when items are still Pending', async () => {
+    const repo = makeRepo();
+    const { fixture } = await renderPageWithStore(repo);
+    await waitFor(() => screen.getByRole('heading', { name: 'Jane Tester' }));
+    const page = fixture.componentInstance as OffboardingSessionPageComponent;
+    // Both items Pending by default
+    expect(page['pendingReason']()).toBe('2 items still pending');
+  });
+
+  it('pendingReason shows 1 item still pending when one is returned and one is pending', async () => {
+    const repo = makeRepo();
+    const { fixture } = await renderPageWithStore(repo);
+    await waitFor(() => screen.getByRole('heading', { name: 'Jane Tester' }));
+    const page = fixture.componentInstance as OffboardingSessionPageComponent;
+    page['store'].beginReturn('emp-test', 'i-1');
+    page['store'].confirmReturn('emp-test', 'i-1', 'Good');
+    expect(page['pendingReason']()).toBe('1 item still pending');
+  });
+
+  it('marks items as read-only after the session is completed', async () => {
+    const repo = makeRepo();
+    const { fixture } = await renderPageWithStore(repo);
+    await waitFor(() => screen.getByRole('heading', { name: 'Jane Tester' }));
+
+    const page = fixture.componentInstance as OffboardingSessionPageComponent;
+
+    // Complete via store directly (all items are Pending → need to return them first).
+    page['store'].beginReturn('emp-test', 'i-1');
+    page['store'].confirmReturn('emp-test', 'i-1', 'Good');
+    page['store'].beginReturn('emp-test', 'i-2');
+    page['store'].confirmReturn('emp-test', 'i-2', 'Good');
+    page['store'].completeOffboarding('emp-test');
+
+    expect(page['isCompleted']()).toBe(true);
   });
 });

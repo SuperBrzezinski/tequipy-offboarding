@@ -1,0 +1,56 @@
+@if (offboardingStatus() === 'Completed') {
+  <!-- Completed state -->
+  <section class="summary-panel summary-panel--completed" aria-label="Offboarding summary">
+    <div class="summary-panel__completed-banner" role="status">
+      <span class="summary-panel__completed-icon" aria-hidden="true">✓</span>
+      <h2 class="summary-panel__completed-heading">Offboarding completed</h2>
+    </div>
+    <p class="summary-panel__completed-at">
+      <span class="summary-panel__meta-label">Completed at:</span>
+      @if (completedAt(); as ts) {
+        <time [attr.datetime]="ts">{{ formatTimestamp(ts) }}</time>
+      } @else {
+        <span>—</span>
+      }
+    </p>
+  </section>
+} @else {
+  <!-- Active (In progress) state -->
+  <section class="summary-panel" aria-label="Offboarding summary">
+    <h2 class="summary-panel__heading">Equipment summary</h2>
+
+    <ul class="summary-panel__counts" aria-label="Item counts by status">
+      <li aria-label="Pending: {{ pendingCount() }}">
+        <span class="count-chip count-chip--pending" aria-hidden="true">
+          <span class="count-chip__label">Pending</span>
+          <span class="count-chip__value">{{ pendingCount() }}</span>
+        </span>
+      </li>
+      <li aria-label="Returned: {{ returnedCount() }}">
+        <span class="count-chip count-chip--returned" aria-hidden="true">
+          <span class="count-chip__label">Returned</span>
+          <span class="count-chip__value">{{ returnedCount() }}</span>
+        </span>
+      </li>
+      <li aria-label="Issue: {{ issueCount() }}">
+        <span class="count-chip count-chip--issue" aria-hidden="true">
+          <span class="count-chip__label">Issue</span>
+          <span class="count-chip__value">{{ issueCount() }}</span>
+        </span>
+      </li>
+    </ul>
+
+    <div class="summary-panel__actions">
+      <p-button
+        label="Complete offboarding"
+        [disabled]="!canComplete()"
+        (onClick)="complete.emit()"
+      />
+      @if (!canComplete() && pendingReason()) {
+        <p class="summary-panel__pending-reason" role="status" aria-live="polite">
+          {{ pendingReason() }}
+        </p>
+      }
+    </div>
+  </section>
+}

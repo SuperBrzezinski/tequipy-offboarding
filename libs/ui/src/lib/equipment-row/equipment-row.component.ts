@@ -28,6 +28,7 @@ export class EquipmentRowComponent {
   readonly isEditing = input<boolean>(false);
   readonly editMode = input<'return' | 'issue' | null>(null);
   readonly suggestedNote = input<string | null>(null);
+  readonly readOnly = input<boolean>(false);
 
   // --- Outputs ---
   readonly beginReturn = output<string>();

@@ -11,94 +11,99 @@
   @switch (item().status) {
     @case ('Pending') {
       <div class="equipment-row__assigned-condition">
+        @if (readOnly()) {
+          <lib-status-badge [status]="'Pending'" />
+        }
         <span class="equipment-row__label">Assigned condition:</span>
         <span>{{ item().item.assignedCondition }}</span>
       </div>
 
-      @if (!isEditing()) {
-        <!-- State A: Pending, not editing -->
-        <div class="equipment-row__actions">
-          <p-button
-            label="Mark as returned"
-            severity="secondary"
-            (onClick)="beginReturn.emit(item().item.id)"
-            ariaLabel="Mark {{ item().item.name }} as returned"
-          />
-          <p-button
-            label="Report issue"
-            severity="danger"
-            [outlined]="true"
-            (onClick)="beginIssue.emit(item().item.id)"
-            ariaLabel="Report issue for {{ item().item.name }}"
-          />
-        </div>
-      } @else if (editMode() === 'return') {
-        <!-- State B: Pending, editing return -->
-        <div class="equipment-row__return-form">
-          <label class="equipment-row__label" [for]="'condition-' + item().item.id">
-            Return condition
-          </label>
-          <p-select
-            [inputId]="'condition-' + item().item.id"
-            [options]="conditionOptions"
-            [ngModel]="selectedCondition()"
-            (ngModelChange)="selectedCondition.set($event)"
-            placeholder="Select condition…"
-          />
+      @if (!readOnly()) {
+        @if (!isEditing()) {
+          <!-- State A: Pending, not editing -->
           <div class="equipment-row__actions">
             <p-button
-              label="Confirm return"
-              [disabled]="!selectedCondition()"
-              (onClick)="onConfirmReturn()"
-              ariaLabel="Confirm return of {{ item().item.name }}"
+              label="Mark as returned"
+              severity="secondary"
+              (onClick)="beginReturn.emit(item().item.id)"
+              ariaLabel="Mark {{ item().item.name }} as returned"
             />
             <p-button
-              label="Cancel"
-              severity="secondary"
+              label="Report issue"
+              severity="danger"
               [outlined]="true"
-              (onClick)="cancelReturn.emit(item().item.id)"
-              ariaLabel="Cancel return of {{ item().item.name }}"
+              (onClick)="beginIssue.emit(item().item.id)"
+              ariaLabel="Report issue for {{ item().item.name }}"
             />
           </div>
-        </div>
-      } @else if (editMode() === 'issue') {
-        <!-- State C: Pending, editing issue -->
-        <div class="equipment-row__issue-form">
-          <label class="equipment-row__label" [for]="'note-' + item().item.id">
-            Issue description
-          </label>
-          <textarea
-            pTextarea
-            [id]="'note-' + item().item.id"
-            [value]="noteValue()"
-            (input)="onNoteInput($event)"
-            placeholder="Describe the issue…"
-            rows="3"
-            class="equipment-row__textarea"
-          ></textarea>
-          <div class="equipment-row__actions">
-            <p-button
-              label="Suggest note"
-              severity="secondary"
-              [text]="true"
-              (onClick)="suggestNote.emit(item().item.id)"
-              ariaLabel="Suggest a note for {{ item().item.name }}"
+        } @else if (editMode() === 'return') {
+          <!-- State B: Pending, editing return -->
+          <div class="equipment-row__return-form">
+            <label class="equipment-row__label" [for]="'condition-' + item().item.id">
+              Return condition
+            </label>
+            <p-select
+              [inputId]="'condition-' + item().item.id"
+              [options]="conditionOptions"
+              [ngModel]="selectedCondition()"
+              (ngModelChange)="selectedCondition.set($event)"
+              placeholder="Select condition…"
             />
-            <p-button
-              label="Confirm issue"
-              [disabled]="!noteValue().trim()"
-              (onClick)="onConfirmIssue()"
-              ariaLabel="Confirm issue for {{ item().item.name }}"
-            />
-            <p-button
-              label="Cancel"
-              severity="secondary"
-              [outlined]="true"
-              (onClick)="cancelIssue.emit(item().item.id)"
-              ariaLabel="Cancel issue report for {{ item().item.name }}"
-            />
+            <div class="equipment-row__actions">
+              <p-button
+                label="Confirm return"
+                [disabled]="!selectedCondition()"
+                (onClick)="onConfirmReturn()"
+                ariaLabel="Confirm return of {{ item().item.name }}"
+              />
+              <p-button
+                label="Cancel"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="cancelReturn.emit(item().item.id)"
+                ariaLabel="Cancel return of {{ item().item.name }}"
+              />
+            </div>
           </div>
-        </div>
+        } @else if (editMode() === 'issue') {
+          <!-- State C: Pending, editing issue -->
+          <div class="equipment-row__issue-form">
+            <label class="equipment-row__label" [for]="'note-' + item().item.id">
+              Issue description
+            </label>
+            <textarea
+              pTextarea
+              [id]="'note-' + item().item.id"
+              [value]="noteValue()"
+              (input)="onNoteInput($event)"
+              placeholder="Describe the issue…"
+              rows="3"
+              class="equipment-row__textarea"
+            ></textarea>
+            <div class="equipment-row__actions">
+              <p-button
+                label="Suggest note"
+                severity="secondary"
+                [text]="true"
+                (onClick)="suggestNote.emit(item().item.id)"
+                ariaLabel="Suggest a note for {{ item().item.name }}"
+              />
+              <p-button
+                label="Confirm issue"
+                [disabled]="!noteValue().trim()"
+                (onClick)="onConfirmIssue()"
+                ariaLabel="Confirm issue for {{ item().item.name }}"
+              />
+              <p-button
+                label="Cancel"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="cancelIssue.emit(item().item.id)"
+                ariaLabel="Cancel issue report for {{ item().item.name }}"
+              />
+            </div>
+          </div>
+        }
       }
     }
 
@@ -108,16 +113,18 @@
         <lib-status-badge [status]="item().status" />
         <span class="equipment-row__label"> Return condition: {{ item().returnCondition }} </span>
       </div>
-      <div class="equipment-row__actions">
-        <p-button
-          label="Undo return"
-          severity="secondary"
-          [text]="true"
-          size="small"
-          (onClick)="undoReturn.emit(item().item.id)"
-          ariaLabel="Undo return of {{ item().item.name }}"
-        />
-      </div>
+      @if (!readOnly()) {
+        <div class="equipment-row__actions">
+          <p-button
+            label="Undo return"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            (onClick)="undoReturn.emit(item().item.id)"
+            ariaLabel="Undo return of {{ item().item.name }}"
+          />
+        </div>
+      }
     }
 
     @case ('Issue') {

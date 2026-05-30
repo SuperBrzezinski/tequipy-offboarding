@@ -131,6 +131,39 @@ epic** (never all up front). Use the `backlog-planning` and `task-breakdown` ski
        guarded by `canComplete`; completion dialog listing open-issue item names; completed
        read-only state with `completedAt` timestamp. _Done = full completion flow end to end._
 
+   **Tasks (JIT breakdown 2026-05-30):**
+
+   - [ ] **C-1** — `OffboardingStore.completeOffboarding(employeeId)`: transitions session to
+         `offboardingStatus: 'Completed'`, sets `completedAt: new Date().toISOString()`. Guard:
+         throws if session missing or `canComplete(items)` returns false. Unit tests: happy path;
+         throws when items still pending; completedAt is set; items array unchanged.
+         DoD: `nx test feature-offboarding` green.
+
+   - [ ] **C-2** — `SummaryPanelComponent` in `libs/ui`: signal inputs `pendingCount`,
+         `returnedCount`, `issueCount` (number), `canComplete: boolean`, `pendingReason: string | null`,
+         `offboardingStatus: OffboardingStatus`, `completedAt: string | null`. Output: `complete`.
+         Active state: live count chips + "Complete offboarding" button (disabled + reason when
+         !canComplete). Completed state (`offboardingStatus === 'Completed'`): read-only banner +
+         formatted `completedAt` timestamp, no button. Tests: button disabled/enabled, reason
+         visible, completed banner shown.
+         DoD: `nx test ui` green.
+
+   - [ ] **C-3** — Read-only mode in `EquipmentRowComponent` + relay via `EquipmentListComponent`:
+         add `readOnly = input<boolean>(false)` to `EquipmentRowComponent` — when true, suppress
+         all action buttons (return/undo/issue); only item info + status badge shown. Relay the
+         new input through `EquipmentListComponent`. Tests: when readOnly=true no buttons rendered.
+         DoD: `nx test ui` green.
+
+   - [ ] **C-4** — Smart page wiring + completion dialog + integration tests: wire
+         `SummaryPanelComponent` into `OffboardingSessionPageComponent`; computed signals for
+         `pendingCount`, `returnedCount`, `issueCount`, `canComplete`, `hasOpenIssues`,
+         `pendingReason`; on `complete` output: if `hasOpenIssues` → PrimeNG confirm dialog
+         listing issue item names + notes → on confirm call `store.completeOffboarding()`;
+         pass `readOnly` to `EquipmentListComponent` when `session.offboardingStatus === 'Completed'`.
+         Integration tests: counts accurate per items state; complete fires without dialog (clean);
+         dialog shown when open issues exist; items read-only after completion.
+         DoD: `nx build offboarding-shell` green; all integration tests green.
+
 ## Milestone 2 — Signal & polish
 7. [ ] **EPIC: Bonus + polish** — `ConditionDiffBadgeComponent`; `NoteFieldComponent` "Suggest
        note" button wired to `suggestNote()`; a11y pass (WCAG 2.1 AA); responsive ≥768px;

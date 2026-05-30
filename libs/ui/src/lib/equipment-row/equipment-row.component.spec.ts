@@ -300,6 +300,38 @@ describe('suggestedNote input', () => {
   });
 });
 
+describe('readOnly mode', () => {
+  it('shows action buttons when readOnly is false (default) for a Pending item', async () => {
+    await render(EquipmentRowComponent, {
+      inputs: { item: makePendingItem(), readOnly: false },
+      providers: primeNGProviders,
+    });
+
+    expect(screen.getByRole('button', { name: /mark.*as returned/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /report issue for/i })).toBeTruthy();
+  });
+
+  it('hides all action buttons but keeps item name visible when readOnly is true for a Pending item', async () => {
+    await render(EquipmentRowComponent, {
+      inputs: { item: makePendingItem(), readOnly: true },
+      providers: primeNGProviders,
+    });
+
+    expect(screen.queryByRole('button')).toBeNull();
+    expect(screen.getByText('MacBook Pro')).toBeTruthy();
+  });
+
+  it('hides "Undo return" button but keeps item name visible when readOnly is true for a Returned item', async () => {
+    await render(EquipmentRowComponent, {
+      inputs: { item: makeReturnedItem(), readOnly: true },
+      providers: primeNGProviders,
+    });
+
+    expect(screen.queryByRole('button', { name: /undo return of/i })).toBeNull();
+    expect(screen.getByText('Dell Monitor')).toBeTruthy();
+  });
+});
+
 describe('EquipmentListComponent — empty state', () => {
   it('renders empty-state message when items=[]', async () => {
     await render(EquipmentListComponent, {

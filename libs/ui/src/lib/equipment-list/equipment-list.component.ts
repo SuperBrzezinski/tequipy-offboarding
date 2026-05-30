@@ -13,6 +13,7 @@ export class EquipmentListComponent {
   readonly items = input.required<ReturnItem[]>();
   readonly editingItem = input<{ itemId: string; mode: 'return' | 'issue' } | null>(null);
   readonly noteHints = input<Record<string, string>>({});
+  readonly readOnly = input<boolean>(false);
 
   // --- Outputs — mirror EquipmentRowComponent ---
   readonly beginReturn = output<string>();
