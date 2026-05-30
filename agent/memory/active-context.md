@@ -1,20 +1,23 @@
 # Active context
 
-- **Project phase:** NOT STARTED — agent layer scaffolded, application not begun.
+- **Project phase:** DISCOVERY COMPLETE — spec authoring is next.
 - **Mode:** dev
 - **Active epic:** none
-- **Last checkpoint:** agent layer COMPLETE (sub-agents, skills, commands, memory, META, playbooks, rubric-map).
-- **Next action:** run the `discovery-session` skill with the operator to resolve ambiguous
-  offboarding flows, *before* writing the spec. Do NOT scaffold code yet.
+- **Last checkpoint:** discovery session complete (2026-05-30). All key flow decisions confirmed by operator.
+- **Next action:** run `spec-authoring` skill to write `docs/spec.md`. Then architecture ADR.
 
-## Open questions to resolve in discovery
-(seeded — confirm/expand with the operator)
-- Can an employee be offboarded with an unrecovered ("Issue") item, or must everything reach
-  a terminal state? What does "all items actioned" mean exactly?
-- Is "Report an issue" a terminal status, or can an item move issue → returned later?
-- Should returning a device in a worse condition than at assignment require confirmation?
-- One employee at a time, or a queue? Re-selecting an employee mid-flow — keep or reset state?
-- Which single bonus feature do we commit to? (recommendation: AI-assisted note.)
+## Confirmed decisions (see docs/discovery.md for full log)
+- Issue is resolvable (Issue → Returned allowed)
+- Completion rule: no Pending items + every Issue has a non-empty note
+- Complete with open Issues = allowed via soft-confirm dialog (not hard block)
+- Condition downgrade = soft confirmation required
+- Per-employee session state persists in-memory; unsaved changes warning on navigate away
+- Required states: loading, empty-no-equipment, error-load-fail, completed-read-only
+- Bonus: AI-assisted note (primary) + condition diff (secondary)
+
+## ADRs to write
+- ADR-0002: item state machine
+- ADR-0003: bonus feature choice
 
 ## Notes
 Stack ratified in ADR-0001. Architecture ADR still pending (do it right after spec).
