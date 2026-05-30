@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** BUILDING — EPIC: Domain core COMPLETE. Next = EPIC: Data + employee list.
+- **Project phase:** BUILDING — EPIC: Data + employee list COMPLETE. Next = EPIC: Return actions.
 - **Mode:** dev
-- **Active epic:** none (next = EPIC: Data + employee list)
-- **Last checkpoint:** `feat(dev-007)` — Domain core: all types, pure functions, 54 tests green (2026-05-30).
-- **Next action:** EPIC: Data + employee list → `task-breakdown` → `frontend-engineer`.
+- **Active epic:** none (next = EPIC: Return actions)
+- **Last checkpoint:** `feat(dev-008)` — Data + employee list: repo, mock data, employee list page, session scaffold, routes (2026-05-30).
+- **Next action:** EPIC: Return actions → `task-breakdown` → `frontend-engineer`.
 
 ## Architecture decisions (ADR-0004)
 
@@ -43,6 +43,20 @@
 - ADR-0002: item state machine (v1.1 — includes Returned → Pending undo)
 - ADR-0003: bonus feature choice
 - ADR-0004: front-end architecture (lib split, signal store, routing, component tree)
+
+## EPIC: Data + employee list — completed (dev-008)
+
+- E-1: `Employee.offboardingStatus` added to domain type; mock dataset (6 employees, 11 items)
+- E-2: `InMemoryOffboardingRepository` + `OFFBOARDING_REPO` token; `getEmployee(id)` on port
+- E-3: `EmployeeListPageComponent` — resource(), all states, badge, keyboard nav; 6 integration tests
+- E-4: `OffboardingSessionPageComponent` scaffold + routes wired; 5 integration tests; back nav
+
+## What's in the codebase
+
+- `libs/domain`: types, constants, pure functions, port interface — 54 unit tests
+- `libs/data-access`: mock data + `InMemoryOffboardingRepository` — 11 unit tests
+- `libs/feature-offboarding`: `EmployeeListPageComponent` + `OffboardingSessionPageComponent` (scaffold) — 12 integration tests
+- `apps/offboarding-shell`: zoneless Angular 21 app, PrimeNG Aura, lazy routes
 
 ## EPIC: Setup — completed tasks (dev-006)
 

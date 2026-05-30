@@ -1,0 +1,34 @@
+import { ChangeDetectionStrategy, Component, inject, resource } from '@angular/core';
+import { Router } from '@angular/router';
+import { OFFBOARDING_REPO } from '@org/data-access';
+import type { Employee } from '@org/domain';
+import { TagModule } from 'primeng/tag';
+import { SkeletonModule } from 'primeng/skeleton';
+
+@Component({
+  selector: 'lib-employee-list-page',
+  imports: [TagModule, SkeletonModule],
+  templateUrl: './employee-list-page.component.html',
+  styleUrl: './employee-list-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class EmployeeListPageComponent {
+  private readonly repo = inject(OFFBOARDING_REPO);
+  private readonly router = inject(Router);
+
+  protected readonly employeesResource = resource({
+    loader: () => this.repo.getEmployees(),
+  });
+
+  protected navigateToSession(employee: Employee): void {
+    this.router.navigate(['/offboarding', employee.id]);
+  }
+
+  protected formatDate(iso: string): string {
+    return new Date(iso).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+  }
+}

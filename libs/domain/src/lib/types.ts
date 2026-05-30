@@ -10,6 +10,7 @@ export interface Employee {
   department: string;
   email: string;
   offboardingDate: string;
+  offboardingStatus: OffboardingStatus;
 }
 
 export interface AssignedItem {

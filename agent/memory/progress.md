@@ -2,6 +2,19 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `feat(dev-008)` — EPIC: Data + employee list complete. Domain: `Employee.offboardingStatus`
+  added (needed for list badge). Data-access: `InMemoryOffboardingRepository` behind
+  `OFFBOARDING_REPO` InjectionToken (single DI instance via `inject()`); mock dataset (6
+  employees: 4 active, 1 no equipment, 1 pre-completed). `IOffboardingRepository` port
+  extended with `getEmployee(id)` (avoids `getEmployees()` scan on session page). Feature-
+  offboarding: `EmployeeListPageComponent` (resource(), loading/error/empty states,
+  Completed/In-progress badge, keyboard-accessible card nav); `OffboardingSessionPageComponent`
+  scaffold (receives `employeeId` signal input, shows name+count, employee-not-found guard).
+  Routes wired: both pages lazy-loaded. PrimeNG 21 + Aura theme configured. @testing-library/
+  angular installed; 12 component integration tests + 11 repository unit tests, all green.
+  Code review: CHANGES-REQUESTED → blockers (dual DI, silent not-found) + 6 should items
+  resolved. Final: lint 5/5, test 5/5, build green. Next: EPIC: Return actions.
+
 - `feat(dev-007)` — EPIC: Domain core complete. Pure-TS lib with zero Angular imports:
   string unions (ReturnCondition/ItemStatus/OffboardingStatus), all interfaces (Employee,
   AssignedItem, ReturnItem as composition, EmployeeSession), CONDITION_SEVERITY constant,

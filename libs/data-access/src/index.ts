@@ -1,1 +1,2 @@
-// Public API for data-access — exports added when OffboardingRepository is implemented (EPIC: Data)
+export { InMemoryOffboardingRepository, OFFBOARDING_REPO } from './lib/offboarding.repository';
+export { MOCK_EMPLOYEES, MOCK_ASSIGNED_ITEMS } from './lib/mock-data';

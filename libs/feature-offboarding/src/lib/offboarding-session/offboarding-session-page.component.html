@@ -1,0 +1,38 @@
+<div class="session-page">
+  <header class="session-header">
+    <button type="button" class="back-btn" (click)="goBack()" aria-label="Back to employee list">
+      ← Back
+    </button>
+
+    @if (sessionResource.isLoading()) {
+      <div class="session-header__title-skeleton" aria-busy="true">Loading...</div>
+    } @else if (sessionResource.error()) {
+      <p class="session-error" role="alert">Failed to load employee session.</p>
+    } @else if (sessionResource.value()?.employee; as employee) {
+      <div class="session-header__info">
+        <h1 class="session-title">{{ employee.name }}</h1>
+        <p class="session-meta">
+          {{ employee.department }} &mdash; Offboarding {{ formatDate(employee.offboardingDate) }}
+        </p>
+      </div>
+    } @else {
+      <p class="session-error" role="alert">Employee not found.</p>
+    }
+  </header>
+
+  <main class="session-main">
+    @if (
+      !sessionResource.isLoading() && !sessionResource.error() && sessionResource.value();
+      as session
+    ) {
+      @if (session.employee) {
+        <p class="placeholder-notice">
+          Equipment items for <strong>{{ session.employee.name }}</strong> ({{
+            session.items.length
+          }}
+          assigned) &mdash; return actions coming in the next epic.
+        </p>
+      }
+    }
+  </main>
+</div>

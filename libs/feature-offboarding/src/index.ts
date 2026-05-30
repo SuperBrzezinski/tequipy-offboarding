@@ -1,1 +1,2 @@
-export * from './lib/feature-offboarding/feature-offboarding';
+export { EmployeeListPageComponent } from './lib/employee-list/employee-list-page.component';
+export { OffboardingSessionPageComponent } from './lib/offboarding-session/offboarding-session-page.component';

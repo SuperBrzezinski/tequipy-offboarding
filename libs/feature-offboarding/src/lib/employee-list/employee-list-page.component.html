@@ -1,0 +1,62 @@
+<main class="employee-list-page">
+  <header class="page-header">
+    <h1 class="page-title">Equipment Offboarding</h1>
+    <p class="page-subtitle">Select an employee to process their equipment return.</p>
+  </header>
+
+  @if (employeesResource.isLoading()) {
+    <ul class="employee-list" aria-label="Loading employees" aria-busy="true">
+      @for (_ of [1, 2, 3]; track $index) {
+        <li class="employee-card employee-card--skeleton">
+          <p-skeleton height="1.25rem" width="60%" />
+          <p-skeleton height="1rem" width="40%" styleClass="mt-2" />
+        </li>
+      }
+    </ul>
+  } @else if (employeesResource.error()) {
+    <div class="state-message state-message--error" role="alert">
+      <p>Failed to load employees. Please try again.</p>
+      <button type="button" class="retry-btn" (click)="employeesResource.reload()">Retry</button>
+    </div>
+  } @else if ((employeesResource.value() ?? []).length === 0) {
+    <div class="state-message" role="status">
+      <p>No employees to offboard at this time.</p>
+    </div>
+  } @else {
+    <ul class="employee-list" aria-label="Employees pending offboarding">
+      @for (employee of employeesResource.value(); track employee.id) {
+        <li
+          class="employee-card"
+          [class.employee-card--completed]="employee.offboardingStatus === 'Completed'"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="
+            employee.name +
+            ', ' +
+            employee.department +
+            ', offboarding date ' +
+            formatDate(employee.offboardingDate)
+          "
+          (click)="navigateToSession(employee)"
+          (keydown.enter)="navigateToSession(employee)"
+          (keydown.space)="$event.preventDefault(); navigateToSession(employee)"
+        >
+          <div class="employee-card__body">
+            <span class="employee-name">{{ employee.name }}</span>
+            <span class="employee-meta">{{ employee.department }}</span>
+            <span class="employee-meta"
+              >Offboarding: {{ formatDate(employee.offboardingDate) }}</span
+            >
+          </div>
+          <div class="employee-card__aside">
+            @if (employee.offboardingStatus === 'Completed') {
+              <p-tag value="Completed" severity="success" />
+            } @else {
+              <p-tag value="In progress" severity="warn" />
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</main>
