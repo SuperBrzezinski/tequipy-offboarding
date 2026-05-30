@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 import { OFFBOARDING_REPO } from '@org/data-access';
 import type { AssignedItem, Employee, IOffboardingRepository } from '@org/domain';
+import { ConfirmationService } from 'primeng/api';
 import { describe, expect, it, vi } from 'vitest';
 import { OffboardingSessionPageComponent } from './offboarding-session-page.component';
 
@@ -50,11 +51,16 @@ describe('OffboardingSessionPageComponent', () => {
     await waitFor(() => expect(screen.getByRole('heading', { name: 'Jane Tester' })).toBeTruthy());
   });
 
-  it('shows the item count in the placeholder', async () => {
+  it('renders equipment items after loading', async () => {
+    // The equipment list (not a placeholder) should show both assigned items.
+    // Query by aria-label on the article element to avoid ambiguity with type tags.
     const repo = makeRepo();
     await renderPage(repo);
 
-    await waitFor(() => expect(screen.getByText(/2 assigned/i)).toBeTruthy());
+    await waitFor(() => {
+      expect(screen.getByRole('article', { name: 'MacBook' })).toBeTruthy();
+      expect(screen.getByRole('article', { name: 'Monitor' })).toBeTruthy();
+    });
   });
 
   it('shows employee-not-found when the id does not match any employee', async () => {
@@ -69,6 +75,84 @@ describe('OffboardingSessionPageComponent', () => {
     await renderPage(repo);
 
     await waitFor(() => expect(screen.getByText(/Failed to load employee session/i)).toBeTruthy());
+  });
+
+  describe('condition-downgrade dialog (onConfirmReturn)', () => {
+    it('calls store.confirmReturn directly when condition is not a downgrade', async () => {
+      // Good → Good: severity stays the same, no dialog needed.
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+      await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
+
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+
+      // MacBook (i-1) assignedCondition = 'Good'; returning as 'Good' = no downgrade
+      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Good' });
+
+      expect(confirmSpy).not.toHaveBeenCalled();
+      // Session item should now be Returned
+      const sess = page['session']();
+      expect(sess?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Returned');
+    });
+
+    it('shows ConfirmDialog when recording a worse condition', async () => {
+      // Good → Damaged: downgrade detected, dialog must appear before committing.
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+      await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
+
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+
+      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Damaged' });
+
+      expect(confirmSpy).toHaveBeenCalledOnce();
+      const call = confirmSpy.mock.calls[0][0];
+      expect(call.message).toContain('MacBook');
+      expect(call.message).toContain('Good');
+      expect(call.message).toContain('Damaged');
+      // Item must NOT be committed yet — dialog awaits confirmation
+      const sess = page['session']();
+      expect(sess?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Pending');
+    });
+
+    it('commits the return only after the dialog accept callback fires', async () => {
+      // Simulates the admin clicking "Continue" in the confirm dialog.
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+      await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
+
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      let acceptCallback: (() => void) | undefined;
+      vi.spyOn(page['confirmationService'], 'confirm').mockImplementation((opts) => {
+        acceptCallback = opts.accept as () => void;
+      });
+
+      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Damaged' });
+      expect(page['session']()?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Pending');
+
+      // Admin clicks "Continue"
+      acceptCallback?.();
+      expect(page['session']()?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Returned');
+    });
+  });
+
+  describe('suggest note (onSuggestNote)', () => {
+    it('populates noteHints with a non-empty suggestion for the given item', async () => {
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+      await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
+
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      expect(page['noteHints']()['i-1']).toBeUndefined();
+
+      page['onSuggestNote']('i-1');
+
+      const hint = page['noteHints']()['i-1'];
+      expect(hint).toBeTruthy();
+      expect(typeof hint).toBe('string');
+    });
   });
 
   it('navigates back to the list when Back is clicked', async () => {

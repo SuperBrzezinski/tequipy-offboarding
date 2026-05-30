@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** BUILDING — EPIC: Data + employee list COMPLETE. Next = EPIC: Return actions.
+- **Project phase:** BUILDING — EPIC: Return actions COMPLETE. Next = EPIC: Summary + completion.
 - **Mode:** dev
-- **Active epic:** none (next = EPIC: Return actions)
-- **Last checkpoint:** `feat(dev-008)` — Data + employee list: repo, mock data, employee list page, session scaffold, routes (2026-05-30).
-- **Next action:** EPIC: Return actions → `task-breakdown` → `frontend-engineer`.
+- **Active epic:** none (next = EPIC: Summary + completion)
+- **Last checkpoint:** `feat(dev-009)` — Return actions: OffboardingStore, dumb components, smart page wiring, condition-downgrade dialog, suggest note (2026-05-30).
+- **Next action:** EPIC: Summary + completion → `task-breakdown` → implement.
 
 ## Architecture decisions (ADR-0004)
 

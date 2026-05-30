@@ -5,7 +5,7 @@
     </button>
 
     @if (sessionResource.isLoading()) {
-      <div class="session-header__title-skeleton" aria-busy="true">Loading...</div>
+      <div class="session-header__title-skeleton" aria-busy="true">Loading…</div>
     } @else if (sessionResource.error()) {
       <p class="session-error" role="alert">Failed to load employee session.</p>
     } @else if (sessionResource.value()?.employee; as employee) {
@@ -21,18 +21,22 @@
   </header>
 
   <main class="session-main">
-    @if (
-      !sessionResource.isLoading() && !sessionResource.error() && sessionResource.value();
-      as session
-    ) {
-      @if (session.employee) {
-        <p class="placeholder-notice">
-          Equipment items for <strong>{{ session.employee.name }}</strong> ({{
-            session.items.length
-          }}
-          assigned) &mdash; return actions coming in the next epic.
-        </p>
-      }
+    @if (!sessionResource.isLoading() && !sessionResource.error() && session(); as sess) {
+      <lib-equipment-list
+        [items]="sess.items"
+        [editingItem]="store.editingItem()"
+        [noteHints]="noteHints()"
+        (beginReturn)="onBeginReturn($event)"
+        (confirmReturn)="onConfirmReturn($event)"
+        (cancelReturn)="onCancelReturn($event)"
+        (undoReturn)="onUndoReturn($event)"
+        (beginIssue)="onBeginIssue($event)"
+        (confirmIssue)="onConfirmIssue($event)"
+        (cancelIssue)="onCancelIssue($event)"
+        (suggestNote)="onSuggestNote($event)"
+      />
     }
   </main>
+
+  <p-confirmdialog />
 </div>

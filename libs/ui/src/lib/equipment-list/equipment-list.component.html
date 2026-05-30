@@ -1,0 +1,22 @@
+@if (items().length === 0) {
+  <p class="empty-state">No equipment assigned to this employee.</p>
+} @else {
+  <div class="equipment-list">
+    @for (returnItem of items(); track returnItem.item.id) {
+      <lib-equipment-row
+        [item]="returnItem"
+        [isEditing]="isEditing(returnItem.item.id)"
+        [editMode]="getEditMode(returnItem.item.id)"
+        [suggestedNote]="noteHints()[returnItem.item.id] || null"
+        (beginReturn)="beginReturn.emit($event)"
+        (confirmReturn)="confirmReturn.emit($event)"
+        (cancelReturn)="cancelReturn.emit($event)"
+        (undoReturn)="undoReturn.emit($event)"
+        (beginIssue)="beginIssue.emit($event)"
+        (confirmIssue)="confirmIssue.emit($event)"
+        (cancelIssue)="cancelIssue.emit($event)"
+        (suggestNote)="suggestNote.emit($event)"
+      />
+    }
+  </div>
+}

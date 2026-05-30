@@ -73,10 +73,60 @@ epic** (never all up front). Use the `backlog-planning` and `task-breakdown` ski
          Wire `app.routes.ts`: `''` → `EmployeeListPageComponent` (eager), `offboarding/:employeeId`
          → `OffboardingSessionPageComponent` (lazy). Back button → list.
          DoD: full navigation flow works end-to-end in the browser; `nx build offboarding-shell` green.
-5. [ ] **EPIC: Return actions** — `OffboardingStore` signal store; `OffboardingSessionPageComponent`
+5. [x] **EPIC: Return actions** — `OffboardingStore` signal store; `OffboardingSessionPageComponent`
        (smart, reads store); `EquipmentListComponent`/`EquipmentRowComponent`/`StatusBadgeComponent` (dumb);
        mark-returned (condition select, condition-downgrade soft-confirm), report-issue (note field,
-       isDirty, confirm/cancel), undo-return. _Done = item moves through all state transitions in the live UI._
+       isDirty, confirm/cancel), undo-return. _Done ✓ — `feat(dev-009)`._
+
+   **Tasks (JIT breakdown 2026-05-30):**
+
+   - [ ] **R-1** — `OffboardingStore` signal service + unit tests: `@Injectable` service in
+         `libs/feature-offboarding`; `WritableSignal<Map<employeeId, EmployeeSession>>` session map;
+         `editingItem: WritableSignal<{itemId:string, mode:'return'|'issue'} | null>` for isDirty;
+         `isDirty = computed(...)`, `getSession(id)` computed; methods: `loadSession`, `beginReturn`,
+         `confirmReturn(itemId, condition)`, `undoReturn`, `beginIssue`, `confirmIssue(itemId, note)`,
+         `cancelIssue`; session persists across navigation (cache by employeeId).
+         Unit tests: all 5 transitions, cache hit (navigate away + back restores state), isDirty
+         set/cleared correctly on begin/confirm/cancel.
+         DoD: `nx test feature-offboarding && nx lint feature-offboarding` green.
+
+   - [ ] **R-2** — Dumb presentational components (`StatusBadgeComponent`, `EquipmentRowComponent`,
+         `EquipmentListComponent`) in `libs/ui`: `StatusBadgeComponent` — signal input `status: ItemStatus`,
+         renders colour-coded badge (Pending=neutral, Returned=success, Issue=warning); `EquipmentRowComponent`
+         — signal inputs: `item: ReturnItem`, `isEditing: boolean`, `editMode: 'return'|'issue'|null`;
+         outputs: `markReturn`, `undoReturn`, `reportIssue`, `confirmIssue`, `cancelIssue`, `suggestNote`;
+         renders item name/type/serial/assignedCondition + status badge + contextual action buttons;
+         `EquipmentListComponent` — input `items: ReturnItem[]`, relays all row events.
+         Component tests: badge renders correct variant; row shows correct buttons per status.
+         DoD: `nx test ui && nx lint ui` green.
+
+   - [ ] **R-3** — Return flow: condition select + condition-downgrade soft-confirm + undo: in
+         `EquipmentRowComponent`, when `editMode === 'return'`: show `<p-select>` (Good / Damaged /
+         Missing accessories); "Confirm return" calls `confirmReturn`; `isConditionWorse` check in
+         `OffboardingSessionPageComponent` — if true, show PrimeNG `<p-confirmdialog>` before calling
+         store; "Undo return" button on Returned row calls `undoReturn`. Dialog: "{{name}} was assigned
+         as {{assigned}}. Recording as {{returned}}. Continue?". Focus moves to dialog on open,
+         returns to trigger on close.
+         DoD: both happy-path and downgrade-confirm flow work in browser; `nx test feature-offboarding` green.
+
+   - [ ] **R-4** — Issue flow: note field + suggest note + confirm/cancel: in `EquipmentRowComponent`,
+         when `editMode === 'issue'`: show `<p-textarea>` (required, min-length 1) + "Suggest note"
+         button (calls `suggestNote(item.type, item.assignedCondition)` from domain, fills textarea);
+         "Confirm issue" (disabled when note empty) calls `confirmIssue`; "Cancel" calls `cancelIssue`;
+         `isDirty` is `true` while the field is open, `false` after confirm/cancel.
+         Component test: Confirm disabled when empty, enabled when non-empty; suggest note pre-fills.
+         DoD: `nx test ui && nx test feature-offboarding && nx lint` green.
+
+   - [ ] **R-5** — Smart page wiring + isDirty navigation guard + integration tests: wire
+         `OffboardingSessionPageComponent` to `OffboardingStore` — inject store, call `loadSession`
+         on `employeeId` input change, pass `currentItems`, `editingItem` signals into
+         `EquipmentListComponent`, handle all output events by calling store; add `CanDeactivateFn`
+         guard to `/offboarding/:id` route — if `store.isDirty()` prompt "You have an unsaved edit.
+         Leave and discard?" (use `location.back()` after discard or stay on confirm); integration
+         tests: render equipment list for emp-001; transition Pending→Returned→Pending (undo);
+         Pending→Issue (with note); navigation guard fires when isDirty.
+         DoD: full state-machine flow verified in browser; `nx build offboarding-shell` green;
+         integration tests green.
 6. [ ] **EPIC: Summary + completion** — `SummaryPanelComponent` live counts; Complete button
        guarded by `canComplete`; completion dialog listing open-issue item names; completed
        read-only state with `completedAt` timestamp. _Done = full completion flow end to end._
