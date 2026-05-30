@@ -11,10 +11,10 @@ epic** (never all up front). Use the `backlog-planning` and `task-breakdown` ski
 ## Milestone 1 — Build
 1. [x] **EPIC: Discovery + Spec + Architecture** — resolve flows, write spec, agree layering;
        ADRs 0001–0004 written (tech stack, state machine, bonus, architecture). _Done ✓_
-2. [ ] **EPIC: Setup** (devex) — Nx workspace; four libs (`domain`, `data-access`,
+2. [x] **EPIC: Setup** (devex) — Nx workspace; four libs (`domain`, `data-access`,
        `feature-offboarding`, `ui`) + `apps/offboarding-shell` with `@nx/enforce-module-boundaries`
        tags, ESLint (incl. `prefer-on-push`), Prettier, Husky+lint-staged, commitlint, CI.
-       _Done = `nx run-many -t lint test build` green from a clean clone; hooks fire._
+       _Done ✓ — lint/test/build 5/5 green; hooks fire. `build(dev-006)`._
 3. [ ] **EPIC: Domain core** — `ReturnStatus`/`ReturnCondition` string unions; `AssignedItem`,
        `ReturnItem` (composition), `EmployeeSession` types; `CONDITION_SEVERITY`,
        `isConditionWorse`, `canComplete`, `hasOpenIssues`, `suggestNote` pure functions;
