@@ -1,0 +1,33 @@
+{
+  "name": "Tequipy Offboarding — Angular 21 / Nx",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  // Angular 21 requires Node >= 24.13.1 (or >= 22.22). The 24-bookworm image tracks latest 24.x.
+  // pnpm is provisioned via Corepack to keep the lockfile and version pinned to the repo.
+  "postCreateCommand": "sudo corepack enable && sudo corepack prepare pnpm@latest --activate && node -v && pnpm -v",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "Angular.ng-template",
+        "nrwl.angular-console",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "editorconfig.editorconfig",
+        "vitest.explorer"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true
+      }
+    }
+  },
+  "remoteUser": "node"
+}

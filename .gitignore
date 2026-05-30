@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Nx
+.nx/cache
+.nx/workspace-data
+tmp/
+
+# Build output
+dist/
+out-tsc/
+*.tsbuildinfo
+
+# Testing / coverage
+coverage/
+.vitest/
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs / env
+*.log
+npm-debug.log*
+.env
+.env.*
+!.env.example
+
+# Angular cache
+.angular/cache
+
+# NOTE: the agent layer is intentionally COMMITTED.
+# Do NOT ignore .claude/ or agent/ — they are part of the deliverable's story.
