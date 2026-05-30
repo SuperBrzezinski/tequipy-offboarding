@@ -1,11 +1,18 @@
 # Active context
 
-- **Project phase:** SPEC COMPLETE — architecture ADR is next.
+- **Project phase:** ARCHITECTURE COMPLETE — ready to build.
 - **Mode:** dev
-- **Active epic:** none
-- **Last checkpoint:** spec authoring complete (2026-05-30). Spec v1.1 signed off.
-- **Next action:** run `solution-architect` to produce architecture ADR (layer split, store
-  design, component tree). Then `backlog-planning` to create epics.
+- **Active epic:** none (next = EPIC: Setup)
+- **Last checkpoint:** ADR-0004 written + backlog shaped (2026-05-30).
+- **Next action:** pick up EPIC: Setup → `task-breakdown` → `devex-engineer`.
+
+## Architecture decisions (ADR-0004)
+- Four libs: `domain` (pure TS), `data-access` (in-memory repo), `feature-offboarding` (signal store + smart page), `ui` (dumb components)
+- App: `apps/offboarding-shell` (bootstraps, router, global styles)
+- State: plain `@Injectable` signal service (`OffboardingStore`) — no NgRx
+- Routing: `/offboarding/:employeeId` lazy-loaded; `withComponentInputBinding()` for route params
+- Change detection: OnPush everywhere, zoneless, signal inputs
+- Smart/dumb split: `OffboardingSessionPageComponent` is the **only** store consumer
 
 ## Confirmed decisions (full log in docs/discovery.md + docs/spec.md)
 
@@ -30,6 +37,4 @@
 - ADR-0001: tech stack (Angular 21, Nx, PrimeNG, Vitest, pnpm)
 - ADR-0002: item state machine (v1.1 — includes Returned → Pending undo)
 - ADR-0003: bonus feature choice
-
-## Next ADR
-- ADR-0004: architecture — layer split, store design, component tree (solution-architect)
+- ADR-0004: front-end architecture (lib split, signal store, routing, component tree)
