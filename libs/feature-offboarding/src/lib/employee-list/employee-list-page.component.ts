@@ -2,12 +2,14 @@ import { ChangeDetectionStrategy, Component, inject, resource } from '@angular/c
 import { Router } from '@angular/router';
 import { OFFBOARDING_REPO } from '@org/data-access';
 import type { Employee } from '@org/domain';
-import { TagModule } from 'primeng/tag';
+import { MessageModule } from 'primeng/message';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'lib-employee-list-page',
-  imports: [TagModule, SkeletonModule],
+  imports: [TableModule, TagModule, SkeletonModule, MessageModule],
   templateUrl: './employee-list-page.component.html',
   styleUrl: './employee-list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

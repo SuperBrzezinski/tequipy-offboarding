@@ -65,7 +65,7 @@ describe('EmployeeListPageComponent', () => {
     );
   });
 
-  it('navigates to /offboarding/:id when an employee card is clicked', async () => {
+  it('navigates to /offboarding/:id when an employee row is clicked', async () => {
     const navigate = vi.fn();
     const repo = makeRepo();
     const user = userEvent.setup();
@@ -79,9 +79,7 @@ describe('EmployeeListPageComponent', () => {
     });
 
     await waitFor(() => expect(screen.getByText('Alice Active')).toBeTruthy());
-
-    const card = screen.getByRole('button', { name: /Alice Active/i });
-    await user.click(card);
+    await user.click(screen.getByText('Alice Active'));
 
     expect(navigate).toHaveBeenCalledWith(['/offboarding', 'emp-a']);
   });
@@ -104,5 +102,20 @@ describe('EmployeeListPageComponent', () => {
     });
 
     await waitFor(() => expect(screen.getByText(/No employees to offboard/i)).toBeTruthy());
+  });
+
+  it('renders column headers for Name, Department, Offboarding Date and Status', async () => {
+    const repo = makeRepo();
+    await render(EmployeeListPageComponent, {
+      providers: [provideRouter([]), { provide: OFFBOARDING_REPO, useValue: repo }],
+    });
+
+    // columnheader role is implicit on <th scope="col"> elements
+    await waitFor(() => {
+      expect(screen.getByRole('columnheader', { name: /^Name/i })).toBeTruthy();
+      expect(screen.getByRole('columnheader', { name: /^Department/i })).toBeTruthy();
+      expect(screen.getByRole('columnheader', { name: /^Offboarding Date/i })).toBeTruthy();
+      expect(screen.getByRole('columnheader', { name: /^Status/i })).toBeTruthy();
+    });
   });
 });
