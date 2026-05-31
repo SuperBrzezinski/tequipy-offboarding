@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `fix(dev-019)` — Pre-submission audit against task spec. Fixed critical README command (`offboarding-shell` → `shell`), OOM in feature test suite (vitest singleFork), stale library description, architecture diagram app name. Added Phone template to suggestNote. Showed assigned condition on Issue-state equipment rows. 45 + 54 + 11 tests green. (2026-05-31)
+- **Last checkpoint:** `docs(dev-020)` — README accuracy fixes: stack line now includes Tailwind v4 + Angular Testing Library; layer diagram corrected to actual structure (`libs/offboarding-feature` + `domain`/`data-access` sub-libs, no phantom `libs/ui`); "Why four libs" section renamed/rewritten to match reality; ADR-0001 key-decisions row stripped of self-congratulatory framing, replaced with concrete technical reasons. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)

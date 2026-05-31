@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `docs(dev-020)` — README accuracy fixes: stack line adds Tailwind v4 + Angular Testing Library; layer diagram corrected to real lib structure; "Why four libs" rewritten; ADR-0001 key-decisions row rewritten without self-congratulatory framing.
+
 - `fix(dev-019)` — Pre-submission spec audit. Six issues found and resolved: (1) README serve
   command `offboarding-shell` → `shell` (critical — would break reviewer quick start);
   (2) vitest `pool: forks / singleFork: true / testTimeout: 15000` to fix OOM-kill of

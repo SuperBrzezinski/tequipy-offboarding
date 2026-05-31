@@ -3,7 +3,7 @@
 A production-quality SPA for IT administrators to process the equipment return step of an
 employee offboarding workflow. Built as a Founding Frontend Engineer assessment submission.
 
-> Stack: **Angular 21 · Nx 22 · PrimeNG 21 · TypeScript strict · Vitest**
+> Stack: **Angular 21 · Nx 22 · PrimeNG 21 · Tailwind v4 · TypeScript strict · Vitest · Angular Testing Library**
 
 ---
 
@@ -46,29 +46,27 @@ data is in-memory.
 ```
 apps/shell                        bootstrap, router config, global styles
           |
-libs/feature-offboarding          OffboardingStore (signals) + smart page component
+libs/offboarding-feature          OffboardingStore, page + dumb components
           |               \
-libs/data-access          libs/ui          dumb components, PrimeNG wrappers
-          |                    |
-          +------> libs/domain <-----------+
-                  pure TypeScript, zero Angular imports
+  domain                   data-access
+  pure TypeScript,          InMemoryOffboardingRepository,
+  zero Angular imports      mock dataset
 ```
 
 Dependencies are **inward only**. `@nx/enforce-module-boundaries` tags make any violation a
 lint error, not a convention.
 
-### Why four libs
+### Library structure
 
 | Library | Contents | Boundary rule |
 |---|---|---|
-| `domain` | Types, constants, pure functions, `IOffboardingRepository` port | No Angular; zero outbound deps |
-| `data-access` | `InMemoryOffboardingRepository`, mock dataset (2 employees, 5 items) | May depend on `domain` only |
-| `feature-offboarding` | `OffboardingStore`, `OffboardingSessionPageComponent`, `EmployeeListPageComponent` | Injects store and repo; composes `ui` |
-| `ui` | `EquipmentListComponent`, `EquipmentRowComponent`, `StatusBadgeComponent`, `ConditionDiffBadgeComponent`, `SummaryPanelComponent` | Signal inputs/outputs only; no store injection |
+| `offboarding-feature` | `OffboardingStore`, page components, dumb UI components | Imports `domain` and `data-access`; no other libs |
+| `offboarding-feature/domain` | Types, constants, pure functions, `IOffboardingRepository` port | No Angular; zero outbound deps |
+| `offboarding-feature/data-access` | `InMemoryOffboardingRepository`, mock dataset (2 employees, 5 items) | Depends on `domain` only |
 
 `domain` has zero Angular imports — enforced by a `no-restricted-imports` ESLint rule in the
-lib, not just convention. It could be published as a standalone package or run in a Node
-backend without modification.
+lib, not just convention. It can run in a Node backend or be published as a standalone
+package without modification.
 
 ### Signal store
 
@@ -108,7 +106,7 @@ rule ensures no feature code leaks into the initial chunk.
 
 | # | What was decided | Why |
 |---|---|---|
-| [ADR-0001](docs/adr/0001-tech-stack.md) | Angular 21 (standalone, zoneless, signals) on Nx 22 with PrimeNG 21 and Vitest | Picking the current Angular generation is itself a signal to reviewers; zoneless + signals pairs cleanly with a testable state layer; Nx makes boundary enforcement mechanical |
+| [ADR-0001](docs/adr/0001-tech-stack.md) | Angular 21 (standalone, zoneless, signals) on Nx 22 with PrimeNG 21 and Vitest | Zoneless eliminates Zone.js patching overhead and removes `async`/`fakeAsync` ceremony from tests; signals give co-located reactivity without an external state library; Nx makes boundary enforcement mechanical |
 | [ADR-0002](docs/adr/0002-item-state-machine.md) | `Pending → Returned ↔ Pending` (undo) and `Pending → Issue → Returned`; completion requires zero Pending items and non-empty notes on all Issues; open Issues trigger a soft-confirm dialog listing item names | A mis-click creating an irrecoverable chargeback record is worse than allowing undo; blank-note Issues fail audit; hard-blocking completion on open Issues lets asset recovery hold up payroll |
 | [ADR-0003](docs/adr/0003-bonus-feature.md) | AI-assisted note as a local template engine (`suggestNote`) + condition diff badge as secondary bonus | The template approach is honest about the implementation; the function signature is the extension seam for a real LLM call; the diff badge surfaces a real admin risk (undeclared damage chargeback) at near-zero implementation cost |
 | [ADR-0004](docs/adr/0004-architecture.md) | Four Nx libs with inward-only dependencies; single injectable signal store; only the smart page component touches the store; all `ui` components are pure input/output | Boundary rules that are mechanically enforced cannot drift; one store owner makes state provenance unambiguous; dumb components are independently testable without TestBed |
