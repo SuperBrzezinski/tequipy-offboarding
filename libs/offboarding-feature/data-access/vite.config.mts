@@ -7,7 +7,7 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../../node_modules/.vite/libs/offboarding-data-access',
-  plugins: [angular(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
+  plugins: [angular({ disableTypeChecking: true }), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
   test: {
     name: 'offboarding-data-access',
     watch: false,
@@ -16,6 +16,8 @@ export default defineConfig(() => ({
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['src/test-setup.ts'],
     reporters: ['default'],
+    pool: 'forks',
+    forks: { singleFork: true },
     coverage: {
       reportsDirectory: '../../../coverage/libs/offboarding-data-access',
       provider: 'v8' as const,

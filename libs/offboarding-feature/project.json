@@ -8,6 +8,23 @@
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "options": {
+        "parallel": false,
+        "cwd": "{projectRoot}",
+        "commands": [
+          "vitest run src/lib/offboarding-session.guard.spec.ts",
+          "vitest run src/lib/components/condition-diff-badge/condition-diff-badge.component.spec.ts",
+          "vitest run src/lib/components/equipment-row/equipment-row.component.spec.ts",
+          "vitest run src/lib/components/summary-panel/summary-panel.component.spec.ts",
+          "vitest run src/lib/components/employee-list/employee-list-page.component.spec.ts",
+          "vitest run src/lib/components/offboarding-session/offboarding-session-page.component.spec.ts"
+        ]
+      }
     }
   }
 }
