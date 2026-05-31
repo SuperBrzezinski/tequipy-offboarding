@@ -19,10 +19,9 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@org/domain": ["./libs/domain/src/index.ts"],
-      "@org/data-access": ["./libs/data-access/src/index.ts"],
-      "@org/feature-offboarding": ["./libs/feature-offboarding/src/index.ts"],
-      "@org/ui": ["./libs/ui/src/index.ts"]
+      "@org/offboarding-feature": ["./libs/offboarding-feature/src/index.ts"],
+      "@org/offboarding-feature/data-access": ["./libs/offboarding-feature/data-access/src/index.ts"],
+      "@org/offboarding-feature/domain": ["./libs/offboarding-feature/domain/src/index.ts"]
     }
   }
 }

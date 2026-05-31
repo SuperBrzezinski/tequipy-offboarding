@@ -1,0 +1,12 @@
+{
+  "name": "offboarding-domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/offboarding-feature/domain/src",
+  "projectType": "library",
+  "tags": ["type:domain", "scope:offboarding"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

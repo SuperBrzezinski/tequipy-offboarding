@@ -26,21 +26,12 @@ export default [
               onlyDependOnLibsWithTags: ['type:domain'],
             },
             {
-              sourceTag: 'type:ui',
-              onlyDependOnLibsWithTags: ['type:domain'],
-            },
-            {
               sourceTag: 'type:feature',
-              onlyDependOnLibsWithTags: ['type:domain', 'type:data-access', 'type:ui'],
+              onlyDependOnLibsWithTags: ['type:domain', 'type:data-access'],
             },
             {
               sourceTag: 'type:app',
-              onlyDependOnLibsWithTags: [
-                'type:domain',
-                'type:data-access',
-                'type:feature',
-                'type:ui',
-              ],
+              onlyDependOnLibsWithTags: ['type:feature'],
             },
           ],
         },
