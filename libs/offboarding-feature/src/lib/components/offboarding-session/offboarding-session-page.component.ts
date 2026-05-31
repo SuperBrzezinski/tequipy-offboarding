@@ -204,6 +204,17 @@ export class OffboardingSessionPageComponent {
   }
 
   protected onCancelIssue(): void {
+    // Clear the stored hint before cancelling so the signal goes undefined → string
+    // on the next suggest-note click, forcing the child effect to re-run even when
+    // the suggestion string is identical to the previous one.
+    const editingItemId = this.store.editingItem()?.itemId;
+    if (editingItemId) {
+      this.noteHints.update((h) => {
+        const next = { ...h };
+        delete next[editingItemId];
+        return next;
+      });
+    }
     this.store.cancelIssue();
   }
 
@@ -212,10 +223,15 @@ export class OffboardingSessionPageComponent {
     if (!session) return;
     const ri = session.items.find((i) => i.item.id === itemId);
     if (!ri) return;
-    // suggestNoteFn is a pure domain function — no Angular dependency, fully
-    // testable in isolation. The result is stored in local signal state so it
-    // flows down to the correct EquipmentRowComponent via noteHints input.
-    const suggestion = suggestNoteFn(ri.item.type, ri.item.assignedCondition);
+    // In issue mode, "Good" is never the right template — the admin is describing
+    // a problem, so fall back to 'Damaged'. Non-Good assigned conditions are kept
+    // as-is since "Missing accessories" is a valid issue description seed.
+    const editMode = this.store.editingItem()?.mode;
+    const condition: ReturnCondition =
+      editMode === 'issue' && ri.item.assignedCondition === 'Good'
+        ? 'Damaged'
+        : ri.item.assignedCondition;
+    const suggestion = suggestNoteFn(ri.item.type, condition);
     this.noteHints.update((h) => ({ ...h, [itemId]: suggestion }));
   }
 

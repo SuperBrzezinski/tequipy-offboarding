@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `fix(dev-022)` — Five pre-submission fixes identified via AI-reviewer simulation: (1) Issue → Returned UI gap closed (equipment-row template now offers "Mark as returned" + condition-select from Issue state, matching ADR-0002); (2) `window.confirm` in nav guard replaced with PrimeNG `ConfirmationService` + `Observable<boolean>` (consistent, testable, async); `ConfirmationService` lifted to root providers, single `<p-confirmdialog>` at app root; (3) `onComplete()` with open Issues now has 3 integration tests; (4) `canDeactivateSession` guard has its own spec (4 tests); (5) `cancelReturn`/`cancelIssue` unused params removed — signatures simplified to zero-arg, template bindings updated. All 53 tests green. (2026-05-31)
+- **Last checkpoint:** `fix(dev-023)` — Two suggest-note bugs fixed in `offboarding-session-page.component.ts`: (1) second click after cancel was silent — `onCancelIssue` now clears the `noteHints` entry for the editing item before cancelling so the signal goes `undefined → string` on re-suggest, forcing the child effect to re-run; (2) issue-mode suggested note used `assignedCondition` even when 'Good', producing an absurd "in good condition" template — `onSuggestNote` now falls back to 'Damaged' when mode is 'issue' and assigned condition is 'Good'. Regression test added to equipment-row spec covering the cancel+re-suggest state transition. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)

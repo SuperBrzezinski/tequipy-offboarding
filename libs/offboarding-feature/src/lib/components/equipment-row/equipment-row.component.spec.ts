@@ -203,6 +203,43 @@ describe('suggestedNote input', () => {
 
     expect(textarea?.value).toBe('Charger cable missing');
   });
+
+  it('re-fills the textarea when suggestedNote goes undefined then back to a value (cancel + re-suggest)', async () => {
+    // Regression: after cancel the parent clears the hint (undefined), then on
+    // second suggest-note the hint goes undefined→string again. The effect must
+    // fire on that transition even when the string value is identical.
+    const { fixture } = await render(EquipmentRowComponent, {
+      inputs: {
+        item: makePendingItem(),
+        isEditing: true,
+        editMode: 'issue',
+        suggestedNote: 'Charger cable missing',
+      },
+      providers: primeNGProviders,
+    });
+
+    const textarea = fixture.nativeElement.querySelector('textarea');
+    expect(textarea?.value).toBe('Charger cable missing');
+
+    // Simulate cancel: parent clears hint and sets isEditing=false
+    fixture.componentRef.setInput('suggestedNote', undefined);
+    fixture.componentRef.setInput('isEditing', false);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // Admin re-opens issue editing
+    fixture.componentRef.setInput('isEditing', true);
+    fixture.componentRef.setInput('editMode', 'issue');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // Parent suggests the same string again — effect must still fire
+    fixture.componentRef.setInput('suggestedNote', 'Charger cable missing');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(textarea?.value).toBe('Charger cable missing');
+  });
 });
 
 describe('readOnly mode', () => {
