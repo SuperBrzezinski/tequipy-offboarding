@@ -11,7 +11,7 @@ employee offboarding workflow. Built as a Founding Frontend Engineer assessment 
 
 ```bash
 pnpm install
-pnpm nx serve offboarding-shell          # http://localhost:4200
+pnpm nx serve shell                       # http://localhost:4200
 pnpm nx run-many --target=test --all     # all unit + integration tests
 ```
 
@@ -44,7 +44,7 @@ data is in-memory.
 ### Layer diagram
 
 ```
-apps/offboarding-shell            bootstrap, router config, global styles
+apps/shell                        bootstrap, router config, global styles
           |
 libs/feature-offboarding          OffboardingStore (signals) + smart page component
           |               \
@@ -62,7 +62,7 @@ lint error, not a convention.
 | Library | Contents | Boundary rule |
 |---|---|---|
 | `domain` | Types, constants, pure functions, `IOffboardingRepository` port | No Angular; zero outbound deps |
-| `data-access` | `InMemoryOffboardingRepository`, mock dataset (6 employees, 11 items) | May depend on `domain` only |
+| `data-access` | `InMemoryOffboardingRepository`, mock dataset (2 employees, 5 items) | May depend on `domain` only |
 | `feature-offboarding` | `OffboardingStore`, `OffboardingSessionPageComponent`, `EmployeeListPageComponent` | Injects store and repo; composes `ui` |
 | `ui` | `EquipmentListComponent`, `EquipmentRowComponent`, `StatusBadgeComponent`, `ConditionDiffBadgeComponent`, `SummaryPanelComponent` | Signal inputs/outputs only; no store injection |
 

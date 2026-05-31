@@ -2,6 +2,15 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `fix(dev-019)` — Pre-submission spec audit. Six issues found and resolved: (1) README serve
+  command `offboarding-shell` → `shell` (critical — would break reviewer quick start);
+  (2) vitest `pool: forks / singleFork: true / testTimeout: 15000` to fix OOM-kill of
+  offboarding-feature test suite; (3) README arch diagram path corrected; (4) README
+  data-access description updated from "6 employees, 11 items" → "2 employees, 5 items";
+  (5) `suggestNote` Phone template added (iPhone 14 Pro in mock data previously fell through
+  to FALLBACK); (6) assigned condition now shown on Issue-state equipment rows (spec
+  requires it always visible). 45 + 54 + 11 tests green.
+
 - `refactor(dev-018)` — Status filter in employee list replaced from free-text `p-columnFilter`
   (type=text, matchMode=contains) to a `p-select` dropdown with `matchMode=equals`. Added
   `FormsModule` + `SelectModule` to component imports; `statusOptions: OffboardingStatus[]`

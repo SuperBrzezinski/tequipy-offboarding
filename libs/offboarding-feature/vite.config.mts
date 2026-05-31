@@ -16,6 +16,9 @@ export default defineConfig(() => ({
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['src/test-setup.ts'],
     reporters: ['default'],
+    pool: 'forks',
+    poolOptions: { forks: { singleFork: true } },
+    testTimeout: 15000,
     coverage: {
       reportsDirectory: '../../coverage/libs/offboarding-feature',
       provider: 'v8' as const,

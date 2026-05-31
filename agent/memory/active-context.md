@@ -1,9 +1,9 @@
 # Active context
 
-- **Project phase:** COMPLETE — All epics shipped + visual overhaul done.
+- **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `refactor(dev-018)` — Status filter in employee list replaced from free-text input to p-select dropdown. matchMode changed to equals; FormsModule + SelectModule added; statusOptions typed as OffboardingStatus[]. 45 tests green. (2026-05-31)
+- **Last checkpoint:** `fix(dev-019)` — Pre-submission audit against task spec. Fixed critical README command (`offboarding-shell` → `shell`), OOM in feature test suite (vitest singleFork), stale library description, architecture diagram app name. Added Phone template to suggestNote. Showed assigned condition on Issue-state equipment rows. 45 + 54 + 11 tests green. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)
@@ -20,13 +20,13 @@
   the store. `feature-offboarding` is lazy-loaded by the app shell (via `loadComponent`),
   making static imports of it forbidden by `@nx/enforce-module-boundaries`.
   `data-access` is non-lazy and already imported statically by the app shell — correct layer.
-- `canDeactivateSession` guard lives in `apps/offboarding-shell/src/app/offboarding-session.guard.ts`
-  and imports `OffboardingStore` from `@org/data-access`.
+- `canDeactivateSession` guard lives in `libs/offboarding-feature/src/lib/offboarding-session.guard.ts`
+  and imports `OffboardingStore` from `@org/offboarding-feature/data-access`.
 
 ## Architecture decisions (ADR-0004)
 
 - Four libs: `domain` (pure TS), `data-access` (in-memory repo), `feature-offboarding` (signal store + smart page), `ui` (dumb components)
-- App: `apps/offboarding-shell` (bootstraps, router, global styles)
+- App: `apps/shell` (bootstraps, router, global styles)
 - State: plain `@Injectable` signal service (`OffboardingStore`) — no NgRx
 - Routing: `/offboarding/:employeeId` lazy-loaded; `withComponentInputBinding()` for route params
 - Change detection: OnPush everywhere, zoneless, signal inputs

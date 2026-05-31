@@ -34,6 +34,11 @@ const TEMPLATES: Record<string, NoteTemplate> = {
     Damaged: 'Docking station returned with damage to ports or casing.',
     'Missing accessories': 'Docking station returned without power adapter.',
   },
+  Phone: {
+    Good: 'Phone returned in good condition. No visible damage.',
+    Damaged: 'Phone returned with physical damage (cracked screen or casing).',
+    'Missing accessories': 'Phone returned without charger or protective case.',
+  },
 };
 
 const FALLBACK: NoteTemplate = {
