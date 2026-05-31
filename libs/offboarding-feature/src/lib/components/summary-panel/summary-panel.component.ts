@@ -8,7 +8,6 @@ import { formatDate } from '../utils/format-date';
   selector: 'lib-summary-panel',
   imports: [ButtonModule, TagModule],
   templateUrl: './summary-panel.component.html',
-  styleUrl: './summary-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SummaryPanelComponent {

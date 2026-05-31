@@ -21,7 +21,6 @@ import { StatusBadgeComponent } from '../status-badge/status-badge.component';
     StatusBadgeComponent,
   ],
   templateUrl: './equipment-row.component.html',
-  styleUrl: './equipment-row.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EquipmentRowComponent {

@@ -1,10 +1,17 @@
 # Active context
 
-- **Project phase:** COMPLETE — All epics shipped + test suite finalised.
+- **Project phase:** COMPLETE — All epics shipped + visual overhaul done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `fix(dev-016)` — replaced invented mock dataset with exact task-spec data: Maria Kowalski (emp-001, 3 items eq-101/102/103) and Tomasz Wierzbicki (emp-002, 2 items eq-201/202), original serials preserved. Repository tests updated to match 2-employee dataset. All tests green. (2026-05-31)
+- **Last checkpoint:** `style(dev-017)` — Tailwind v4 + Inter font + full visual overhaul. All SCSS removed from components. PrimeNG p-button replaces all raw HTML buttons. Nav bar added to app shell. 129 tests green. (2026-05-31)
 - **Next action:** none — project is submission-ready.
+
+## Tailwind v4 integration details (dev-017)
+
+- **Architecture**: Tailwind CLI (`pnpm tailwindcss`) pre-processes `tailwind-input.css` → `styles.css`. Angular build consumes pure CSS — no PostCSS plugin in Angular's pipeline (avoids esbuild service-mode deadlock with `@tailwindcss/oxide`).
+- **Dev workflow**: `nx serve shell` runs Tailwind CLI watch + Angular dev-server in parallel via `nx:run-commands`. `nx build shell` runs `prebuild-css` target first.
+- **Fonts**: Inter from Google Fonts in `index.html`; PrimeIcons added to `project.json` styles array.
+- **Known pre-existing lint issue**: `@angular-eslint/component-selector` errors on `lib-*` selectors (not introduced by this increment; existed in dev-006).
 
 ## Architecture addendum (dev-011 change)
 

@@ -6,9 +6,16 @@
   "sourceRoot": "apps/shell/src",
   "tags": ["type:app"],
   "targets": {
+    "prebuild-css": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm tailwindcss -i apps/shell/src/tailwind-input.css -o apps/shell/src/styles.css"
+      }
+    },
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
+      "dependsOn": ["prebuild-css"],
       "options": {
         "outputPath": "dist/apps/shell",
         "browser": "apps/shell/src/main.ts",
@@ -20,7 +27,7 @@
             "input": "apps/shell/public"
           }
         ],
-        "styles": ["apps/shell/src/styles.scss"]
+        "styles": ["node_modules/primeicons/primeicons.css", "apps/shell/src/styles.css"]
       },
       "configurations": {
         "production": {
@@ -46,7 +53,7 @@
       },
       "defaultConfiguration": "production"
     },
-    "serve": {
+    "serve-ng": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "options": {
@@ -61,6 +68,17 @@
         }
       },
       "defaultConfiguration": "development"
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "pnpm tailwindcss -i apps/shell/src/tailwind-input.css -o apps/shell/src/styles.css --watch",
+          "nx run shell:serve-ng"
+        ],
+        "parallel": true
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

@@ -2,6 +2,15 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `style(dev-017)` — Tailwind v4 + Inter font + full visual overhaul. Installed `tailwindcss`,
+  `@tailwindcss/postcss`, `@tailwindcss/cli`, `primeicons`. Replaced all component SCSS files
+  with Tailwind utility classes in HTML templates. Added Inter font (Google Fonts). Added
+  global nav bar in `app.html`. Replaced raw HTML `back-btn`/`retry-btn` with `p-button`.
+  Fixed `p-message` deprecated `text=` attr. Tailwind v4 integrated via CLI pre-processing
+  (`tailwind-input.css` → `styles.css`) to bypass esbuild service-mode deadlock with
+  `@tailwindcss/oxide`. `prebuild-css` Nx target + parallel `serve` target added. 129 tests
+  green, build clean.
+
 - `fix(dev-016)` — Replaced invented mock dataset with exact task-spec data. `mock-data.ts` now
   uses Maria Kowalski (emp-001, Engineering, 2024-06-30) with eq-101 MacBook Pro 14"/C02XG2JHQ6DN,
   eq-102 Dell 27" Monitor/CN-0T7VWR-48621, eq-103 Logitech MX Keys/2246OD118965; and Tomasz

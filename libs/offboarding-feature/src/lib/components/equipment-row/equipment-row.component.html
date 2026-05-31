@@ -1,27 +1,32 @@
-<article class="equipment-row" [attr.aria-label]="item().item.name">
-  <!-- Row header — shown in all states -->
-  <header class="equipment-row__header">
-    <span class="equipment-row__name">{{ item().item.name }}</span>
+<article
+  class="flex flex-col gap-3 p-4 rounded-lg border border-[var(--p-surface-200)] bg-[var(--p-surface-0)]"
+  [attr.aria-label]="item().item.name"
+>
+  <!-- Header: name, type tag, serial number -->
+  <header class="flex items-center flex-wrap gap-2">
+    <span class="font-semibold text-[var(--p-text-color)]">{{ item().item.name }}</span>
     <p-tag [value]="item().item.type" />
     @if (item().item.serialNumber) {
-      <span class="equipment-row__serial">S/N: {{ item().item.serialNumber }}</span>
+      <span class="text-sm text-[var(--p-text-muted-color)]"
+        >S/N: {{ item().item.serialNumber }}</span
+      >
     }
   </header>
 
   @switch (item().status) {
     @case ('Pending') {
-      <div class="equipment-row__assigned-condition">
+      <div class="flex items-center gap-2 text-sm">
         @if (readOnly()) {
           <lib-status-badge [status]="'Pending'" />
         }
-        <span class="equipment-row__label">Assigned condition:</span>
+        <span class="font-medium text-[var(--p-text-muted-color)]">Assigned condition:</span>
         <span>{{ item().item.assignedCondition }}</span>
       </div>
 
       @if (!readOnly()) {
         @if (!isEditing()) {
           <!-- State A: Pending, not editing -->
-          <div class="equipment-row__actions">
+          <div class="flex flex-wrap gap-2">
             <p-button
               label="Mark as returned"
               severity="secondary"
@@ -38,8 +43,11 @@
           </div>
         } @else if (editMode() === 'return') {
           <!-- State B: Pending, editing return -->
-          <div class="equipment-row__return-form">
-            <label class="equipment-row__label" [for]="'condition-' + item().item.id">
+          <div class="flex flex-col gap-2">
+            <label
+              class="text-sm font-medium text-[var(--p-text-muted-color)]"
+              [for]="'condition-' + item().item.id"
+            >
               Return condition
             </label>
             <p-select
@@ -49,7 +57,7 @@
               (ngModelChange)="selectedCondition.set($event)"
               placeholder="Select condition…"
             />
-            <div class="equipment-row__actions">
+            <div class="flex flex-wrap gap-2">
               <p-button
                 label="Confirm return"
                 [disabled]="!selectedCondition()"
@@ -67,8 +75,11 @@
           </div>
         } @else if (editMode() === 'issue') {
           <!-- State C: Pending, editing issue -->
-          <div class="equipment-row__issue-form">
-            <label class="equipment-row__label" [for]="'note-' + item().item.id">
+          <div class="flex flex-col gap-2">
+            <label
+              class="text-sm font-medium text-[var(--p-text-muted-color)]"
+              [for]="'note-' + item().item.id"
+            >
               Issue description
             </label>
             <textarea
@@ -78,9 +89,9 @@
               (input)="onNoteInput($event)"
               placeholder="Describe the issue…"
               rows="3"
-              class="equipment-row__textarea"
+              class="w-full resize-y"
             ></textarea>
-            <div class="equipment-row__actions">
+            <div class="flex flex-wrap gap-2">
               <p-button
                 label="Suggest note"
                 severity="secondary"
@@ -109,9 +120,11 @@
 
     @case ('Returned') {
       <!-- State D: Returned -->
-      <div class="equipment-row__status-row">
+      <div class="flex items-center flex-wrap gap-2">
         <lib-status-badge [status]="item().status" />
-        <span class="equipment-row__label"> Return condition: {{ item().returnCondition }} </span>
+        <span class="text-sm font-medium text-[var(--p-text-muted-color)]">
+          Return condition: {{ item().returnCondition }}
+        </span>
       </div>
       @if (item().returnCondition) {
         <lib-condition-diff-badge
@@ -120,7 +133,7 @@
         />
       }
       @if (!readOnly()) {
-        <div class="equipment-row__actions">
+        <div class="flex flex-wrap gap-2">
           <p-button
             label="Undo return"
             severity="secondary"
@@ -135,10 +148,10 @@
 
     @case ('Issue') {
       <!-- State E: Issue -->
-      <div class="equipment-row__status-row">
+      <div class="flex items-center flex-wrap gap-2">
         <lib-status-badge [status]="item().status" />
         @if (item().note) {
-          <span class="equipment-row__note">Note: {{ item().note }}</span>
+          <span class="text-sm text-[var(--p-text-color)]">Note: {{ item().note }}</span>
         }
       </div>
     }

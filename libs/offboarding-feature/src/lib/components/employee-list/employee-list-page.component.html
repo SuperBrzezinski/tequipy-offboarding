@@ -1,13 +1,23 @@
-<main class="employee-list-page">
-  <header class="page-header">
-    <h1 class="page-title">Equipment Offboarding</h1>
-    <p class="page-subtitle">Select an employee to process their equipment return.</p>
+<main class="mx-auto max-w-5xl px-6 py-8">
+  <header class="mb-8">
+    <h1 class="text-2xl font-bold tracking-tight m-0 mb-1 text-[var(--p-text-color)]">
+      Equipment Offboarding
+    </h1>
+    <p class="m-0 text-sm text-[var(--p-text-muted-color)]">
+      Select an employee to process their equipment return.
+    </p>
   </header>
 
   @if (employeesResource.isLoading()) {
-    <div class="skeleton-table" aria-busy="true" aria-label="Loading employees">
+    <div
+      class="rounded-lg border border-[var(--p-surface-200)] overflow-hidden"
+      aria-busy="true"
+      aria-label="Loading employees"
+    >
       @for (_ of [1, 2, 3]; track $index) {
-        <div class="skeleton-row">
+        <div
+          class="flex items-center gap-8 px-4 py-3 border-b border-[var(--p-surface-200)] last:border-b-0"
+        >
           <p-skeleton height="1rem" width="25%" />
           <p-skeleton height="1rem" width="15%" />
           <p-skeleton height="1rem" width="15%" />
@@ -16,9 +26,17 @@
       }
     </div>
   } @else if (employeesResource.error()) {
-    <div class="state-message state-message--error" role="alert">
-      <p-message severity="error" text="Failed to load employees." />
-      <button type="button" class="retry-btn" (click)="employeesResource.reload()">Retry</button>
+    <div class="text-center py-12" role="alert">
+      <p-message severity="error">Failed to load employees.</p-message>
+      <div class="mt-3">
+        <p-button
+          label="Retry"
+          severity="danger"
+          [outlined]="true"
+          size="small"
+          (onClick)="employeesResource.reload()"
+        />
+      </div>
     </div>
   } @else {
     <p-table
@@ -29,6 +47,7 @@
       [rows]="25"
       [paginator]="(employeesResource.value()?.length ?? 0) > 25"
       [filterDelay]="300"
+      [rowHover]="true"
       [tableStyle]="{ 'min-width': '50rem' }"
     >
       <ng-template pTemplate="header">
@@ -82,7 +101,7 @@
 
       <ng-template pTemplate="body" let-row>
         <tr
-          class="employee-row"
+          class="cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--p-primary-color)]"
           role="button"
           tabindex="0"
           [attr.aria-label]="
@@ -112,7 +131,7 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="4">
-            <div class="state-message" role="status">
+            <div class="text-center py-10 text-[var(--p-text-muted-color)]" role="status">
               <p>No employees to offboard at this time.</p>
             </div>
           </td>

@@ -1,7 +1,9 @@
 @if (items().length === 0) {
-  <p class="empty-state">No equipment assigned to this employee.</p>
+  <p class="text-center py-10 text-[var(--p-text-muted-color)]">
+    No equipment assigned to this employee.
+  </p>
 } @else {
-  <div class="equipment-list">
+  <div class="flex flex-col gap-3">
     @for (returnItem of items(); track returnItem.item.id) {
       <lib-equipment-row
         [item]="returnItem"

@@ -1,12 +1,19 @@
 @if (offboardingStatus() === 'Completed') {
   <!-- Completed state -->
-  <section class="summary-panel summary-panel--completed" aria-label="Offboarding summary">
-    <div class="summary-panel__completed-banner" role="status">
-      <span class="summary-panel__completed-icon" aria-hidden="true">✓</span>
-      <h2 class="summary-panel__completed-heading">Offboarding completed</h2>
+  <section
+    class="sticky bottom-4 flex flex-col gap-4 p-5 rounded-xl border border-[var(--p-green-200)] bg-[var(--p-green-50)] shadow-md mt-4"
+    aria-label="Offboarding summary"
+  >
+    <div class="flex items-center gap-3" role="status">
+      <span
+        class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[var(--p-green-700)] text-white text-base font-bold shrink-0"
+        aria-hidden="true"
+        >✓</span
+      >
+      <h2 class="m-0 text-base font-semibold text-[var(--p-green-700)]">Offboarding completed</h2>
     </div>
-    <p class="summary-panel__completed-at">
-      <span class="summary-panel__meta-label">Completed at:</span>
+    <p class="m-0 flex items-baseline gap-1.5 text-sm text-[var(--p-text-muted-color)]">
+      <span class="font-medium">Completed at:</span>
       @if (completedAt(); as ts) {
         <time [attr.datetime]="ts">{{ formatTimestamp(ts) }}</time>
       } @else {
@@ -16,43 +23,52 @@
   </section>
 } @else {
   <!-- Active (In progress) state -->
-  <section class="summary-panel" aria-label="Offboarding summary">
-    <h2 class="summary-panel__heading">Equipment summary</h2>
+  <section
+    class="sticky bottom-4 flex flex-col gap-4 p-5 rounded-xl border border-[var(--p-surface-200)] bg-[var(--p-surface-0)] shadow-md mt-4"
+    aria-label="Offboarding summary"
+  >
+    <h2 class="m-0 text-base font-semibold text-[var(--p-text-color)]">Equipment summary</h2>
 
     <ul
-      class="summary-panel__counts"
+      class="flex flex-wrap gap-2 list-none m-0 p-0"
       aria-label="Item counts by status"
       aria-live="polite"
       aria-atomic="false"
     >
       <li aria-label="Pending: {{ pendingCount() }}">
-        <span class="count-chip count-chip--pending" aria-hidden="true">
-          <span class="count-chip__label">Pending</span>
-          <span class="count-chip__value">{{ pendingCount() }}</span>
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--p-yellow-100)] text-[var(--p-yellow-800)]"
+          aria-hidden="true"
+        >
+          Pending <strong class="font-bold">{{ pendingCount() }}</strong>
         </span>
       </li>
       <li aria-label="Returned: {{ returnedCount() }}">
-        <span class="count-chip count-chip--returned" aria-hidden="true">
-          <span class="count-chip__label">Returned</span>
-          <span class="count-chip__value">{{ returnedCount() }}</span>
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--p-green-100)] text-[var(--p-green-800)]"
+          aria-hidden="true"
+        >
+          Returned <strong class="font-bold">{{ returnedCount() }}</strong>
         </span>
       </li>
       <li aria-label="Issue: {{ issueCount() }}">
-        <span class="count-chip count-chip--issue" aria-hidden="true">
-          <span class="count-chip__label">Issue</span>
-          <span class="count-chip__value">{{ issueCount() }}</span>
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--p-red-100)] text-[var(--p-red-800)]"
+          aria-hidden="true"
+        >
+          Issue <strong class="font-bold">{{ issueCount() }}</strong>
         </span>
       </li>
     </ul>
 
-    <div class="summary-panel__actions">
+    <div class="flex flex-col gap-2">
       <p-button
         label="Complete offboarding"
         [disabled]="!canComplete()"
         (onClick)="complete.emit()"
       />
       @if (!canComplete() && pendingReason()) {
-        <p class="summary-panel__pending-reason" role="status" aria-live="polite">
+        <p class="m-0 text-sm text-[var(--p-text-muted-color)]" role="status" aria-live="polite">
           {{ pendingReason() }}
         </p>
       }

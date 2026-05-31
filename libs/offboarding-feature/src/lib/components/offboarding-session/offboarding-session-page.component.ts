@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { SkeletonModule } from 'primeng/skeleton';
 import { OFFBOARDING_REPO } from '@org/offboarding-feature/data-access';
@@ -27,9 +28,14 @@ import { OffboardingStore } from '@org/offboarding-feature/data-access';
 
 @Component({
   selector: 'lib-offboarding-session-page',
-  imports: [EquipmentListComponent, SummaryPanelComponent, ConfirmDialog, SkeletonModule],
+  imports: [
+    EquipmentListComponent,
+    SummaryPanelComponent,
+    ConfirmDialog,
+    SkeletonModule,
+    ButtonModule,
+  ],
   templateUrl: './offboarding-session-page.component.html',
-  styleUrl: './offboarding-session-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ConfirmationService],
 })

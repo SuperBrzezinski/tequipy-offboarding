@@ -1,29 +1,36 @@
-<div class="session-page">
-  <header class="session-header">
-    <button type="button" class="back-btn" (click)="goBack()" aria-label="Back to employee list">
-      ← Back
-    </button>
+<div class="mx-auto max-w-5xl px-6 py-6">
+  <header class="flex items-start gap-3 mb-6 pb-5 border-b border-[var(--p-surface-200)]">
+    <p-button
+      icon="pi pi-arrow-left"
+      label="Back"
+      severity="secondary"
+      [text]="true"
+      (onClick)="goBack()"
+      ariaLabel="Back to employee list"
+    />
 
     @if (sessionResource.isLoading()) {
-      <div class="session-header__info" aria-busy="true" aria-label="Loading employee details">
+      <div class="flex-1 pt-1" aria-busy="true" aria-label="Loading employee details">
         <p-skeleton height="1.75rem" width="14rem" />
         <p-skeleton height="1rem" width="10rem" styleClass="mt-2" />
       </div>
     } @else if (sessionResource.error()) {
-      <p class="session-error" role="alert">Failed to load employee session.</p>
+      <p class="text-[var(--p-red-500,#ef4444)] m-0 pt-2" role="alert">
+        Failed to load employee session.
+      </p>
     } @else if (sessionResource.value()?.employee; as employee) {
-      <div class="session-header__info">
-        <h1 class="session-title">{{ employee.name }}</h1>
-        <p class="session-meta">
+      <div class="flex-1 min-w-0">
+        <h1 class="text-xl font-bold m-0 mb-0.5 text-[var(--p-text-color)]">{{ employee.name }}</h1>
+        <p class="m-0 text-sm text-[var(--p-text-muted-color)]">
           {{ employee.department }} &mdash; Offboarding {{ formatDate(employee.offboardingDate) }}
         </p>
       </div>
     } @else {
-      <p class="session-error" role="alert">Employee not found.</p>
+      <p class="text-[var(--p-red-500,#ef4444)] m-0 pt-2" role="alert">Employee not found.</p>
     }
   </header>
 
-  <main class="session-main" aria-label="Equipment return session">
+  <main class="flex flex-col gap-4" aria-label="Equipment return session">
     @if (!sessionResource.isLoading() && !sessionResource.error() && session(); as sess) {
       <lib-equipment-list
         [items]="sess.items"
