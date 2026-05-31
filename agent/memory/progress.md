@@ -2,6 +2,11 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `refactor(dev-018)` — Status filter in employee list replaced from free-text `p-columnFilter`
+  (type=text, matchMode=contains) to a `p-select` dropdown with `matchMode=equals`. Added
+  `FormsModule` + `SelectModule` to component imports; `statusOptions: OffboardingStatus[]`
+  typed constant in component class. 45 tests green, no warnings.
+
 - `style(dev-017)` — Tailwind v4 + Inter font + full visual overhaul. Installed `tailwindcss`,
   `@tailwindcss/postcss`, `@tailwindcss/cli`, `primeicons`. Replaced all component SCSS files
   with Tailwind utility classes in HTML templates. Added Inter font (Google Fonts). Added

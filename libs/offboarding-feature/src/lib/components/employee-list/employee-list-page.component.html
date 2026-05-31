@@ -86,15 +86,18 @@
           </th>
           <th></th>
           <th>
-            <p-columnFilter
-              field="offboardingStatus"
-              type="text"
-              matchMode="contains"
-              filterOn="input"
-              [showMenu]="false"
-              placeholder="Filter by status"
-              ariaLabel="Filter by status"
-            />
+            <p-columnFilter field="offboardingStatus" matchMode="equals" [showMenu]="false">
+              <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-select
+                  [options]="statusOptions"
+                  [ngModel]="value"
+                  (onChange)="filter($event.value)"
+                  placeholder="All statuses"
+                  [showClear]="true"
+                  styleClass="w-full"
+                />
+              </ng-template>
+            </p-columnFilter>
           </th>
         </tr>
       </ng-template>

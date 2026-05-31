@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + visual overhaul done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `style(dev-017)` — Tailwind v4 + Inter font + full visual overhaul. All SCSS removed from components. PrimeNG p-button replaces all raw HTML buttons. Nav bar added to app shell. 129 tests green. (2026-05-31)
+- **Last checkpoint:** `refactor(dev-018)` — Status filter in employee list replaced from free-text input to p-select dropdown. matchMode changed to equals; FormsModule + SelectModule added; statusOptions typed as OffboardingStatus[]. 45 tests green. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)
