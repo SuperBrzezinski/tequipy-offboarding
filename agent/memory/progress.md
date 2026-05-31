@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `docs(dev-026)` — Untracked generated `styles.css` from git (`.gitignore` + `git rm --cached`); README Quick start updated with Tailwind CLI build setup explanation and guidance on adding global styles via `tailwind-input.css`.
+
 - `fix(dev-023)` — Two suggest-note bugs fixed: (1) second click after cancel was silent — `onCancelIssue` now deletes the `noteHints` entry for the editing item before cancelling so the child effect sees `undefined → string` on re-suggest; (2) issue-mode suggestion used `assignedCondition === 'Good'` producing "in good condition" template — `onSuggestNote` now falls back to 'Damaged' when `editMode === 'issue'` and assigned condition is 'Good'. Regression test added to equipment-row spec for the cancel+re-suggest path.
 
 - `fix(dev-022)` — Five pre-submission fixes: (1) Issue → Returned UI path added to equipment-row (ADR-0002 ↔ UI now aligned); (2) `window.confirm` → PrimeNG ConfirmDialog in nav guard (`ConfirmationService` at root, `Observable<boolean>` return); (3) 3 integration tests for `onComplete()` with open Issues confirm dialog; (4) 4-test spec for `canDeactivateSession` guard; (5) `cancelReturn`/`cancelIssue` zero-arg signatures, template bindings updated. All 53 tests green.

@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `fix(dev-023)` — Two suggest-note bugs fixed in `offboarding-session-page.component.ts`: (1) second click after cancel was silent — `onCancelIssue` now clears the `noteHints` entry for the editing item before cancelling so the signal goes `undefined → string` on re-suggest, forcing the child effect to re-run; (2) issue-mode suggested note used `assignedCondition` even when 'Good', producing an absurd "in good condition" template — `onSuggestNote` now falls back to 'Damaged' when mode is 'issue' and assigned condition is 'Good'. Regression test added to equipment-row spec covering the cancel+re-suggest state transition. (2026-05-31)
+- **Last checkpoint:** `docs(dev-026)` — Untracked generated `styles.css` from git (added to `.gitignore`, removed via `git rm --cached`); added README Quick start notes explaining the Tailwind CLI build setup (`tailwind-input.css` → `styles.css`) and how to add global styles. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)
