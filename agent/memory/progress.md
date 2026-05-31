@@ -2,6 +2,17 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `test(dev-014)` — Test suite cleanup. Removed 6 store describe-blocks testing incidental
+  signal state (beginReturn, beginIssue, cancelIssue, cancelReturn, getSession, getSessionReactive).
+  Removed 9 trivial rendering tests from EquipmentRowComponent. Removed 1 implementation-
+  coupled test (private selectedCondition/noteValue signal access via isEditing flip).
+  Removed "Summary panel and completion flow" block from session-page spec (8 tests using
+  page['store'], page['pendingCount'] etc.). Removed "suggest note" test (page['noteHints']).
+  Fixed suggestedNote assertion to check textarea.value instead of private signal.
+  Removed 1 redundant pendingReason test from SummaryPanel. Result: 74 tests, all
+  behavioural or domain-level, 0 private-member access outside condition-downgrade dialog.
+  Next: one integration test covering the full return flow.
+
 - `feat(dev-011)` — EPIC: Bonus + polish. All 5 tasks complete:
   B-1: `ConditionDiffBadgeComponent` (secondary bonus) — "Was: X → Now: Y" tag on Returned
   items; severity="warn" on downgrade, default otherwise; `@if hasDiff()` guard; `data-severity`

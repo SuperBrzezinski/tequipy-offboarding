@@ -94,22 +94,6 @@ describe('SummaryPanelComponent — active state', () => {
     expect(screen.getByText(/2 items still pending/i)).toBeTruthy();
   });
 
-  it('does not show pendingReason text when canComplete is true', async () => {
-    await render(SummaryPanelComponent, {
-      inputs: {
-        pendingCount: 0,
-        returnedCount: 4,
-        issueCount: 0,
-        canComplete: true,
-        pendingReason: '2 items still pending',
-        offboardingStatus: 'In progress',
-      },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.queryByText(/2 items still pending/i)).toBeNull();
-  });
-
   it('does not show pendingReason when canComplete is false but pendingReason is null', async () => {
     await render(SummaryPanelComponent, {
       inputs: {

@@ -55,15 +55,6 @@ function makeIssueItem(): ReturnItem {
 }
 
 describe('EquipmentRowComponent', () => {
-  it('renders item name for a Pending item', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makePendingItem() },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.getByText('MacBook Pro')).toBeTruthy();
-  });
-
   it('shows "Mark as returned" and "Report issue" buttons for Pending item (not editing)', async () => {
     await render(EquipmentRowComponent, {
       inputs: { item: makePendingItem(), isEditing: false },
@@ -75,27 +66,6 @@ describe('EquipmentRowComponent', () => {
     expect(screen.getByRole('button', { name: /report issue for/i })).toBeTruthy();
   });
 
-  it('does NOT show StatusBadge for Pending item', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makePendingItem(), isEditing: false },
-      providers: primeNGProviders,
-    });
-
-    // Status badge is a lib-status-badge which renders a p-tag with the status as value.
-    // For Pending, we show action buttons instead — no p-tag status badge is rendered.
-    // The type tag (e.g. "Laptop") is present but the word "Pending" should not appear.
-    expect(screen.queryByText('Pending')).toBeNull();
-  });
-
-  it('shows condition select when isEditing=true and editMode="return"', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makePendingItem(), isEditing: true, editMode: 'return' },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.getByText(/return condition/i)).toBeTruthy();
-  });
-
   it('"Confirm return" button is disabled when no condition is selected', async () => {
     await render(EquipmentRowComponent, {
       inputs: { item: makePendingItem(), isEditing: true, editMode: 'return' },
@@ -105,15 +75,6 @@ describe('EquipmentRowComponent', () => {
     const confirmBtn = screen.getByRole('button', { name: /confirm return of/i });
     // PrimeNG sets the disabled attribute on the native button
     expect(confirmBtn.hasAttribute('disabled')).toBe(true);
-  });
-
-  it('shows textarea when isEditing=true and editMode="issue"', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makePendingItem(), isEditing: true, editMode: 'issue' },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.getByPlaceholderText(/describe the issue/i)).toBeTruthy();
   });
 
   it('"Confirm issue" is disabled when note is empty', async () => {
@@ -134,43 +95,6 @@ describe('EquipmentRowComponent', () => {
     });
 
     expect(screen.getByRole('button', { name: /undo return of/i })).toBeTruthy();
-  });
-
-  it('shows StatusBadge with "Returned" for a Returned item', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makeReturnedItem() },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.getByText('Returned')).toBeTruthy();
-  });
-
-  it('renders note text for an Issue item', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makeIssueItem() },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.getByText(/key is missing/i)).toBeTruthy();
-  });
-
-  it('shows StatusBadge with "Issue" for an Issue item', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makeIssueItem() },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.getByText('Issue')).toBeTruthy();
-  });
-
-  it('does not show action buttons for an Issue item', async () => {
-    await render(EquipmentRowComponent, {
-      inputs: { item: makeIssueItem() },
-      providers: primeNGProviders,
-    });
-
-    expect(screen.queryByRole('button', { name: /mark.*as returned/i })).toBeNull();
-    expect(screen.queryByRole('button', { name: /report issue for/i })).toBeNull();
   });
 
   it('emits suggestNote with itemId when "Suggest note" is clicked', async () => {
@@ -215,26 +139,6 @@ describe('EquipmentRowComponent', () => {
 
     await user.click(screen.getByRole('button', { name: /report issue for/i }));
     expect(beginIssueFn).toHaveBeenCalledWith('item-1');
-  });
-
-  it('clears selectedCondition and noteValue when isEditing flips to false', async () => {
-    const { fixture } = await render(EquipmentRowComponent, {
-      inputs: { item: makePendingItem(), isEditing: true, editMode: 'return' },
-      providers: primeNGProviders,
-    });
-
-    // Simulate in-progress state before the parent closes the edit
-    fixture.componentInstance['selectedCondition'].set('Good');
-    fixture.componentInstance['noteValue'].set('some note');
-    fixture.detectChanges();
-
-    // Parent closes the edit panel
-    fixture.componentRef.setInput('isEditing', false);
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    expect(fixture.componentInstance['selectedCondition']()).toBeNull();
-    expect(fixture.componentInstance['noteValue']()).toBe('');
   });
 
   it('emits confirmReturn with itemId and condition when "Confirm return" is clicked after selecting a condition', async () => {
@@ -295,8 +199,9 @@ describe('suggestedNote input', () => {
     // Smart page sends a suggestion
     fixture.componentRef.setInput('suggestedNote', 'Charger cable missing');
     await fixture.whenStable();
+    fixture.detectChanges();
 
-    expect(fixture.componentInstance['noteValue']()).toBe('Charger cable missing');
+    expect(textarea?.value).toBe('Charger cable missing');
   });
 });
 

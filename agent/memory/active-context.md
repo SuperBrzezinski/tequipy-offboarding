@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** COMPLETE — All epics shipped. Submission-ready.
+- **Project phase:** COMPLETE — All epics shipped. Test refinement in progress.
 - **Mode:** dev
-- **Active epic:** none — all epics done
-- **Last checkpoint:** `feat(dev-011)` — Bonus + polish: ConditionDiffBadgeComponent, a11y pass, responsive, README, navigation guard, OffboardingStore moved to data-access (2026-05-30).
-- **Next action:** checkpoint → submit.
+- **Active epic:** test cleanup + integration test
+- **Last checkpoint:** `test(dev-014)` — slim down test suite: removed trivial rendering tests, private-signal access tests, and implementation-coupled tests. 74 tests remain, all behavioural or domain-level. (2026-05-31)
+- **Next action:** write one integration test — full return flow (employee page → mark returned → complete session) using real store + mocked repo.
 
 ## Architecture addendum (dev-011 change)
 

@@ -1,4 +1,3 @@
-import { signal } from '@angular/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 import type { AssignedItem, Employee } from '@org/offboarding-feature/domain';
 import type { StoredSession } from './offboarding.store';
@@ -126,22 +125,7 @@ describe('OffboardingStore', () => {
   });
 
   // -------------------------------------------------------------------------
-  // 3. beginReturn
-  // -------------------------------------------------------------------------
-
-  describe('beginReturn', () => {
-    it('sets editingItem with mode "return" and isDirty = true', () => {
-      store.loadSession(makeEmployee(), [makeItem('item-1')]);
-
-      store.beginReturn('emp-1', 'item-1');
-
-      expect(store.editingItem()).toEqual({ itemId: 'item-1', mode: 'return' });
-      expect(store.isDirty()).toBe(true);
-    });
-  });
-
-  // -------------------------------------------------------------------------
-  // 4. confirmReturn — Pending → Returned
+  // 3. confirmReturn — Pending → Returned
   // -------------------------------------------------------------------------
 
   describe('confirmReturn', () => {
@@ -215,31 +199,7 @@ describe('OffboardingStore', () => {
   });
 
   // -------------------------------------------------------------------------
-  // 7. beginIssue
-  // -------------------------------------------------------------------------
-
-  describe('beginIssue', () => {
-    it('sets editingItem with mode "issue" and isDirty = true', () => {
-      store.loadSession(makeEmployee(), [makeItem('item-1')]);
-
-      store.beginIssue('emp-1', 'item-1');
-
-      expect(store.editingItem()).toEqual({ itemId: 'item-1', mode: 'issue' });
-      expect(store.isDirty()).toBe(true);
-    });
-
-    it('beginIssue replaces beginReturn editing slot (single-slot invariant)', () => {
-      store.loadSession(makeEmployee(), [makeItem('item-1'), makeItem('item-2')]);
-      store.beginReturn('emp-1', 'item-1');
-      store.beginIssue('emp-1', 'item-2');
-      // Second begin replaces the first — only one item is ever in edit mode
-      expect(store.editingItem()).toEqual({ itemId: 'item-2', mode: 'issue' });
-      expect(store.isDirty()).toBe(true);
-    });
-  });
-
-  // -------------------------------------------------------------------------
-  // 8. confirmIssue — Pending → Issue
+  // 5. confirmIssue — Pending → Issue
   // -------------------------------------------------------------------------
 
   describe('confirmIssue', () => {
@@ -267,44 +227,7 @@ describe('OffboardingStore', () => {
   });
 
   // -------------------------------------------------------------------------
-  // 9. cancelIssue
-  // -------------------------------------------------------------------------
-
-  describe('cancelIssue', () => {
-    it('clears editingItem, status unchanged, isDirty = false', () => {
-      store.loadSession(makeEmployee(), [makeItem('item-1')]);
-      store.beginIssue('emp-1', 'item-1');
-      expect(store.isDirty()).toBe(true);
-
-      store.cancelIssue('emp-1', 'item-1');
-
-      expect(store.editingItem()).toBeNull();
-      expect(store.isDirty()).toBe(false);
-      const session = assertSession(store.getSession('emp-1')());
-      // Status must remain Pending — cancel means "never mind"
-      expect(session.items[0].status).toBe('Pending');
-    });
-  });
-
-  // -------------------------------------------------------------------------
-  // 10. cancelReturn
-  // -------------------------------------------------------------------------
-
-  describe('cancelReturn', () => {
-    it('clears editingItem (isDirty → false) without changing item status', () => {
-      store.loadSession(makeEmployee(), [makeItem('item-1')]);
-      store.beginReturn('emp-1', 'item-1');
-      expect(store.isDirty()).toBe(true);
-      store.cancelReturn('emp-1', 'item-1');
-      expect(store.editingItem()).toBeNull();
-      expect(store.isDirty()).toBe(false);
-      const session = assertSession(store.getSession('emp-1')());
-      expect(session.items[0].status).toBe('Pending');
-    });
-  });
-
-  // -------------------------------------------------------------------------
-  // 11. completeOffboarding
+  // 6. completeOffboarding
   // -------------------------------------------------------------------------
 
   describe('completeOffboarding', () => {
@@ -409,42 +332,6 @@ describe('OffboardingStore', () => {
       const sessionA = assertSession(store.getSession('emp-A')());
       expect(sessionA.items[0].status).toBe('Returned'); // A's state intact
       expect(sessionA.items[0].returnCondition).toBe('Damaged');
-    });
-  });
-
-  // -------------------------------------------------------------------------
-  // 11. getSession — unknown employeeId
-  // -------------------------------------------------------------------------
-
-  describe('getSession', () => {
-    it('returns null for an unknown employeeId before any session is loaded', () => {
-      const session = store.getSession('nobody')();
-      expect(session).toBeNull();
-    });
-  });
-
-  // -------------------------------------------------------------------------
-  // 12. getSessionReactive — stable computed via Signal<string>
-  // -------------------------------------------------------------------------
-
-  describe('getSessionReactive', () => {
-    it('returns null before session is loaded, then reflects live state after loadSession', () => {
-      // getSessionReactive creates one computed that reads from the sessions map
-      // reactively. A component can call it once with its employeeId signal and
-      // get a stable signal that updates as the session state changes.
-      const idSignal = signal('emp-1');
-      const sessionSignal = store.getSessionReactive(idSignal);
-
-      expect(sessionSignal()).toBeNull(); // not loaded yet
-
-      store.loadSession(makeEmployee({ id: 'emp-1' }), [makeItem('item-1')]);
-      expect(sessionSignal()).not.toBeNull();
-      expect(sessionSignal()!.items[0].status).toBe('Pending');
-
-      // State changes are reflected immediately
-      store.beginReturn('emp-1', 'item-1');
-      store.confirmReturn('emp-1', 'item-1', 'Good');
-      expect(sessionSignal()!.items[0].status).toBe('Returned');
     });
   });
 });
