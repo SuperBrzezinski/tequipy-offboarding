@@ -18,6 +18,27 @@ pnpm nx run-many --target=test --all     # all unit + integration tests
 The dev server binds to `0.0.0.0:4200`. No environment variables or API keys required — all
 data is in-memory.
 
+`apps/shell/src/styles.css` is a generated artefact (Tailwind CLI output) and is not committed
+to the repo. It is rebuilt automatically by the `prebuild-css` target, which both `serve` and
+`build` declare as a `dependsOn` — so no manual step is needed.
+
+**Adding global styles:** edit `apps/shell/src/tailwind-input.css` — the source file that
+Tailwind compiles from. Write plain CSS rules or use `@apply` to compose Tailwind utilities:
+
+```css
+/* apps/shell/src/tailwind-input.css */
+@import "tailwindcss";
+
+.my-class {
+  @apply rounded-xl shadow-md p-4; /* compose utilities */
+}
+
+h1 { font-size: 2rem; }            /* or plain CSS */
+```
+
+Run `pnpm nx run shell:prebuild-css` to regenerate `styles.css` immediately, or just let
+`serve` do it on the next start.
+
 ---
 
 ## What it does
