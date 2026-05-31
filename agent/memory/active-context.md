@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** COMPLETE — All epics shipped. Test refinement in progress.
+- **Project phase:** COMPLETE — All epics shipped + test suite finalised.
 - **Mode:** dev
-- **Active epic:** test cleanup + integration test
-- **Last checkpoint:** `test(dev-014)` — slim down test suite: removed trivial rendering tests, private-signal access tests, and implementation-coupled tests. 74 tests remain, all behavioural or domain-level. (2026-05-31)
-- **Next action:** write one integration test — full return flow (employee page → mark returned → complete session) using real store + mocked repo.
+- **Active epic:** —
+- **Last checkpoint:** `test(dev-015)` — integration test: full return flow (load → confirm both items returned → click Complete → "Offboarding completed" banner). Real store, mocked repo. All 45 feature + 30 data-access tests green. (2026-05-31)
+- **Next action:** none — project is submission-ready.
 
 ## Architecture addendum (dev-011 change)
 

@@ -2,6 +2,13 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `test(dev-015)` — Integration test: full return flow in `OffboardingSessionPageComponent`.
+  New `describe('complete flow (integration)')` block: renders with real `OffboardingStore` +
+  mocked repo, waits for both items to load, asserts Complete button is disabled (2 Pending),
+  drives both items to Returned via `onConfirmReturn` (Good→Good, no dialog), asserts button
+  enables, clicks Complete via `userEvent`, asserts "Offboarding completed" banner appears.
+  45/45 feature tests green, 30/30 data-access green. Project submission-ready.
+
 - `test(dev-014)` — Test suite cleanup. Removed 6 store describe-blocks testing incidental
   signal state (beginReturn, beginIssue, cancelIssue, cancelReturn, getSession, getSessionReactive).
   Removed 9 trivial rendering tests from EquipmentRowComponent. Removed 1 implementation-

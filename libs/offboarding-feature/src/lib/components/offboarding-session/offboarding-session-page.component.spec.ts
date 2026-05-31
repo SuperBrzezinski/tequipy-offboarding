@@ -161,4 +161,43 @@ describe('OffboardingSessionPageComponent', () => {
 
     expect(navigate).toHaveBeenCalledWith(['/']);
   });
+
+  describe('complete flow (integration — real store + mocked repo)', () => {
+    it('transitions Pending → all Returned → Completed and shows completed banner', async () => {
+      const user = userEvent.setup();
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+
+      // Wait for the resource to resolve and both item rows to appear.
+      await waitFor(() => {
+        expect(screen.getByRole('article', { name: 'MacBook' })).toBeTruthy();
+        expect(screen.getByRole('article', { name: 'Monitor' })).toBeTruthy();
+      });
+
+      // While items are Pending the Complete button must be disabled.
+      expect(
+        (screen.getByRole('button', { name: /Complete offboarding/i }) as HTMLButtonElement)
+          .disabled,
+      ).toBe(true);
+
+      // Drive both items through the return path.
+      // Good → Good: no condition-downgrade dialog fires, store is called directly.
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Good' });
+      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
+      fixture.detectChanges();
+
+      // All items Returned — Complete must now be enabled.
+      await waitFor(() => {
+        const btn = screen.getByRole('button', { name: /Complete offboarding/i });
+        expect((btn as HTMLButtonElement).disabled).toBe(false);
+      });
+
+      // Click Complete — no open issues so no confirmation dialog fires.
+      await user.click(screen.getByRole('button', { name: /Complete offboarding/i }));
+
+      // Summary panel must switch to the completed banner.
+      await waitFor(() => expect(screen.getByText(/Offboarding completed/i)).toBeTruthy());
+    });
+  });
 });
