@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, resource } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, resource } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OFFBOARDING_REPO } from '@org/offboarding-feature/data-access';
+import { OFFBOARDING_REPO, OffboardingStore } from '@org/offboarding-feature/data-access';
 import type { Employee, OffboardingStatus } from '@org/offboarding-feature/domain';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
@@ -27,11 +27,21 @@ import { TagModule } from 'primeng/tag';
 export class EmployeeListPageComponent {
   private readonly repo = inject(OFFBOARDING_REPO);
   private readonly router = inject(Router);
+  private readonly store = inject(OffboardingStore);
 
   protected readonly statusOptions: OffboardingStatus[] = ['In progress', 'Completed'];
 
   protected readonly employeesResource = resource({
     loader: () => this.repo.getEmployees(),
+  });
+
+  protected readonly employees = computed<Employee[]>(() => {
+    const list = this.employeesResource.value() ?? [];
+    const completedIds = this.store.completedEmployeeIds();
+    if (completedIds.size === 0) return list;
+    return list.map((e) =>
+      completedIds.has(e.id) ? { ...e, offboardingStatus: 'Completed' as const } : e,
+    );
   });
 
   protected navigateToSession(employee: Employee): void {

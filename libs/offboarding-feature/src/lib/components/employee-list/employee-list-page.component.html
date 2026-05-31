@@ -40,7 +40,7 @@
     </div>
   } @else {
     <p-table
-      [value]="employeesResource.value() ?? []"
+      [value]="employees()"
       sortField="offboardingDate"
       [sortOrder]="1"
       filterDisplay="row"

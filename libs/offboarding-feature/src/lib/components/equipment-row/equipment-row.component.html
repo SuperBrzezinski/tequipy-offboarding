@@ -5,7 +5,7 @@
   <!-- Header: name, type tag, serial number -->
   <header class="flex items-center flex-wrap gap-2">
     <span class="font-semibold text-[var(--p-text-color)]">{{ item().item.name }}</span>
-    <p-tag [value]="item().item.type" />
+    <p-tag [value]="item().item.type" severity="secondary" />
     @if (item().item.serialNumber) {
       <span class="text-sm text-[var(--p-text-muted-color)]"
         >S/N: {{ item().item.serialNumber }}</span

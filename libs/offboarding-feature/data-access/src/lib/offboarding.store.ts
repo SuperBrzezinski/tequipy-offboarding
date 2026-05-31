@@ -42,6 +42,18 @@ export class OffboardingStore {
    */
   readonly isDirty: Signal<boolean> = computed(() => this._editingItem() !== null);
 
+  /**
+   * Set of employee IDs whose offboarding was completed in this session.
+   * Used by the employee list to overlay the correct status without re-fetching.
+   */
+  readonly completedEmployeeIds: Signal<ReadonlySet<string>> = computed(() => {
+    const ids = new Set<string>();
+    this._sessions().forEach((session, id) => {
+      if (session.offboardingStatus === 'Completed') ids.add(id);
+    });
+    return ids;
+  });
+
   readonly editingItem: Signal<EditingItem | null> = this._editingItem.asReadonly();
 
   /**

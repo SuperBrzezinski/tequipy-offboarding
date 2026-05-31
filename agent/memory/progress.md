@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `fix(dev-021)` — Three UI/bug fixes post-review: equipment-type p-tag `severity="secondary"` (no longer clashes with Returned green); Complete button `[severity]` dynamic (`success`/`secondary`) so it looks inactive when disabled; employee list overlay bug fixed — `OffboardingStore.completedEmployeeIds` signal added, `employees()` computed in list component merges store + repo data so status is correct after navigating back from a completed session. Tests: `renderList()` helper always provides `OffboardingStore`; regression test with fake store (`signal(new Set(['emp-a']))`) guards the fix. 46/46 tests green.
+
 - `docs(dev-020)` — README accuracy fixes: stack line adds Tailwind v4 + Angular Testing Library; layer diagram corrected to real lib structure; "Why four libs" rewritten; ADR-0001 key-decisions row rewritten without self-congratulatory framing.
 
 - `fix(dev-019)` — Pre-submission spec audit. Six issues found and resolved: (1) README serve

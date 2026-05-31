@@ -64,6 +64,7 @@
     <div class="flex flex-col gap-2">
       <p-button
         label="Complete offboarding"
+        [severity]="canComplete() ? 'success' : 'secondary'"
         [disabled]="!canComplete()"
         (onClick)="complete.emit()"
       />

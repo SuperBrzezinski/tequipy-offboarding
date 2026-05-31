@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `docs(dev-020)` — README accuracy fixes: stack line now includes Tailwind v4 + Angular Testing Library; layer diagram corrected to actual structure (`libs/offboarding-feature` + `domain`/`data-access` sub-libs, no phantom `libs/ui`); "Why four libs" section renamed/rewritten to match reality; ADR-0001 key-decisions row stripped of self-congratulatory framing, replaced with concrete technical reasons. (2026-05-31)
+- **Last checkpoint:** `fix(dev-021)` — Three UI/bug fixes post-review: (1) equipment-type `p-tag` severity set to `secondary` (was clashing with Returned green); (2) Complete button uses dynamic `[severity]="canComplete() ? 'success' : 'secondary'"` (was inviting green when disabled); (3) employee list now overlays `OffboardingStore.completedEmployeeIds` over stale repo data so Completed shows correctly after navigating back from a session. Store gained `completedEmployeeIds: Signal<ReadonlySet<string>>` computed; list gained `employees()` computed merging both sources; list tests refactored to always provide `OffboardingStore` via shared `renderList()` helper; regression test added. 46 tests green. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)
