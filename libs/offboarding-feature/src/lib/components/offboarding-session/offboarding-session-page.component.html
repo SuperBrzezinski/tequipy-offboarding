@@ -39,11 +39,11 @@
         [readOnly]="isCompleted()"
         (beginReturn)="onBeginReturn($event)"
         (confirmReturn)="onConfirmReturn($event)"
-        (cancelReturn)="onCancelReturn($event)"
+        (cancelReturn)="onCancelReturn()"
         (undoReturn)="onUndoReturn($event)"
         (beginIssue)="onBeginIssue($event)"
         (confirmIssue)="onConfirmIssue($event)"
-        (cancelIssue)="onCancelIssue($event)"
+        (cancelIssue)="onCancelIssue()"
         (suggestNote)="onSuggestNote($event)"
       />
       <lib-summary-panel
@@ -58,6 +58,4 @@
       />
     }
   </main>
-
-  <p-confirmdialog />
 </div>

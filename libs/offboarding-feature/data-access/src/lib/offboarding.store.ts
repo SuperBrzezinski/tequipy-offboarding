@@ -195,12 +195,7 @@ export class OffboardingStore {
    * Discards the in-progress return edit without changing item state.
    * The item stays in its current status and isDirty goes back to false.
    */
-  cancelReturn(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _employeeId: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _itemId: string,
-  ): void {
+  cancelReturn(): void {
     this._editingItem.set(null);
   }
 
@@ -208,13 +203,7 @@ export class OffboardingStore {
    * Discards the in-progress issue edit without changing item state.
    * The item stays in its current status and isDirty goes back to false.
    */
-  cancelIssue(
-    // Symmetric signature with all other action methods so call sites are uniform.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _employeeId: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _itemId: string,
-  ): void {
+  cancelIssue(): void {
     this._editingItem.set(null);
   }
 

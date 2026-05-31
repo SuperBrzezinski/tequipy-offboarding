@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `fix(dev-021)` — Three UI/bug fixes post-review: (1) equipment-type `p-tag` severity set to `secondary` (was clashing with Returned green); (2) Complete button uses dynamic `[severity]="canComplete() ? 'success' : 'secondary'"` (was inviting green when disabled); (3) employee list now overlays `OffboardingStore.completedEmployeeIds` over stale repo data so Completed shows correctly after navigating back from a session. Store gained `completedEmployeeIds: Signal<ReadonlySet<string>>` computed; list gained `employees()` computed merging both sources; list tests refactored to always provide `OffboardingStore` via shared `renderList()` helper; regression test added. 46 tests green. (2026-05-31)
+- **Last checkpoint:** `fix(dev-022)` — Five pre-submission fixes identified via AI-reviewer simulation: (1) Issue → Returned UI gap closed (equipment-row template now offers "Mark as returned" + condition-select from Issue state, matching ADR-0002); (2) `window.confirm` in nav guard replaced with PrimeNG `ConfirmationService` + `Observable<boolean>` (consistent, testable, async); `ConfirmationService` lifted to root providers, single `<p-confirmdialog>` at app root; (3) `onComplete()` with open Issues now has 3 integration tests; (4) `canDeactivateSession` guard has its own spec (4 tests); (5) `cancelReturn`/`cancelIssue` unused params removed — signatures simplified to zero-arg, template bindings updated. All 53 tests green. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)

@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `fix(dev-022)` — Five pre-submission fixes: (1) Issue → Returned UI path added to equipment-row (ADR-0002 ↔ UI now aligned); (2) `window.confirm` → PrimeNG ConfirmDialog in nav guard (`ConfirmationService` at root, `Observable<boolean>` return); (3) 3 integration tests for `onComplete()` with open Issues confirm dialog; (4) 4-test spec for `canDeactivateSession` guard; (5) `cancelReturn`/`cancelIssue` zero-arg signatures, template bindings updated. All 53 tests green.
+
 - `fix(dev-021)` — Three UI/bug fixes post-review: equipment-type p-tag `severity="secondary"` (no longer clashes with Returned green); Complete button `[severity]` dynamic (`success`/`secondary`) so it looks inactive when disabled; employee list overlay bug fixed — `OffboardingStore.completedEmployeeIds` signal added, `employees()` computed in list component merges store + repo data so status is correct after navigating back from a completed session. Tests: `renderList()` helper always provides `OffboardingStore`; regression test with fake store (`signal(new Set(['emp-a']))`) guards the fix. 46/46 tests green.
 
 - `docs(dev-020)` — README accuracy fixes: stack line adds Tailwind v4 + Angular Testing Library; layer diagram corrected to real lib structure; "Why four libs" rewritten; ADR-0001 key-decisions row rewritten without self-congratulatory framing.

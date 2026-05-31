@@ -157,6 +157,52 @@
       @if (item().note) {
         <p class="m-0 text-sm text-[var(--p-text-color)]">Note: {{ item().note }}</p>
       }
+
+      @if (!readOnly()) {
+        @if (!isEditing()) {
+          <!-- State E1: Issue, not editing — admin can escalate to Returned -->
+          <div class="flex flex-wrap gap-2">
+            <p-button
+              label="Mark as returned"
+              severity="secondary"
+              (onClick)="beginReturn.emit(item().item.id)"
+              ariaLabel="Mark {{ item().item.name }} as returned"
+            />
+          </div>
+        } @else if (editMode() === 'return') {
+          <!-- State E2: Issue, editing return — same condition-select UI as from Pending -->
+          <div class="flex flex-col gap-2">
+            <label
+              class="text-sm font-medium text-[var(--p-text-muted-color)]"
+              [for]="'condition-' + item().item.id"
+            >
+              Return condition
+            </label>
+            <p-select
+              [inputId]="'condition-' + item().item.id"
+              [options]="conditionOptions"
+              [ngModel]="selectedCondition()"
+              (ngModelChange)="selectedCondition.set($event)"
+              placeholder="Select condition…"
+            />
+            <div class="flex flex-wrap gap-2">
+              <p-button
+                label="Confirm return"
+                [disabled]="!selectedCondition()"
+                (onClick)="onConfirmReturn()"
+                ariaLabel="Confirm return of {{ item().item.name }}"
+              />
+              <p-button
+                label="Cancel"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="cancelReturn.emit(item().item.id)"
+                ariaLabel="Cancel return of {{ item().item.name }}"
+              />
+            </div>
+          </div>
+        }
+      }
     }
   }
 </article>

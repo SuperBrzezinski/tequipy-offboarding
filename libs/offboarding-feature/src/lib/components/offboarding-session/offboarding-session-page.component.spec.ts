@@ -1,6 +1,7 @@
 import { provideRouter, Router } from '@angular/router';
 import { render, screen, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
+import { ConfirmationService } from 'primeng/api';
 import { OFFBOARDING_REPO, OffboardingStore } from '@org/offboarding-feature/data-access';
 import type {
   AssignedItem,
@@ -42,7 +43,12 @@ function makeRepo(overrides: Partial<IOffboardingRepository> = {}): IOffboarding
 async function renderPage(repo: IOffboardingRepository, employeeId = 'emp-test') {
   return render(OffboardingSessionPageComponent, {
     inputs: { employeeId },
-    providers: [provideRouter([]), { provide: OFFBOARDING_REPO, useValue: repo }, OffboardingStore],
+    providers: [
+      provideRouter([]),
+      { provide: OFFBOARDING_REPO, useValue: repo },
+      OffboardingStore,
+      ConfirmationService,
+    ],
   });
 }
 
@@ -153,6 +159,7 @@ describe('OffboardingSessionPageComponent', () => {
         { provide: OFFBOARDING_REPO, useValue: repo },
         { provide: Router, useValue: { navigate } },
         OffboardingStore,
+        ConfirmationService,
       ],
     });
 
@@ -160,6 +167,73 @@ describe('OffboardingSessionPageComponent', () => {
     await user.click(backBtn);
 
     expect(navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  describe('onComplete() with open Issues confirm dialog', () => {
+    it('shows ConfirmDialog listing issue item names when open issues remain', async () => {
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+      await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
+
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+
+      // Put i-1 into Issue status with a note so canComplete() returns true,
+      // but sessionHasOpenIssues() is true → dialog must fire.
+      page['onBeginIssue']('i-1');
+      page['onConfirmIssue']({ itemId: 'i-1', note: 'Screen cracked' });
+      // Return i-2 so there are zero Pending items (completion gate is met).
+      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
+      fixture.detectChanges();
+
+      page['onComplete']();
+
+      expect(confirmSpy).toHaveBeenCalledOnce();
+      const call = confirmSpy.mock.calls[0][0];
+      expect(call.header).toBe('Unresolved issues');
+      expect(call.message).toContain('MacBook');
+      expect(call.message).toContain('Screen cracked');
+    });
+
+    it('calls store.completeOffboarding only after the dialog accept callback fires', async () => {
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+      await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
+
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      let acceptCallback: (() => void) | undefined;
+      vi.spyOn(page['confirmationService'], 'confirm').mockImplementation((opts) => {
+        acceptCallback = opts.accept as () => void;
+      });
+
+      page['onBeginIssue']('i-1');
+      page['onConfirmIssue']({ itemId: 'i-1', note: 'Screen cracked' });
+      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
+
+      page['onComplete']();
+      // Dialog shown but not confirmed yet — session should still be In progress.
+      expect(page['session']()?.offboardingStatus).toBe('In progress');
+
+      acceptCallback?.();
+      expect(page['session']()?.offboardingStatus).toBe('Completed');
+    });
+
+    it('does NOT show ConfirmDialog when all items are Returned (no open issues)', async () => {
+      const repo = makeRepo();
+      const { fixture } = await renderPage(repo);
+      await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
+
+      const page = fixture.componentInstance as OffboardingSessionPageComponent;
+      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+
+      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Good' });
+      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
+
+      page['onComplete']();
+
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(page['session']()?.offboardingStatus).toBe('Completed');
+    });
   });
 
   describe('complete flow (integration — real store + mocked repo)', () => {
