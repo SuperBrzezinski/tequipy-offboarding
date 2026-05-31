@@ -2,6 +2,13 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `fix(dev-016)` — Replaced invented mock dataset with exact task-spec data. `mock-data.ts` now
+  uses Maria Kowalski (emp-001, Engineering, 2024-06-30) with eq-101 MacBook Pro 14"/C02XG2JHQ6DN,
+  eq-102 Dell 27" Monitor/CN-0T7VWR-48621, eq-103 Logitech MX Keys/2246OD118965; and Tomasz
+  Wierzbicki (emp-002, Sales, 2024-07-15) with eq-201 Lenovo ThinkPad X1/PF2YNAB2, eq-202
+  iPhone 14 Pro/DNPXC3J3Q1GC. Repository spec updated: 6→2 count assertions, removed emp-005/
+  emp-006 references, added name and equipment-ID assertions. All 29 data-access tests green.
+
 - `test(dev-015)` — Integration test: full return flow in `OffboardingSessionPageComponent`.
   New `describe('complete flow (integration)')` block: renders with real `OffboardingStore` +
   mocked repo, waits for both items to load, asserts Complete button is disabled (2 Pending),

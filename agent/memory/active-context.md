@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + test suite finalised.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `test(dev-015)` — integration test: full return flow (load → confirm both items returned → click Complete → "Offboarding completed" banner). Real store, mocked repo. All 45 feature + 30 data-access tests green. (2026-05-31)
+- **Last checkpoint:** `fix(dev-016)` — replaced invented mock dataset with exact task-spec data: Maria Kowalski (emp-001, 3 items eq-101/102/103) and Tomasz Wierzbicki (emp-002, 2 items eq-201/202), original serials preserved. Repository tests updated to match 2-employee dataset. All tests green. (2026-05-31)
 - **Next action:** none — project is submission-ready.
 
 ## Architecture addendum (dev-011 change)

@@ -9,22 +9,21 @@ describe('InMemoryOffboardingRepository', () => {
   });
 
   describe('getEmployees', () => {
-    it('returns all 6 employees', async () => {
+    it('returns all 2 employees from the mock dataset', async () => {
       const employees = await repo.getEmployees();
-      expect(employees).toHaveLength(6);
+      expect(employees).toHaveLength(2);
     });
 
-    it('includes one pre-completed employee', async () => {
+    it('returns employees with correct names from the spec dataset', async () => {
       const employees = await repo.getEmployees();
-      const completed = employees.filter((e) => e.offboardingStatus === 'Completed');
-      expect(completed).toHaveLength(1);
-      expect(completed[0].id).toBe('emp-006');
+      const names = employees.map((e) => e.name);
+      expect(names).toContain('Maria Kowalski');
+      expect(names).toContain('Tomasz Wierzbicki');
     });
 
-    it('includes employees with In progress status', async () => {
+    it('all employees start with In progress status', async () => {
       const employees = await repo.getEmployees();
-      const active = employees.filter((e) => e.offboardingStatus === 'In progress');
-      expect(active).toHaveLength(5);
+      expect(employees.every((e) => e.offboardingStatus === 'In progress')).toBe(true);
     });
 
     it('returns a copy — mutations do not affect the source', async () => {
@@ -38,7 +37,7 @@ describe('InMemoryOffboardingRepository', () => {
         offboardingStatus: 'In progress',
       });
       const second = await repo.getEmployees();
-      expect(second).toHaveLength(6);
+      expect(second).toHaveLength(2);
     });
   });
 
@@ -58,18 +57,16 @@ describe('InMemoryOffboardingRepository', () => {
   describe('getAssignedItems', () => {
     it('returns items only for the requested employee', async () => {
       const items = await repo.getAssignedItems('emp-001');
-      expect(items.length).toBeGreaterThanOrEqual(2);
+      expect(items).toHaveLength(3);
       expect(items.every((i) => i.employeeId === 'emp-001')).toBe(true);
     });
 
-    it('returns empty array for employee with no equipment (emp-005)', async () => {
-      const items = await repo.getAssignedItems('emp-005');
-      expect(items).toHaveLength(0);
-    });
-
-    it('returns items for completed employee (emp-006)', async () => {
-      const items = await repo.getAssignedItems('emp-006');
-      expect(items.length).toBeGreaterThanOrEqual(2);
+    it('returns correct equipment IDs from the spec dataset', async () => {
+      const items = await repo.getAssignedItems('emp-001');
+      const ids = items.map((i) => i.id);
+      expect(ids).toContain('eq-101');
+      expect(ids).toContain('eq-102');
+      expect(ids).toContain('eq-103');
     });
 
     it('returns empty array for unknown employee id', async () => {
