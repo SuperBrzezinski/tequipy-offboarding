@@ -12,9 +12,6 @@ dist/
 out-tsc/
 *.tsbuildinfo
 
-# Generated Tailwind CSS (rebuilt by prebuild-css before every build/serve)
-apps/shell/src/styles.css
-
 # Testing / coverage
 coverage/
 .vitest/

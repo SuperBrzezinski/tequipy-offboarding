@@ -3,13 +3,15 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `test(dev-028)` — `offboarding-session-page.component.spec.ts` rewritten: removed all implementation-detail access (`page['privateMethod']`, `page['session']()`, `page['confirmationService']`); replaced with `triggerEventHandler` on child component debug elements and `fixture.debugElement.injector.get(ConfirmationService)`. 12/12 tests green. (2026-06-01)
+- **Last checkpoint:** `refactor(dev-029)` — Tailwind CSS pipeline migrated from CLI pre-processing to Angular's built-in PostCSS pipeline. `postcss.config.json` + `@tailwindcss/postcss` + `@source` directives in `styles.css`. Removed `prebuild-css` target, `tailwind-input.css`, orphan `styles.scss`, `postcss.config.mjs`. `serve` target merged from `serve-ng` wrapper. README updated. (2026-06-01)
 - **Next action:** none — project is submission-ready.
 
-## Tailwind v4 integration details (dev-017)
+## Tailwind v4 integration details (refactored dev-029)
 
-- **Architecture**: Tailwind CLI (`pnpm tailwindcss`) pre-processes `tailwind-input.css` → `styles.css`. Angular build consumes pure CSS — no PostCSS plugin in Angular's pipeline (avoids esbuild service-mode deadlock with `@tailwindcss/oxide`).
-- **Dev workflow**: `nx serve shell` runs Tailwind CLI watch + Angular dev-server in parallel via `nx:run-commands`. `nx build shell` runs `prebuild-css` target first.
+- **Architecture**: `apps/shell/src/styles.css` is the committed source file with `@import "tailwindcss"`. Angular's built-in PostCSS pipeline loads `postcss.config.json` (JSON format — Angular ignores `.mjs`/`.js`), which runs `@tailwindcss/postcss`. Angular passes `from: filename` to PostCSS so `@source` directives resolve correctly relative to the CSS file.
+- **Critical insight**: `@import "tailwindcss"` without PostCSS resolves to a static `tailwindcss/index.css` (theme tokens only, no utilities). PostCSS is required to generate utility classes.
+- **`@source` directives** in `styles.css`: `./app/**/*.{html,ts}` and `../../../libs/**/*.{html,ts}` — relative to the CSS file path.
+- **Dev workflow**: `nx serve shell` / `nx build shell` — no separate prebuild-css step. PostCSS runs inside Angular's esbuild pipeline.
 - **Fonts**: Inter from Google Fonts in `index.html`; PrimeIcons added to `project.json` styles array.
 - **Known pre-existing lint issue**: `@angular-eslint/component-selector` errors on `lib-*` selectors (not introduced by this increment; existed in dev-006).
 
