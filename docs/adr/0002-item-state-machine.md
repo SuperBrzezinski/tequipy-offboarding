@@ -69,6 +69,9 @@ rather than the problem.
 
 ## Alternatives considered
 
+- **Hybrid state: Returned + Issue note simultaneously:** An admin might want to record "returned as damaged" AND add a free-text issue note. Rejected because the `returnCondition` field (`Damaged / Missing accessories`) already captures this signal; "Returned + condition = Damaged" is the correct encoding for a physical return with problems. `Issue` is semantically reserved for cases where physical return is absent or uncertain (device lost, employee refuses). Combining states would duplicate the condition-diff feature and complicate the predicate without adding information. See discovery Q8.
+
+
 - **Issue is terminal (no resolution):** Simpler state machine, but real admins would need
   to abuse the system (re-create a record) to close a recovered item. Ruled out.
 - **Hard block on open Issues:** Prevents legitimate completions when an asset is

@@ -86,6 +86,16 @@ All decisions below are either **confirmed by operator** or explicitly marked as
 
 ---
 
+### Q8: Should "Returned" and "Issue" be combinable states (e.g. "returned but damaged with a note")?
+
+- **Decision:** No — `Returned` and `Issue` remain **mutually exclusive** terminal states. The condition field on return (`Good / Damaged / Missing accessories`) is the mechanism for flagging problems at physical return. `Issue` is reserved for cases where physical return is absent or uncertain.
+- **Rationale:** The spec's status model `Pending | Returned | Issue reported` explicitly reads as three discrete states. More importantly, "Returned + Damaged" is already fully expressed by `status = Returned, returnCondition = Damaged`. Adding a free-text issue note on top of a Returned item would duplicate the condition diff feature, complicate the state machine, and go beyond what was asked. The condition field IS the issue signal for physical returns.
+- **Assumption:** "Issue reported" semantically means something blocked or prevented the return (employee refuses, device lost, not found) — NOT "item came back in bad shape". Condition-on-return handles the latter.
+- **Status:** assumption — confirmed by operator 2026-06-01
+- **ADR:** noted in ADR-0002 (alternatives considered)
+
+---
+
 ## Items flagged for ADRs
 
 | ADR | Topic |
