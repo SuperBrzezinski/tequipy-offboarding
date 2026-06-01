@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `test(dev-028)` — `offboarding-session-page.component.spec.ts` rewritten: removed all implementation-detail access (`page['privateMethod']`, `page['session']()`, `page['confirmationService']`); replaced with `triggerEventHandler` on child component `DebugElement`s and `injector.get(ConfirmationService)`. 12/12 tests green.
+
 - `docs(dev-027)` — README Quick start restructured: Dev Container listed as recommended option with single shared command block below (previously commands were duplicated under a "Manual" heading, which was misleading).
 
 - `docs(dev-026)` — Untracked generated `styles.css` from git (`.gitignore` + `git rm --cached`); README Quick start updated with Tailwind CLI build setup explanation and guidance on adding global styles via `tailwind-input.css`.

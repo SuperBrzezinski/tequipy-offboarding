@@ -1,3 +1,5 @@
+import { ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
 import { render, screen, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
@@ -7,8 +9,11 @@ import type {
   AssignedItem,
   Employee,
   IOffboardingRepository,
+  ReturnCondition,
 } from '@org/offboarding-feature/domain';
 import { describe, expect, it, vi } from 'vitest';
+import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
+import { SummaryPanelComponent } from '../summary-panel/summary-panel.component';
 import { OffboardingSessionPageComponent } from './offboarding-session-page.component';
 
 const EMPLOYEE: Employee = {
@@ -52,6 +57,37 @@ async function renderPage(repo: IOffboardingRepository, employeeId = 'emp-test')
   });
 }
 
+// Fires the confirmReturn output of lib-equipment-list — drives an item into Returned status.
+// We bypass the p-select UI because PrimeNG overlays do not position correctly in JSDOM;
+// the condition-select interaction is already covered by equipment-row.component.spec.ts.
+function triggerReturn(
+  fixture: ComponentFixture<OffboardingSessionPageComponent>,
+  itemId: string,
+  condition: ReturnCondition,
+): void {
+  const equipList = fixture.debugElement.query(By.directive(EquipmentListComponent));
+  equipList.triggerEventHandler('confirmReturn', { itemId, condition });
+  fixture.detectChanges();
+}
+
+// Fires the confirmIssue output of lib-equipment-list.
+function triggerConfirmIssue(
+  fixture: ComponentFixture<OffboardingSessionPageComponent>,
+  itemId: string,
+  note: string,
+): void {
+  const equipList = fixture.debugElement.query(By.directive(EquipmentListComponent));
+  equipList.triggerEventHandler('confirmIssue', { itemId, note });
+  fixture.detectChanges();
+}
+
+// Fires the complete output of lib-summary-panel (equivalent to the admin clicking the button).
+function triggerComplete(fixture: ComponentFixture<OffboardingSessionPageComponent>): void {
+  const summaryPanel = fixture.debugElement.query(By.directive(SummaryPanelComponent));
+  summaryPanel.triggerEventHandler('complete', null);
+  fixture.detectChanges();
+}
+
 describe('OffboardingSessionPageComponent', () => {
   it('shows the employee name in the heading after loading', async () => {
     const repo = makeRepo();
@@ -87,43 +123,44 @@ describe('OffboardingSessionPageComponent', () => {
   });
 
   describe('condition-downgrade dialog (onConfirmReturn)', () => {
-    it('calls store.confirmReturn directly when condition is not a downgrade', async () => {
+    it('does not show a confirm dialog when returning with the same or better condition', async () => {
       // Good → Good: severity stays the same, no dialog needed.
       const repo = makeRepo();
       const { fixture } = await renderPage(repo);
       await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
 
-      const page = fixture.componentInstance as OffboardingSessionPageComponent;
-      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+      const confirmSpy = vi.spyOn(
+        fixture.debugElement.injector.get(ConfirmationService),
+        'confirm',
+      );
 
-      // MacBook (i-1) assignedCondition = 'Good'; returning as 'Good' = no downgrade
-      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Good' });
+      triggerReturn(fixture, 'i-1', 'Good');
 
       expect(confirmSpy).not.toHaveBeenCalled();
-      // Session item should now be Returned
-      const sess = page['session']();
-      expect(sess?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Returned');
+      // Item is now Returned — the DOM shows the return condition
+      expect(screen.getByText(/Return condition: Good/i)).toBeTruthy();
     });
 
-    it('shows ConfirmDialog when recording a worse condition', async () => {
+    it('shows a condition-downgrade ConfirmDialog when returning with a worse condition', async () => {
       // Good → Damaged: downgrade detected, dialog must appear before committing.
       const repo = makeRepo();
       const { fixture } = await renderPage(repo);
       await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
 
-      const page = fixture.componentInstance as OffboardingSessionPageComponent;
-      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+      const confirmSpy = vi.spyOn(
+        fixture.debugElement.injector.get(ConfirmationService),
+        'confirm',
+      );
 
-      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Damaged' });
+      triggerReturn(fixture, 'i-1', 'Damaged');
 
       expect(confirmSpy).toHaveBeenCalledOnce();
       const call = confirmSpy.mock.calls[0][0];
       expect(call.message).toContain('MacBook');
       expect(call.message).toContain('Good');
       expect(call.message).toContain('Damaged');
-      // Item must NOT be committed yet — dialog awaits confirmation
-      const sess = page['session']();
-      expect(sess?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Pending');
+      // Item must NOT be committed yet — its action buttons are still visible (still Pending)
+      expect(screen.getByRole('button', { name: /Mark MacBook as returned/i })).toBeTruthy();
     });
 
     it('commits the return only after the dialog accept callback fires', async () => {
@@ -132,18 +169,24 @@ describe('OffboardingSessionPageComponent', () => {
       const { fixture } = await renderPage(repo);
       await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
 
-      const page = fixture.componentInstance as OffboardingSessionPageComponent;
       let acceptCallback: (() => void) | undefined;
-      vi.spyOn(page['confirmationService'], 'confirm').mockImplementation((opts) => {
+      vi.spyOn(
+        fixture.debugElement.injector.get(ConfirmationService),
+        'confirm',
+      ).mockImplementation((opts) => {
         acceptCallback = opts.accept as () => void;
       });
 
-      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Damaged' });
-      expect(page['session']()?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Pending');
+      triggerReturn(fixture, 'i-1', 'Damaged');
+      // Dialog shown — item must still show its action buttons (still Pending)
+      expect(screen.getByRole('button', { name: /Mark MacBook as returned/i })).toBeTruthy();
 
       // Admin clicks "Continue"
       acceptCallback?.();
-      expect(page['session']()?.items.find((r) => r.item.id === 'i-1')?.status).toBe('Returned');
+      fixture.detectChanges();
+
+      // Item is now Returned — return condition appears in DOM
+      expect(screen.getByText(/Return condition: Damaged/i)).toBeTruthy();
     });
   });
 
@@ -175,18 +218,17 @@ describe('OffboardingSessionPageComponent', () => {
       const { fixture } = await renderPage(repo);
       await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
 
-      const page = fixture.componentInstance as OffboardingSessionPageComponent;
-      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+      const confirmSpy = vi.spyOn(
+        fixture.debugElement.injector.get(ConfirmationService),
+        'confirm',
+      );
 
-      // Put i-1 into Issue status with a note so canComplete() returns true,
-      // but sessionHasOpenIssues() is true → dialog must fire.
-      page['onBeginIssue']('i-1');
-      page['onConfirmIssue']({ itemId: 'i-1', note: 'Screen cracked' });
+      // Put i-1 into Issue with a note so canComplete() is true, but open issues remain.
+      triggerConfirmIssue(fixture, 'i-1', 'Screen cracked');
       // Return i-2 so there are zero Pending items (completion gate is met).
-      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
-      fixture.detectChanges();
+      triggerReturn(fixture, 'i-2', 'Good');
 
-      page['onComplete']();
+      triggerComplete(fixture);
 
       expect(confirmSpy).toHaveBeenCalledOnce();
       const call = confirmSpy.mock.calls[0][0];
@@ -195,27 +237,29 @@ describe('OffboardingSessionPageComponent', () => {
       expect(call.message).toContain('Screen cracked');
     });
 
-    it('calls store.completeOffboarding only after the dialog accept callback fires', async () => {
+    it('completes the session only after the dialog accept callback fires', async () => {
       const repo = makeRepo();
       const { fixture } = await renderPage(repo);
       await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
 
-      const page = fixture.componentInstance as OffboardingSessionPageComponent;
       let acceptCallback: (() => void) | undefined;
-      vi.spyOn(page['confirmationService'], 'confirm').mockImplementation((opts) => {
+      vi.spyOn(
+        fixture.debugElement.injector.get(ConfirmationService),
+        'confirm',
+      ).mockImplementation((opts) => {
         acceptCallback = opts.accept as () => void;
       });
 
-      page['onBeginIssue']('i-1');
-      page['onConfirmIssue']({ itemId: 'i-1', note: 'Screen cracked' });
-      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
+      triggerConfirmIssue(fixture, 'i-1', 'Screen cracked');
+      triggerReturn(fixture, 'i-2', 'Good');
 
-      page['onComplete']();
-      // Dialog shown but not confirmed yet — session should still be In progress.
-      expect(page['session']()?.offboardingStatus).toBe('In progress');
+      triggerComplete(fixture);
+      // Dialog shown but not confirmed — session should still be In progress
+      expect(screen.queryByText(/Offboarding completed/i)).toBeNull();
 
       acceptCallback?.();
-      expect(page['session']()?.offboardingStatus).toBe('Completed');
+      fixture.detectChanges();
+      expect(screen.getByText(/Offboarding completed/i)).toBeTruthy();
     });
 
     it('does NOT show ConfirmDialog when all items are Returned (no open issues)', async () => {
@@ -223,16 +267,18 @@ describe('OffboardingSessionPageComponent', () => {
       const { fixture } = await renderPage(repo);
       await waitFor(() => screen.getByRole('article', { name: 'MacBook' }));
 
-      const page = fixture.componentInstance as OffboardingSessionPageComponent;
-      const confirmSpy = vi.spyOn(page['confirmationService'], 'confirm');
+      const confirmSpy = vi.spyOn(
+        fixture.debugElement.injector.get(ConfirmationService),
+        'confirm',
+      );
 
-      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Good' });
-      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
+      triggerReturn(fixture, 'i-1', 'Good');
+      triggerReturn(fixture, 'i-2', 'Good');
 
-      page['onComplete']();
+      triggerComplete(fixture);
 
       expect(confirmSpy).not.toHaveBeenCalled();
-      expect(page['session']()?.offboardingStatus).toBe('Completed');
+      expect(screen.getByText(/Offboarding completed/i)).toBeTruthy();
     });
   });
 
@@ -256,10 +302,8 @@ describe('OffboardingSessionPageComponent', () => {
 
       // Drive both items through the return path.
       // Good → Good: no condition-downgrade dialog fires, store is called directly.
-      const page = fixture.componentInstance as OffboardingSessionPageComponent;
-      page['onConfirmReturn']({ itemId: 'i-1', condition: 'Good' });
-      page['onConfirmReturn']({ itemId: 'i-2', condition: 'Good' });
-      fixture.detectChanges();
+      triggerReturn(fixture, 'i-1', 'Good');
+      triggerReturn(fixture, 'i-2', 'Good');
 
       // All items Returned — Complete must now be enabled.
       await waitFor(() => {

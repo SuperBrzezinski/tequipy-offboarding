@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `docs(dev-027)` — README Quick start restructured: Dev Container option added as recommended path, followed by a single shared command block (not duplicated per path). (2026-06-01)
+- **Last checkpoint:** `test(dev-028)` — `offboarding-session-page.component.spec.ts` rewritten: removed all implementation-detail access (`page['privateMethod']`, `page['session']()`, `page['confirmationService']`); replaced with `triggerEventHandler` on child component debug elements and `fixture.debugElement.injector.get(ConfirmationService)`. 12/12 tests green. (2026-06-01)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)
