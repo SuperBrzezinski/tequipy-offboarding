@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** COMPLETE — All epics shipped + submission audit done.
+- **Project phase:** Active refactor — ADR-0006 planned, not yet implemented.
 - **Mode:** dev
-- **Active epic:** —
-- **Last checkpoint:** `refactor(dev-033)` — repository-as-source-of-truth: moved all session state (item statuses, completion) from `OffboardingStore` into `IOffboardingRepository` + `InMemoryOffboardingRepository`; `OffboardingStore` now holds only `editingItem` UI state; session page uses local signals mirrored from repo mutations; employee list drops `completedEmployeeIds` dependency; ADR-0005 written. (2026-06-01)
-- **Next action:** none — project is submission-ready.
+- **Active epic:** Merge session state into AssignedItem (remove ReturnItem + session layer)
+- **Last checkpoint:** `refactor(dev-033)` — repository-as-source-of-truth (2026-06-01)
+- **Next action:** Implement ADR-0006 — extend `AssignedItem` with status fields, remove `ReturnItem` type, remove `initSession`/`getSessionItems` from port, update repo + component + all tests. See `docs/adr/0006-assigned-item-as-single-record.md` for full file list and before/after types.
 
 ## Tailwind v4 integration details (refactored dev-029)
 
