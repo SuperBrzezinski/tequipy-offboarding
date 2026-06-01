@@ -2,6 +2,9 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `refactor(dev-035)` — ADR-0006 implemented: `AssignedItem` extended with `status`, `returnCondition?`, `note` fields; `ReturnItem` and `EmployeeSession` deleted; `IOffboardingRepository` drops `initSession`/`getSessionItems`; mutations now return `AssignedItem[]`; `InMemoryOffboardingRepository` replaces `_sessionItems: Map` with a single `_items: AssignedItem[]` store; `OffboardingSessionPageComponent` resource loader simplified to one `Promise.all`; all `item.item.X` references flattened to `item.X` across templates, components, and specs. 88 tests green.
+
+
 - `refactor(dev-033)` — Repository-as-source-of-truth: moved all session state (item statuses, offboarding completion) from `OffboardingStore` into `IOffboardingRepository` + `InMemoryOffboardingRepository`; `OffboardingStore` now owns only `editingItem` UI state; session page mirrors repo state into local signals; employee list drops `OffboardingStore` dependency entirely; `Employee.completedAt?` added to domain type; ADR-0005 written. Swap the in-memory impl for an HTTP client — nothing else changes.
 
 - `refactor(dev-032)` — Self-documenting code pass: removed WHAT-comments and section dividers; renamed cryptic variables (`sess`, `ri`, `n`, `e`, `i` in lambdas) across store, repository, predicates, and all feature components.

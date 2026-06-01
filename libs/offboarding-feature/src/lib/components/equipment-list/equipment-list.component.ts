@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import type { ReturnCondition, ReturnItem } from '@org/offboarding-feature/domain';
+import type { AssignedItem, ReturnCondition } from '@org/offboarding-feature/domain';
 import { EquipmentRowComponent } from '../equipment-row/equipment-row.component';
 
 @Component({
@@ -9,7 +9,7 @@ import { EquipmentRowComponent } from '../equipment-row/equipment-row.component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EquipmentListComponent {
-  readonly items = input.required<ReturnItem[]>();
+  readonly items = input.required<AssignedItem[]>();
   readonly editingItem = input<{ itemId: string; mode: 'return' | 'issue' } | null>(null);
   readonly noteHints = input<Record<string, string>>({});
   readonly readOnly = input<boolean>(false);

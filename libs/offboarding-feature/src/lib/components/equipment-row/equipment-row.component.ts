@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CONDITION_SEVERITY } from '@org/offboarding-feature/domain';
-import type { ReturnCondition, ReturnItem } from '@org/offboarding-feature/domain';
+import type { AssignedItem, ReturnCondition } from '@org/offboarding-feature/domain';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
@@ -24,7 +24,7 @@ import { StatusBadgeComponent } from '../status-badge/status-badge.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EquipmentRowComponent {
-  readonly item = input.required<ReturnItem>();
+  readonly item = input.required<AssignedItem>();
   readonly isEditing = input<boolean>(false);
   readonly editMode = input<'return' | 'issue' | null>(null);
   readonly suggestedNote = input<string | null>(null);
@@ -72,14 +72,14 @@ export class EquipmentRowComponent {
   protected onConfirmReturn(): void {
     const condition = this.selectedCondition();
     if (!condition) return;
-    this.confirmReturn.emit({ itemId: this.item().item.id, condition });
+    this.confirmReturn.emit({ itemId: this.item().id, condition });
     this.selectedCondition.set(null);
   }
 
   protected onConfirmIssue(): void {
     const note = this.noteValue().trim();
     if (!note) return;
-    this.confirmIssue.emit({ itemId: this.item().item.id, note });
+    this.confirmIssue.emit({ itemId: this.item().id, note });
     this.noteValue.set('');
   }
 }

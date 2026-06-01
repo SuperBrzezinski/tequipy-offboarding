@@ -21,21 +21,7 @@ export interface AssignedItem {
   type: string;
   serialNumber?: string;
   assignedCondition: ReturnCondition;
-}
-
-export type ReturnItem =
-  | { item: AssignedItem; status: 'Returned'; returnCondition: ReturnCondition; note: string }
-  | {
-      item: AssignedItem;
-      status: 'Pending' | 'Issue';
-      returnCondition?: ReturnCondition;
-      note: string;
-    };
-
-export interface EmployeeSession {
-  employeeId: string;
-  items: ReturnItem[];
-  offboardingStatus: OffboardingStatus;
-  completedAt: string | null;
-  isDirty: boolean;
+  status: ItemStatus;
+  returnCondition?: ReturnCondition;
+  note: string;
 }

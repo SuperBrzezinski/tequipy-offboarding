@@ -1,15 +1,13 @@
 <article
   class="flex flex-col gap-3 p-4 rounded-lg border border-[var(--p-surface-200)] bg-[var(--p-surface-0)]"
-  [attr.aria-label]="item().item.name"
+  [attr.aria-label]="item().name"
 >
   <!-- Header: name, type tag, serial number -->
   <header class="flex items-center flex-wrap gap-2">
-    <span class="font-semibold text-[var(--p-text-color)]">{{ item().item.name }}</span>
-    <p-tag [value]="item().item.type" severity="secondary" />
-    @if (item().item.serialNumber) {
-      <span class="text-sm text-[var(--p-text-muted-color)]"
-        >S/N: {{ item().item.serialNumber }}</span
-      >
+    <span class="font-semibold text-[var(--p-text-color)]">{{ item().name }}</span>
+    <p-tag [value]="item().type" severity="secondary" />
+    @if (item().serialNumber) {
+      <span class="text-sm text-[var(--p-text-muted-color)]">S/N: {{ item().serialNumber }}</span>
     }
   </header>
 
@@ -20,7 +18,7 @@
           <tq-status-badge [status]="'Pending'" />
         }
         <span class="font-medium text-[var(--p-text-muted-color)]">Assigned condition:</span>
-        <span>{{ item().item.assignedCondition }}</span>
+        <span>{{ item().assignedCondition }}</span>
       </div>
 
       @if (!readOnly()) {
@@ -30,15 +28,15 @@
             <p-button
               label="Mark as returned"
               severity="secondary"
-              (onClick)="beginReturn.emit(item().item.id)"
-              ariaLabel="Mark {{ item().item.name }} as returned"
+              (onClick)="beginReturn.emit(item().id)"
+              ariaLabel="Mark {{ item().name }} as returned"
             />
             <p-button
               label="Report issue"
               severity="danger"
               [outlined]="true"
-              (onClick)="beginIssue.emit(item().item.id)"
-              ariaLabel="Report issue for {{ item().item.name }}"
+              (onClick)="beginIssue.emit(item().id)"
+              ariaLabel="Report issue for {{ item().name }}"
             />
           </div>
         } @else if (editMode() === 'return') {
@@ -46,12 +44,12 @@
           <div class="flex flex-col gap-2">
             <label
               class="text-sm font-medium text-[var(--p-text-muted-color)]"
-              [for]="'condition-' + item().item.id"
+              [for]="'condition-' + item().id"
             >
               Return condition
             </label>
             <p-select
-              [inputId]="'condition-' + item().item.id"
+              [inputId]="'condition-' + item().id"
               [options]="conditionOptions"
               [ngModel]="selectedCondition()"
               (ngModelChange)="selectedCondition.set($event)"
@@ -62,14 +60,14 @@
                 label="Confirm return"
                 [disabled]="!selectedCondition()"
                 (onClick)="onConfirmReturn()"
-                ariaLabel="Confirm return of {{ item().item.name }}"
+                ariaLabel="Confirm return of {{ item().name }}"
               />
               <p-button
                 label="Cancel"
                 severity="secondary"
                 [outlined]="true"
-                (onClick)="cancelReturn.emit(item().item.id)"
-                ariaLabel="Cancel return of {{ item().item.name }}"
+                (onClick)="cancelReturn.emit(item().id)"
+                ariaLabel="Cancel return of {{ item().name }}"
               />
             </div>
           </div>
@@ -78,13 +76,13 @@
           <div class="flex flex-col gap-2">
             <label
               class="text-sm font-medium text-[var(--p-text-muted-color)]"
-              [for]="'note-' + item().item.id"
+              [for]="'note-' + item().id"
             >
               Issue description
             </label>
             <textarea
               pTextarea
-              [id]="'note-' + item().item.id"
+              [id]="'note-' + item().id"
               [value]="noteValue()"
               (input)="onNoteInput($event)"
               placeholder="Describe the issue…"
@@ -96,21 +94,21 @@
                 label="Suggest note"
                 severity="secondary"
                 [text]="true"
-                (onClick)="suggestNote.emit(item().item.id)"
-                ariaLabel="Suggest a note for {{ item().item.name }}"
+                (onClick)="suggestNote.emit(item().id)"
+                ariaLabel="Suggest a note for {{ item().name }}"
               />
               <p-button
                 label="Confirm issue"
                 [disabled]="!noteValue().trim()"
                 (onClick)="onConfirmIssue()"
-                ariaLabel="Confirm issue for {{ item().item.name }}"
+                ariaLabel="Confirm issue for {{ item().name }}"
               />
               <p-button
                 label="Cancel"
                 severity="secondary"
                 [outlined]="true"
-                (onClick)="cancelIssue.emit(item().item.id)"
-                ariaLabel="Cancel issue report for {{ item().item.name }}"
+                (onClick)="cancelIssue.emit(item().id)"
+                ariaLabel="Cancel issue report for {{ item().name }}"
               />
             </div>
           </div>
@@ -128,7 +126,7 @@
       </div>
       @if (item().returnCondition; as rc) {
         <tq-condition-diff-badge
-          [assignedCondition]="item().item.assignedCondition"
+          [assignedCondition]="item().assignedCondition"
           [returnCondition]="rc"
         />
       }
@@ -139,8 +137,8 @@
             severity="secondary"
             [text]="true"
             size="small"
-            (onClick)="undoReturn.emit(item().item.id)"
-            ariaLabel="Undo return of {{ item().item.name }}"
+            (onClick)="undoReturn.emit(item().id)"
+            ariaLabel="Undo return of {{ item().name }}"
           />
         </div>
       }
@@ -151,7 +149,7 @@
       <div class="flex items-center flex-wrap gap-2">
         <tq-status-badge [status]="item().status" />
         <span class="text-sm font-medium text-[var(--p-text-muted-color)]">
-          Assigned condition: {{ item().item.assignedCondition }}
+          Assigned condition: {{ item().assignedCondition }}
         </span>
       </div>
       @if (item().note) {
@@ -165,8 +163,8 @@
             <p-button
               label="Mark as returned"
               severity="secondary"
-              (onClick)="beginReturn.emit(item().item.id)"
-              ariaLabel="Mark {{ item().item.name }} as returned"
+              (onClick)="beginReturn.emit(item().id)"
+              ariaLabel="Mark {{ item().name }} as returned"
             />
           </div>
         } @else if (editMode() === 'return') {
@@ -174,12 +172,12 @@
           <div class="flex flex-col gap-2">
             <label
               class="text-sm font-medium text-[var(--p-text-muted-color)]"
-              [for]="'condition-' + item().item.id"
+              [for]="'condition-' + item().id"
             >
               Return condition
             </label>
             <p-select
-              [inputId]="'condition-' + item().item.id"
+              [inputId]="'condition-' + item().id"
               [options]="conditionOptions"
               [ngModel]="selectedCondition()"
               (ngModelChange)="selectedCondition.set($event)"
@@ -190,14 +188,14 @@
                 label="Confirm return"
                 [disabled]="!selectedCondition()"
                 (onClick)="onConfirmReturn()"
-                ariaLabel="Confirm return of {{ item().item.name }}"
+                ariaLabel="Confirm return of {{ item().name }}"
               />
               <p-button
                 label="Cancel"
                 severity="secondary"
                 [outlined]="true"
-                (onClick)="cancelReturn.emit(item().item.id)"
-                ariaLabel="Cancel return of {{ item().item.name }}"
+                (onClick)="cancelReturn.emit(item().id)"
+                ariaLabel="Cancel return of {{ item().name }}"
               />
             </div>
           </div>

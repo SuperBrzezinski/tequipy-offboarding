@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
-import type { ReturnItem } from '@org/offboarding-feature/domain';
+import type { AssignedItem } from '@org/offboarding-feature/domain';
 import { describe, expect, it, vi } from 'vitest';
 import { EquipmentRowComponent } from './equipment-row.component';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
@@ -9,30 +9,26 @@ import Aura from '@primeng/themes/aura';
 
 const primeNGProviders = [providePrimeNG({ theme: { preset: Aura } })];
 
-function makePendingItem(): ReturnItem {
+function makePendingItem(): AssignedItem {
   return {
-    item: {
-      id: 'item-1',
-      employeeId: 'emp-1',
-      name: 'MacBook Pro',
-      type: 'Laptop',
-      serialNumber: 'SN-12345',
-      assignedCondition: 'Good',
-    },
+    id: 'item-1',
+    employeeId: 'emp-1',
+    name: 'MacBook Pro',
+    type: 'Laptop',
+    serialNumber: 'SN-12345',
+    assignedCondition: 'Good',
     status: 'Pending',
     note: '',
   };
 }
 
-function makeReturnedItem(): ReturnItem {
+function makeReturnedItem(): AssignedItem {
   return {
-    item: {
-      id: 'item-2',
-      employeeId: 'emp-1',
-      name: 'Dell Monitor',
-      type: 'Monitor',
-      assignedCondition: 'Good',
-    },
+    id: 'item-2',
+    employeeId: 'emp-1',
+    name: 'Dell Monitor',
+    type: 'Monitor',
+    assignedCondition: 'Good',
     status: 'Returned',
     returnCondition: 'Good',
     note: '',
@@ -272,7 +268,7 @@ describe('EquipmentListComponent — empty state', () => {
   });
 
   it('renders one row per item when items are provided', async () => {
-    const items: ReturnItem[] = [makePendingItem(), makeReturnedItem()];
+    const items: AssignedItem[] = [makePendingItem(), makeReturnedItem()];
 
     await render(EquipmentListComponent, {
       inputs: { items },

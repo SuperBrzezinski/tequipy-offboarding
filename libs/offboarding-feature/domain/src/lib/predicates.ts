@@ -1,6 +1,6 @@
-import type { ReturnItem } from './types';
+import type { AssignedItem } from './types';
 
-export function canComplete(items: ReturnItem[]): boolean {
+export function canComplete(items: AssignedItem[]): boolean {
   if (items.length === 0) return false;
   const noPending = items.every((item) => item.status !== 'Pending');
   const allIssuesNoted = items
@@ -9,6 +9,6 @@ export function canComplete(items: ReturnItem[]): boolean {
   return noPending && allIssuesNoted;
 }
 
-export function hasOpenIssues(items: ReturnItem[]): boolean {
+export function hasOpenIssues(items: AssignedItem[]): boolean {
   return items.some((item) => item.status === 'Issue');
 }

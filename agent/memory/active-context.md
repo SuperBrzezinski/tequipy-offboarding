@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** Active refactor — ADR-0006 planned, not yet implemented.
+- **Project phase:** Refactor complete — ADR-0006 implemented and shipped.
 - **Mode:** dev
-- **Active epic:** Merge session state into AssignedItem (remove ReturnItem + session layer)
-- **Last checkpoint:** `refactor(dev-033)` — repository-as-source-of-truth (2026-06-01)
-- **Next action:** Implement ADR-0006 — extend `AssignedItem` with status fields, remove `ReturnItem` type, remove `initSession`/`getSessionItems` from port, update repo + component + all tests. See `docs/adr/0006-assigned-item-as-single-record.md` for full file list and before/after types.
+- **Active epic:** none (between epics)
+- **Last checkpoint:** `refactor(dev-035)` — AssignedItem as single record, ReturnItem removed (2026-06-01)
+- **Next action:** Pick the next epic from `agent/memory/backlog.md` — likely UI polish or the demo walkthrough.
 
 ## Tailwind v4 integration details (refactored dev-029)
 

@@ -1,20 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { canComplete, hasOpenIssues } from './predicates';
-import type { ReturnItem } from './types';
+import type { AssignedItem } from './types';
 
 // Minimal test fixtures — only the fields under test matter.
-function makeItem(status: ReturnItem['status'], note = ''): ReturnItem {
-  const item = {
+function makeItem(status: AssignedItem['status'], note = ''): AssignedItem {
+  return {
     id: '1',
     employeeId: 'e1',
     name: 'Test item',
     type: 'Laptop',
-    assignedCondition: 'Good' as const,
+    assignedCondition: 'Good',
+    status,
+    returnCondition: status === 'Returned' ? 'Good' : undefined,
+    note,
   };
-  if (status === 'Returned') {
-    return { item, status, returnCondition: 'Good', note };
-  }
-  return { item, status, note };
 }
 
 describe('canComplete', () => {

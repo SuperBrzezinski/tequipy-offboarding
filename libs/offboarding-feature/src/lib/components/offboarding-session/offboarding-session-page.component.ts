@@ -20,9 +20,9 @@ import {
   suggestNote as suggestNoteFn,
 } from '@org/offboarding-feature/domain';
 import type {
+  AssignedItem,
   OffboardingStatus,
   ReturnCondition,
-  ReturnItem,
 } from '@org/offboarding-feature/domain';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 import { SummaryPanelComponent } from '../summary-panel/summary-panel.component';
@@ -44,7 +44,7 @@ export class OffboardingSessionPageComponent {
 
   // Session state — owned by the repo, mirrored locally for reactive rendering.
   // Mutations call the repo and update these signals from the returned payload.
-  private readonly _items = signal<ReturnItem[]>([]);
+  private readonly _items = signal<AssignedItem[]>([]);
   private readonly _offboardingStatus = signal<OffboardingStatus>('In progress');
   private readonly _completedAt = signal<string | null>(null);
   private readonly _isSessionLoaded = signal<boolean>(false);
@@ -57,15 +57,11 @@ export class OffboardingSessionPageComponent {
   protected readonly sessionResource = resource({
     params: () => ({ id: this.employeeId() }),
     loader: async ({ params }) => {
-      const [employee, assignedItems] = await Promise.all([
+      const [employee, items] = await Promise.all([
         this.repo.getEmployee(params.id),
         this.repo.getAssignedItems(params.id),
       ]);
-      if (employee) {
-        await this.repo.initSession(params.id, assignedItems);
-      }
-      const sessionItems = employee ? await this.repo.getSessionItems(params.id) : null;
-      return { employee, sessionItems: sessionItems ?? [] };
+      return { employee, items };
     },
   });
 
@@ -106,7 +102,7 @@ export class OffboardingSessionPageComponent {
       const data = this.sessionResource.value();
       if (!data?.employee) return;
 
-      this._items.set(data.sessionItems);
+      this._items.set(data.items);
       this._offboardingStatus.set(data.employee.offboardingStatus);
       this._completedAt.set(
         data.employee.offboardingStatus === 'Completed'
@@ -128,12 +124,12 @@ export class OffboardingSessionPageComponent {
     if (!canComplete(items)) return;
 
     if (hasOpenIssues(items)) {
-      const issueReturnItems = items.filter((item) => item.status === 'Issue');
-      const issueCount = issueReturnItems.length;
-      const issueLines = issueReturnItems
+      const issueItems = items.filter((item) => item.status === 'Issue');
+      const issueCount = issueItems.length;
+      const issueLines = issueItems
         .map(
           (item) =>
-            `• ${this.escapeHtml(item.item.name)}${item.note ? ` — ${this.escapeHtml(item.note)}` : ''}`,
+            `• ${this.escapeHtml(item.name)}${item.note ? ` — ${this.escapeHtml(item.note)}` : ''}`,
         )
         .join('<br>');
 
@@ -154,12 +150,12 @@ export class OffboardingSessionPageComponent {
   }
 
   protected onConfirmReturn(event: { itemId: string; condition: ReturnCondition }): void {
-    const returnItem = this._items().find((item) => item.item.id === event.itemId);
-    if (!returnItem) return;
+    const item = this._items().find((i) => i.id === event.itemId);
+    if (!item) return;
 
-    if (isConditionWorse(returnItem.item.assignedCondition, event.condition)) {
+    if (isConditionWorse(item.assignedCondition, event.condition)) {
       this.confirmationService.confirm({
-        message: `"${returnItem.item.name}" was assigned as "${returnItem.item.assignedCondition}". You are recording it as "${event.condition}". Continue?`,
+        message: `"${item.name}" was assigned as "${item.assignedCondition}". You are recording it as "${event.condition}". Continue?`,
         header: 'Condition downgrade',
         acceptLabel: 'Continue',
         rejectLabel: 'Go back',
@@ -202,14 +198,14 @@ export class OffboardingSessionPageComponent {
   }
 
   protected onSuggestNote(itemId: string): void {
-    const returnItem = this._items().find((item) => item.item.id === itemId);
-    if (!returnItem) return;
+    const item = this._items().find((i) => i.id === itemId);
+    if (!item) return;
     const editMode = this.store.editingItem()?.mode;
     const condition: ReturnCondition =
-      editMode === 'issue' && returnItem.item.assignedCondition === 'Good'
+      editMode === 'issue' && item.assignedCondition === 'Good'
         ? 'Damaged'
-        : returnItem.item.assignedCondition;
-    const suggestion = suggestNoteFn(returnItem.item.type, condition);
+        : item.assignedCondition;
+    const suggestion = suggestNoteFn(item.type, condition);
     this.noteHints.update((h) => ({ ...h, [itemId]: suggestion }));
   }
 

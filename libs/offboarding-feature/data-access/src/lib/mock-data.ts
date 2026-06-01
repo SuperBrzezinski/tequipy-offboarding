@@ -28,6 +28,8 @@ export const MOCK_ASSIGNED_ITEMS: AssignedItem[] = [
     type: 'Laptop',
     serialNumber: 'C02XG2JHQ6DN',
     assignedCondition: 'Good',
+    status: 'Pending',
+    note: '',
   },
   {
     id: 'eq-102',
@@ -36,6 +38,8 @@ export const MOCK_ASSIGNED_ITEMS: AssignedItem[] = [
     type: 'Monitor',
     serialNumber: 'CN-0T7VWR-48621',
     assignedCondition: 'Good',
+    status: 'Pending',
+    note: '',
   },
   {
     id: 'eq-103',
@@ -44,6 +48,8 @@ export const MOCK_ASSIGNED_ITEMS: AssignedItem[] = [
     type: 'Keyboard',
     serialNumber: '2246OD118965',
     assignedCondition: 'Good',
+    status: 'Pending',
+    note: '',
   },
 
   // Tomasz Wierzbicki — 2 items
@@ -54,6 +60,8 @@ export const MOCK_ASSIGNED_ITEMS: AssignedItem[] = [
     type: 'Laptop',
     serialNumber: 'PF2YNAB2',
     assignedCondition: 'Good',
+    status: 'Pending',
+    note: '',
   },
   {
     id: 'eq-202',
@@ -62,5 +70,7 @@ export const MOCK_ASSIGNED_ITEMS: AssignedItem[] = [
     type: 'Phone',
     serialNumber: 'DNPXC3J3Q1GC',
     assignedCondition: 'Good',
+    status: 'Pending',
+    note: '',
   },
 ];
