@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `docs(dev-042)` — pre-submission coherence audit: deleted unimplemented ADR-0006-assigned-item (Proposed status); renumbered 0005-repo-as-source-of-truth → 0007 (eliminates duplicate 0005 number); rebuilt docs/adr/README.md with full 7-ADR index; updated README.md ADR table (0007 link, no duplicate row); rewrote docs/rubric-map.md (correct 137 tests, G1 resolved, current architecture names); fixed employee-list-page.component.ts local formatDate → shared util import.
+
 - `docs(dev-041)` — WALKTHROUGH.md created: executive summary, component/state design, TypeScript model, UX judgement, compressed test-reasoning section (3-layer philosophy, not a test manifest), AI tooling account, bonus features, next steps; README updated with link to walkthrough.
 
 - `docs(dev-040)` — README audited and corrected against actual codebase: fixed signal store description (UI-only EditingItem, not session map), session persistence (repo, not store), routing (/ → EmployeeListPageComponent directly), ADR table expanded to all 7 accepted ADRs, test counts corrected (data-access: 30, feature+UI: 53), removed false "Global styles" section (tailwind-input.css / prebuild-css don't exist), removed "production-quality" from intro, rewrote AI tooling note around DEV/META mode workflow.

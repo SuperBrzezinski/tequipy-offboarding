@@ -9,6 +9,7 @@ import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { formatDate } from '../utils/format-date';
 
 @Component({
   selector: 'tq-employee-list-page',
@@ -36,15 +37,9 @@ export class EmployeeListPageComponent {
 
   protected readonly employees = computed<Employee[]>(() => this.employeesResource.value() ?? []);
 
+  protected readonly formatDate = formatDate;
+
   protected navigateToSession(employee: Employee): void {
     this.router.navigate(['/offboarding', employee.id]);
-  }
-
-  protected formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
   }
 }

@@ -1,4 +1,4 @@
-# ADR-0005 — Repository as source of truth for session state
+# ADR-0007 — Repository as source of truth for session state
 
 **Date:** 2026-06-01  
 **Status:** Accepted  

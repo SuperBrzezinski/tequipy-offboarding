@@ -127,8 +127,8 @@ boundary rule ensures no feature code leaks into the initial chunk.
 | [0003 — Bonus features](docs/adr/0003-bonus-feature.md) | AI-assisted note as a local template engine (`suggestNote`) + condition diff badge | The function signature is the extension seam for a real LLM call; the diff badge surfaces a real admin risk at near-zero cost |
 | [0004 — Architecture](docs/adr/0004-architecture.md) *(superseded by 0006-lib-consolidation)* | Original flat four-library layout | — |
 | [0005 — Employee list table](docs/adr/0005-employee-list-table-over-cards.md) | `p-table` with column sorting and filtering over a card list | Real admin environments have 50–200+ employees; sorting by offboarding date is a first-class need |
-| [0005 — Repo as source of truth](docs/adr/0005-repo-as-source-of-truth.md) | Repository owns all mutable session state; `OffboardingStore` tracks UI-only edit mode | The store was acting as a backend substitute; splitting the concerns makes the repository boundary trivially swappable |
 | [0006 — Library consolidation](docs/adr/0006-feature-library-consolidation.md) | Nested Nx sub-libraries (`offboarding-feature`, `domain`, `data-access`) instead of flat top-level libs; no separate `ui` lib | All four original libs belong to one feature — the flat layout communicated shared infrastructure that doesn't exist |
+| [0007 — Repo as source of truth](docs/adr/0007-repo-as-source-of-truth.md) | Repository owns all mutable session state; `OffboardingStore` tracks UI-only edit mode | The store was acting as a backend substitute; splitting the concerns makes the repository boundary trivially swappable |
 
 ---
 

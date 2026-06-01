@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** WALKTHROUGH.md written and polished.
+- **Project phase:** Submission-ready. All docs coherent, all gaps closed.
 - **Mode:** dev
-- **Active epic:** none (between epics)
-- **Last checkpoint:** `docs(dev-041)` — WALKTHROUGH.md created; section 5 (tests) compressed to architectural summary per operator review (2026-06-01)
-- **Next action:** Submission prep — verify app runs, record demo or finalize any remaining deliverable.
+- **Active epic:** none
+- **Last checkpoint:** `docs(dev-042)` — pre-submission doc coherence audit and cleanup (2026-06-01)
+- **Next action:** Submit.
 
 ## Tailwind v4 integration details (refactored dev-029)
 
