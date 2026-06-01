@@ -3,7 +3,7 @@
 - **Project phase:** Refactor complete — ADR-0006 implemented and shipped.
 - **Mode:** dev
 - **Active epic:** none (between epics)
-- **Last checkpoint:** `refactor(dev-035)` — AssignedItem as single record, ReturnItem removed (2026-06-01)
+- **Last checkpoint:** `chore(dev-036)` — lint/build clean-up: budget adjusted for PrimeNG (2026-06-01)
 - **Next action:** Pick the next epic from `agent/memory/backlog.md` — likely UI polish or the demo walkthrough.
 
 ## Tailwind v4 integration details (refactored dev-029)

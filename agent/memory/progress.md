@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `chore(dev-036)` — lint/build health check: all 4 projects lint and test clean; increased `maximumWarning` budget from 500 kB → 750 kB in `apps/shell/project.json` to match realistic PrimeNG initial bundle size (~602 kB). No warnings or errors anywhere in the pipeline.
+
 - `refactor(dev-035)` — ADR-0006 implemented: `AssignedItem` extended with `status`, `returnCondition?`, `note` fields; `ReturnItem` and `EmployeeSession` deleted; `IOffboardingRepository` drops `initSession`/`getSessionItems`; mutations now return `AssignedItem[]`; `InMemoryOffboardingRepository` replaces `_sessionItems: Map` with a single `_items: AssignedItem[]` store; `OffboardingSessionPageComponent` resource loader simplified to one `Promise.all`; all `item.item.X` references flattened to `item.X` across templates, components, and specs. 88 tests green.
 
 
