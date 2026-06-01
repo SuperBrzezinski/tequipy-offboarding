@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** Test quality audit complete — TypeScript errors in specs fixed, typecheck added to CI.
+- **Project phase:** UI polish — three UX fixes applied.
 - **Mode:** dev
 - **Active epic:** none (between epics)
-- **Last checkpoint:** `fix(dev-038)` — fixed 4 TypeScript errors in spec files (stale after dev-035 refactor), added `typecheck` Nx target + CI step (2026-06-01)
-- **Next action:** Pick the next epic from `agent/memory/backlog.md` — likely UI polish or the demo walkthrough.
+- **Last checkpoint:** `fix(dev-039)` — three UI fixes: empty-state message wording, unsaved-changes dialog button contrast, back button hover visibility (2026-06-01)
+- **Next action:** Pick the next epic from `agent/memory/backlog.md` — likely demo walkthrough or remaining UI polish.
 
 ## Tailwind v4 integration details (refactored dev-029)
 

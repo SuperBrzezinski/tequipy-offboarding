@@ -15,6 +15,8 @@ export const canDeactivateSession: CanDeactivateFn<unknown> = () => {
       header: 'Unsaved changes',
       acceptLabel: 'Leave',
       rejectLabel: 'Stay',
+      acceptButtonProps: { severity: 'danger' },
+      rejectButtonProps: { severity: 'primary' },
       accept: () => {
         store.cancelAnyEdit();
         observer.next(true);

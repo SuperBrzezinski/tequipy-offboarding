@@ -94,7 +94,7 @@ describe('EmployeeListPageComponent', () => {
   it('shows empty state when repository returns no employees', async () => {
     await renderList(makeRepo({ getEmployees: vi.fn().mockResolvedValue([]) }));
 
-    await waitFor(() => expect(screen.getByText(/No employees to offboard/i)).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/No employees to show/i)).toBeTruthy());
   });
 
   it('renders column headers for Name, Department, Offboarding Date and Status', async () => {
