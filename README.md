@@ -2,6 +2,8 @@
 
 An SPA for IT administrators to manage the equipment return step of an employee offboarding
 workflow. Submitted as the Tequipy Founding Frontend Engineer take-home assessment.
+For a full technical walkthrough — architecture decisions, state management rationale, test
+reasoning, and AI tooling — see [WALKTHROUGH.md](WALKTHROUGH.md).
 
 > Stack: **Angular 21 · Nx 22 · PrimeNG 21 · Tailwind v4 · TypeScript strict · Vitest · Angular Testing Library**
 

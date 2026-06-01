@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** README audit + polish complete.
+- **Project phase:** WALKTHROUGH.md written and polished.
 - **Mode:** dev
 - **Active epic:** none (between epics)
-- **Last checkpoint:** `docs(dev-040)` — README fully updated to match actual codebase (2026-06-01)
-- **Next action:** Pick next epic from `agent/memory/backlog.md` — likely demo walkthrough.
+- **Last checkpoint:** `docs(dev-041)` — WALKTHROUGH.md created; section 5 (tests) compressed to architectural summary per operator review (2026-06-01)
+- **Next action:** Submission prep — verify app runs, record demo or finalize any remaining deliverable.
 
 ## Tailwind v4 integration details (refactored dev-029)
 
