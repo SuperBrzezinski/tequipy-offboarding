@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `docs(dev-040)` — README audited and corrected against actual codebase: fixed signal store description (UI-only EditingItem, not session map), session persistence (repo, not store), routing (/ → EmployeeListPageComponent directly), ADR table expanded to all 7 accepted ADRs, test counts corrected (data-access: 30, feature+UI: 53), removed false "Global styles" section (tailwind-input.css / prebuild-css don't exist), removed "production-quality" from intro, rewrote AI tooling note around DEV/META mode workflow.
+
 - `fix(dev-039)` — three UI fixes: (1) empty-state message "No employees to offboard" → "No employees to show" (makes sense when filtering); (2) unsaved-changes dialog — "Leave" button now `severity: danger` (red), "Stay" stays primary (green); (3) back button hover now visible — root cause was `body { background: surface.50 }` matching Aura's secondary-text-button hoverBackground token; fixed by switching body background to `surface.0` (white). Removed workaround CSS from button.
 
 - `fix(dev-038)` — test quality audit: fixed 4 TypeScript errors in spec files left stale by dev-035 refactor (`getSessionItems`/`initSession` removed from employee-list mock, `beginReturn`/`beginIssue` 2-arg calls → 1-arg in guard spec, `mockImplementation` return type for `ConfirmationService.confirm`, unsafe double-cast in repository spec); added `typecheck` Nx target to all 4 projects and `Typecheck` step to CI — TypeScript errors in spec files are now blocking.

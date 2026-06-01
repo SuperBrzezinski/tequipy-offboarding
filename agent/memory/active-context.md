@@ -1,10 +1,10 @@
 # Active context
 
-- **Project phase:** UI polish — three UX fixes applied.
+- **Project phase:** README audit + polish complete.
 - **Mode:** dev
 - **Active epic:** none (between epics)
-- **Last checkpoint:** `fix(dev-039)` — three UI fixes: empty-state message wording, unsaved-changes dialog button contrast, back button hover visibility (2026-06-01)
-- **Next action:** Pick the next epic from `agent/memory/backlog.md` — likely demo walkthrough or remaining UI polish.
+- **Last checkpoint:** `docs(dev-040)` — README fully updated to match actual codebase (2026-06-01)
+- **Next action:** Pick next epic from `agent/memory/backlog.md` — likely demo walkthrough.
 
 ## Tailwind v4 integration details (refactored dev-029)
 
