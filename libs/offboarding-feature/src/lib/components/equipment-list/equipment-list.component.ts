@@ -9,13 +9,12 @@ import { EquipmentRowComponent } from '../equipment-row/equipment-row.component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EquipmentListComponent {
-  // --- Inputs ---
   readonly items = input.required<ReturnItem[]>();
   readonly editingItem = input<{ itemId: string; mode: 'return' | 'issue' } | null>(null);
   readonly noteHints = input<Record<string, string>>({});
   readonly readOnly = input<boolean>(false);
 
-  // --- Outputs — mirror EquipmentRowComponent ---
+  // mirrors EquipmentRowComponent outputs
   readonly beginReturn = output<string>();
   readonly confirmReturn = output<{ itemId: string; condition: ReturnCondition }>();
   readonly cancelReturn = output<string>();
@@ -30,7 +29,7 @@ export class EquipmentListComponent {
   }
 
   protected getEditMode(itemId: string): 'return' | 'issue' | null {
-    const e = this.editingItem();
-    return e?.itemId === itemId ? e.mode : null;
+    const editingState = this.editingItem();
+    return editingState?.itemId === itemId ? editingState.mode : null;
   }
 }

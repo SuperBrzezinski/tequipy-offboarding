@@ -26,14 +26,10 @@ type EditingItem = { itemId: string; mode: 'return' | 'issue' };
  */
 @Injectable()
 export class OffboardingStore {
-  // --- internal state -------------------------------------------------------
-
   private readonly _sessions = signal(new Map<string, StoredSession>());
 
   // Only one item can be in edit mode at a time — the single-employee-per-view flow makes this safe.
   private readonly _editingItem = signal<EditingItem | null>(null);
-
-  // --- public API -----------------------------------------------------------
 
   /**
    * True while the admin has an open condition-select or note field.
@@ -76,8 +72,6 @@ export class OffboardingStore {
     return computed(() => this._sessions().get(employeeId()) ?? null);
   }
 
-  // --- session lifecycle ----------------------------------------------------
-
   /**
    * Enters a session for `employee`. If a session is already cached for this
    * employeeId (e.g. navigating back), this is a no-op so the admin's work
@@ -109,8 +103,6 @@ export class OffboardingStore {
 
     this._sessions.update((map) => new Map(map).set(employee.id, session));
   }
-
-  // --- item transitions -----------------------------------------------------
 
   /**
    * Opens the condition-select UI for a return flow.
@@ -243,8 +235,6 @@ export class OffboardingStore {
     this._editingItem.set(null);
   }
 
-  // --- private helpers ------------------------------------------------------
-
   private _updateItem(
     employeeId: string,
     itemId: string,
@@ -256,7 +246,9 @@ export class OffboardingStore {
         throw new Error(`_updateItem: no session loaded for employee ${employeeId}.`);
       }
 
-      const updatedItems = session.items.map((ri) => (ri.item.id === itemId ? transform(ri) : ri));
+      const updatedItems = session.items.map((returnItem) =>
+        returnItem.item.id === itemId ? transform(returnItem) : returnItem,
+      );
 
       return new Map(map).set(employeeId, { ...session, items: updatedItems });
     });

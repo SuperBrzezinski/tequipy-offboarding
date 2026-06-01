@@ -13,12 +13,14 @@ export class InMemoryOffboardingRepository implements IOffboardingRepository {
   }
 
   getEmployee(id: string): Promise<Employee | undefined> {
-    return Promise.resolve(MOCK_EMPLOYEES.find((e) => e.id === id));
+    return Promise.resolve(MOCK_EMPLOYEES.find((employee) => employee.id === id));
   }
 
   getAssignedItems(employeeId: string): Promise<AssignedItem[]> {
     return Promise.resolve(
-      MOCK_ASSIGNED_ITEMS.filter((i) => i.employeeId === employeeId).map((i) => ({ ...i })),
+      MOCK_ASSIGNED_ITEMS.filter((item) => item.employeeId === employeeId).map((item) => ({
+        ...item,
+      })),
     );
   }
 }

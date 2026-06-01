@@ -3,8 +3,8 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `refactor(dev-031)` — deep code review (code smells, cleanliness, readability) + top-priority fixes: merged duplicate `@org/offboarding-feature/data-access` imports (blocker); replaced `ReturnItem` interface with discriminated union (`'Returned'` requires `returnCondition`, others optional); updated `offboarding.store.ts` (4 methods use explicit object construction instead of spread on union type); removed `!` template assertion via `@if (...; as rc)`; replaced all `_editingItem` bracket-notation access in guard spec with `store.beginReturn/beginIssue`; removed `protected` from `selectedCondition`/`noteValue` and eliminated bracket notation in equipment-row spec; `confirmIssue` test uses `userEvent.type`; removed dead `makeIssueItem` fixture. All 57 tests green. (2026-06-01)
-- **Next action:** none — project is submission-ready. Remaining [should]/[nit] items from the review are documented above.
+- **Last checkpoint:** `refactor(dev-032)` — self-documenting code pass: removed all WHAT-comments and section dividers; renamed cryptic variables (`sess`→`session`, `ri`→`returnItem`, `n`→`issueCount`, `e`→`employee`/`editingState`, `i`→`item` in all lambdas) across 9 files. (2026-06-01)
+- **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (refactored dev-029)
 

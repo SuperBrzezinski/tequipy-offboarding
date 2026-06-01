@@ -38,7 +38,6 @@ export class OffboardingSessionPageComponent {
   protected readonly store = inject(OffboardingStore);
   private readonly confirmationService = inject(ConfirmationService);
 
-  // Resource loads raw employee + item data (handles loading/error UI).
   protected readonly sessionResource = resource({
     params: () => ({ id: this.employeeId() }),
     loader: async ({ params }) => {
@@ -50,24 +49,20 @@ export class OffboardingSessionPageComponent {
     },
   });
 
-  // Derive session from store (null until loadSession is called).
   // getSessionReactive accepts the signal directly — one stable computed,
   // no new allocation each time employeeId changes.
   protected readonly session = this.store.getSessionReactive(this.employeeId);
 
-  // Note hints for the suggest-note feature: keyed by itemId.
   protected readonly noteHints = signal<Record<string, string>>({});
 
-  // --- Summary panel computed state -----------------------------------------
-
   protected readonly pendingCount = computed(
-    () => this.session()?.items.filter((i) => i.status === 'Pending').length ?? 0,
+    () => this.session()?.items.filter((item) => item.status === 'Pending').length ?? 0,
   );
   protected readonly returnedCount = computed(
-    () => this.session()?.items.filter((i) => i.status === 'Returned').length ?? 0,
+    () => this.session()?.items.filter((item) => item.status === 'Returned').length ?? 0,
   );
   protected readonly issueCount = computed(
-    () => this.session()?.items.filter((i) => i.status === 'Issue').length ?? 0,
+    () => this.session()?.items.filter((item) => item.status === 'Issue').length ?? 0,
   );
 
   protected readonly sessionCanComplete = computed(() => {
@@ -80,10 +75,6 @@ export class OffboardingSessionPageComponent {
     return hasOpenIssues(items);
   });
 
-  /**
-   * Human-readable explanation for why the Complete button is disabled.
-   * Null when the session is completable.
-   */
   protected readonly pendingReason = computed<string | null>(() => {
     if (this.sessionCanComplete()) return null;
     const pending = this.pendingCount();
@@ -91,7 +82,7 @@ export class OffboardingSessionPageComponent {
     if ((this.session()?.items.length ?? 0) === 0) return 'No equipment assigned';
     // All items have been actioned but some Issue items are still missing a note.
     const issueWithoutNote = (this.session()?.items ?? []).filter(
-      (i) => i.status === 'Issue' && !i.note.trim(),
+      (item) => item.status === 'Issue' && !item.note.trim(),
     ).length;
     if (issueWithoutNote > 0)
       return `${issueWithoutNote} issue item${issueWithoutNote === 1 ? '' : 's'} need${issueWithoutNote === 1 ? 's' : ''} a note`;
@@ -116,16 +107,11 @@ export class OffboardingSessionPageComponent {
     });
   }
 
-  // --- Navigation -----------------------------------------------------------
-
   protected goBack(): void {
     this.router.navigate(['/']);
   }
 
-  // Arrow referencing the shared pure function; no showTime needed for the header date.
   protected readonly formatDate = formatDate;
-
-  // --- Event handlers -------------------------------------------------------
 
   /**
    * Triggers offboarding completion. When open-issue items exist the admin must
@@ -133,22 +119,22 @@ export class OffboardingSessionPageComponent {
    * Without open issues the action is immediate — no extra friction.
    */
   protected onComplete(): void {
-    const sess = this.session();
-    if (!sess) return;
+    const session = this.session();
+    if (!session) return;
     if (!this.sessionCanComplete()) return;
 
     if (this.sessionHasOpenIssues()) {
-      const issueReturnItems = sess.items.filter((i) => i.status === 'Issue');
-      const n = issueReturnItems.length;
+      const issueReturnItems = session.items.filter((item) => item.status === 'Issue');
+      const issueCount = issueReturnItems.length;
       const issueLines = issueReturnItems
         .map(
-          (i) =>
-            `• ${this.escapeHtml(i.item.name)}${i.note ? ` — ${this.escapeHtml(i.note)}` : ''}`,
+          (item) =>
+            `• ${this.escapeHtml(item.item.name)}${item.note ? ` — ${this.escapeHtml(item.note)}` : ''}`,
         )
         .join('<br>');
 
       this.confirmationService.confirm({
-        message: `Complete offboarding with ${n} unresolved issue${n === 1 ? '' : 's'}?<br>${issueLines}<br><br>This action cannot be undone.`,
+        message: `Complete offboarding with ${issueCount} unresolved issue${issueCount === 1 ? '' : 's'}?<br>${issueLines}<br><br>This action cannot be undone.`,
         header: 'Unresolved issues',
         acceptLabel: 'Complete anyway',
         rejectLabel: 'Go back',
@@ -166,14 +152,14 @@ export class OffboardingSessionPageComponent {
   protected onConfirmReturn(event: { itemId: string; condition: ReturnCondition }): void {
     const session = this.session();
     if (!session) return;
-    const ri = session.items.find((i) => i.item.id === event.itemId);
-    if (!ri) return;
+    const returnItem = session.items.find((item) => item.item.id === event.itemId);
+    if (!returnItem) return;
 
-    if (isConditionWorse(ri.item.assignedCondition, event.condition)) {
+    if (isConditionWorse(returnItem.item.assignedCondition, event.condition)) {
       // Show a soft-confirm dialog: the admin recorded a worse condition than
       // what was assigned. They must explicitly acknowledge before we commit.
       this.confirmationService.confirm({
-        message: `"${ri.item.name}" was assigned as "${ri.item.assignedCondition}". You are recording it as "${event.condition}". Continue?`,
+        message: `"${returnItem.item.name}" was assigned as "${returnItem.item.assignedCondition}". You are recording it as "${event.condition}". Continue?`,
         header: 'Condition downgrade',
         acceptLabel: 'Continue',
         rejectLabel: 'Go back',
@@ -220,17 +206,17 @@ export class OffboardingSessionPageComponent {
   protected onSuggestNote(itemId: string): void {
     const session = this.session();
     if (!session) return;
-    const ri = session.items.find((i) => i.item.id === itemId);
-    if (!ri) return;
+    const returnItem = session.items.find((item) => item.item.id === itemId);
+    if (!returnItem) return;
     // In issue mode, "Good" is never the right template — the admin is describing
     // a problem, so fall back to 'Damaged'. Non-Good assigned conditions are kept
     // as-is since "Missing accessories" is a valid issue description seed.
     const editMode = this.store.editingItem()?.mode;
     const condition: ReturnCondition =
-      editMode === 'issue' && ri.item.assignedCondition === 'Good'
+      editMode === 'issue' && returnItem.item.assignedCondition === 'Good'
         ? 'Damaged'
-        : ri.item.assignedCondition;
-    const suggestion = suggestNoteFn(ri.item.type, condition);
+        : returnItem.item.assignedCondition;
+    const suggestion = suggestNoteFn(returnItem.item.type, condition);
     this.noteHints.update((h) => ({ ...h, [itemId]: suggestion }));
   }
 

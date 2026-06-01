@@ -15,7 +15,6 @@ export class SummaryPanelComponent {
   readonly returnedCount = input.required<number>();
   readonly issueCount = input.required<number>();
   readonly canComplete = input.required<boolean>();
-  /** Shown below the complete button when canComplete() is false. */
   readonly pendingReason = input<string | null>(null);
   readonly offboardingStatus = input.required<OffboardingStatus>();
   readonly completedAt = input<string | null>(null);

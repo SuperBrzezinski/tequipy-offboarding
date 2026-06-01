@@ -39,8 +39,10 @@ export class EmployeeListPageComponent {
     const list = this.employeesResource.value() ?? [];
     const completedIds = this.store.completedEmployeeIds();
     if (completedIds.size === 0) return list;
-    return list.map((e) =>
-      completedIds.has(e.id) ? { ...e, offboardingStatus: 'Completed' as const } : e,
+    return list.map((employee) =>
+      completedIds.has(employee.id)
+        ? { ...employee, offboardingStatus: 'Completed' as const }
+        : employee,
     );
   });
 

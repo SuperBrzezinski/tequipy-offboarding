@@ -24,14 +24,12 @@ import { StatusBadgeComponent } from '../status-badge/status-badge.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EquipmentRowComponent {
-  // --- Inputs ---
   readonly item = input.required<ReturnItem>();
   readonly isEditing = input<boolean>(false);
   readonly editMode = input<'return' | 'issue' | null>(null);
   readonly suggestedNote = input<string | null>(null);
   readonly readOnly = input<boolean>(false);
 
-  // --- Outputs ---
   readonly beginReturn = output<string>();
   readonly confirmReturn = output<{ itemId: string; condition: ReturnCondition }>();
   readonly cancelReturn = output<string>();
@@ -41,7 +39,6 @@ export class EquipmentRowComponent {
   readonly cancelIssue = output<string>();
   readonly suggestNote = output<string>();
 
-  // --- Local UI state ---
   readonly selectedCondition = signal<ReturnCondition | null>(null);
   readonly noteValue = signal('');
 
@@ -50,8 +47,7 @@ export class EquipmentRowComponent {
 
   constructor() {
     effect(() => {
-      // Runs whenever isEditing changes. Reset only fires on false → clears
-      // any in-progress selection or note text when the parent closes the edit.
+      // Reset fires only on false → preserves in-progress state when parent opens the edit.
       if (!this.isEditing()) {
         this.selectedCondition.set(null);
         this.noteValue.set('');

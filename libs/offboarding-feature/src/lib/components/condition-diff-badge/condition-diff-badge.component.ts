@@ -21,7 +21,6 @@ export class ConditionDiffBadgeComponent {
   readonly assignedCondition = input.required<ReturnCondition>();
   readonly returnCondition = input.required<ReturnCondition>();
 
-  /** True only when the two conditions are different — drives the @if guard. */
   protected readonly hasDiff = computed(() => this.returnCondition() !== this.assignedCondition());
 
   protected readonly label = computed(
