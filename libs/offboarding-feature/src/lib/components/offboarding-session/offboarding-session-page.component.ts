@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
-import { OFFBOARDING_REPO } from '@org/offboarding-feature/data-access';
+import { OFFBOARDING_REPO, OffboardingStore } from '@org/offboarding-feature/data-access';
 import {
   canComplete,
   hasOpenIssues,
@@ -23,7 +23,6 @@ import type { ReturnCondition } from '@org/offboarding-feature/domain';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 import { SummaryPanelComponent } from '../summary-panel/summary-panel.component';
 import { formatDate } from '../utils/format-date';
-import { OffboardingStore } from '@org/offboarding-feature/data-access';
 
 @Component({
   selector: 'tq-offboarding-session-page',

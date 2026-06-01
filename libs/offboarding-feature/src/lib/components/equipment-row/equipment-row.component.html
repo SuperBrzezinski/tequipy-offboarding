@@ -126,10 +126,10 @@
           Return condition: {{ item().returnCondition }}
         </span>
       </div>
-      @if (item().returnCondition) {
+      @if (item().returnCondition; as rc) {
         <tq-condition-diff-badge
           [assignedCondition]="item().item.assignedCondition"
-          [returnCondition]="item().returnCondition!"
+          [returnCondition]="rc"
         />
       }
       @if (!readOnly()) {

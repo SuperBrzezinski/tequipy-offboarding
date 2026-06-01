@@ -42,8 +42,8 @@ export class EquipmentRowComponent {
   readonly suggestNote = output<string>();
 
   // --- Local UI state ---
-  protected readonly selectedCondition = signal<ReturnCondition | null>(null);
-  protected readonly noteValue = signal('');
+  readonly selectedCondition = signal<ReturnCondition | null>(null);
+  readonly noteValue = signal('');
 
   // Derived from the domain constant so the template list stays in sync with the type union.
   protected readonly conditionOptions = Object.keys(CONDITION_SEVERITY) as ReturnCondition[];

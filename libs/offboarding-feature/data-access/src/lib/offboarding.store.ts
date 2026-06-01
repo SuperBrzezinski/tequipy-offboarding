@@ -3,7 +3,6 @@ import type {
   AssignedItem,
   Employee,
   EmployeeSession,
-  ItemStatus,
   ReturnCondition,
   ReturnItem,
 } from '@org/offboarding-feature/domain';
@@ -95,14 +94,11 @@ export class OffboardingStore {
       return;
     }
 
-    const initialStatus: ItemStatus =
-      employee.offboardingStatus === 'Completed' ? 'Returned' : 'Pending';
-    const items: ReturnItem[] = assignedItems.map((item) => ({
-      item,
-      status: initialStatus,
-      returnCondition: undefined,
-      note: '',
-    }));
+    const items: ReturnItem[] = assignedItems.map((ai) =>
+      employee.offboardingStatus === 'Completed'
+        ? { item: ai, status: 'Returned' as const, returnCondition: ai.assignedCondition, note: '' }
+        : { item: ai, status: 'Pending' as const, note: '' },
+    );
 
     const session: StoredSession = {
       employeeId: employee.id,
@@ -138,7 +134,12 @@ export class OffboardingStore {
             `expected 'Pending' or 'Issue'.`,
         );
       }
-      return { ...item, status: 'Returned', returnCondition: condition };
+      return {
+        item: item.item,
+        status: 'Returned' as const,
+        returnCondition: condition,
+        note: item.note,
+      };
     });
     this._editingItem.set(null);
   }
@@ -157,7 +158,7 @@ export class OffboardingStore {
           `undoReturn: item ${itemId} is in status '${item.status}', expected 'Returned'.`,
         );
       }
-      return { ...item, status: 'Pending', returnCondition: undefined, note: '' };
+      return { item: item.item, status: 'Pending' as const, note: '' };
     });
   }
 
@@ -186,7 +187,7 @@ export class OffboardingStore {
           `confirmIssue: item ${itemId} is in status '${item.status}', expected 'Pending'.`,
         );
       }
-      return { ...item, status: 'Issue', note };
+      return { item: item.item, status: 'Issue' as const, note };
     });
     this._editingItem.set(null);
   }

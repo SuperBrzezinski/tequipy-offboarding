@@ -4,17 +4,17 @@ import type { ReturnItem } from './types';
 
 // Minimal test fixtures — only the fields under test matter.
 function makeItem(status: ReturnItem['status'], note = ''): ReturnItem {
-  return {
-    item: {
-      id: '1',
-      employeeId: 'e1',
-      name: 'Test item',
-      type: 'Laptop',
-      assignedCondition: 'Good',
-    },
-    status,
-    note,
+  const item = {
+    id: '1',
+    employeeId: 'e1',
+    name: 'Test item',
+    type: 'Laptop',
+    assignedCondition: 'Good' as const,
   };
+  if (status === 'Returned') {
+    return { item, status, returnCondition: 'Good', note };
+  }
+  return { item, status, note };
 }
 
 describe('canComplete', () => {

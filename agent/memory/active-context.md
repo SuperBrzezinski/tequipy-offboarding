@@ -3,8 +3,8 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `chore(dev-030)` — housekeeping: removed 5 orphaned `.scss` files (dead BEM code, not referenced by any `@Component`); renamed all `lib-*` component selectors to `tq-*` to satisfy `@angular-eslint/component-selector` prefix rule; updated all template usages and spec comments; added `composite: true` + `data-access` project reference to `offboarding-feature/tsconfig.json` to fix TS Project References error. (2026-06-01)
-- **Next action:** none — project is submission-ready.
+- **Last checkpoint:** `refactor(dev-031)` — deep code review (code smells, cleanliness, readability) + top-priority fixes: merged duplicate `@org/offboarding-feature/data-access` imports (blocker); replaced `ReturnItem` interface with discriminated union (`'Returned'` requires `returnCondition`, others optional); updated `offboarding.store.ts` (4 methods use explicit object construction instead of spread on union type); removed `!` template assertion via `@if (...; as rc)`; replaced all `_editingItem` bracket-notation access in guard spec with `store.beginReturn/beginIssue`; removed `protected` from `selectedCondition`/`noteValue` and eliminated bracket notation in equipment-row spec; `confirmIssue` test uses `userEvent.type`; removed dead `makeIssueItem` fixture. All 57 tests green. (2026-06-01)
+- **Next action:** none — project is submission-ready. Remaining [should]/[nit] items from the review are documented above.
 
 ## Tailwind v4 integration details (refactored dev-029)
 

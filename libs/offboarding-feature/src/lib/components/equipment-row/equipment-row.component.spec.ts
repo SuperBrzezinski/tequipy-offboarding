@@ -9,7 +9,7 @@ import Aura from '@primeng/themes/aura';
 
 const primeNGProviders = [providePrimeNG({ theme: { preset: Aura } })];
 
-function makePendingItem(overrides: Partial<ReturnItem> = {}): ReturnItem {
+function makePendingItem(): ReturnItem {
   return {
     item: {
       id: 'item-1',
@@ -21,7 +21,6 @@ function makePendingItem(overrides: Partial<ReturnItem> = {}): ReturnItem {
     },
     status: 'Pending',
     note: '',
-    ...overrides,
   };
 }
 
@@ -37,20 +36,6 @@ function makeReturnedItem(): ReturnItem {
     status: 'Returned',
     returnCondition: 'Good',
     note: '',
-  };
-}
-
-function makeIssueItem(): ReturnItem {
-  return {
-    item: {
-      id: 'item-3',
-      employeeId: 'emp-1',
-      name: 'Keyboard',
-      type: 'Peripheral',
-      assignedCondition: 'Good',
-    },
-    status: 'Issue',
-    note: 'Key is missing',
   };
 }
 
@@ -150,8 +135,8 @@ describe('EquipmentRowComponent', () => {
       providers: primeNGProviders,
     });
 
-    // Directly set the internal selectedCondition signal (bypasses PrimeNG select interaction)
-    fixture.componentInstance['selectedCondition'].set('Good');
+    // PrimeNG select overlay doesn't render in JSDOM — set the signal directly.
+    fixture.componentInstance.selectedCondition.set('Good');
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -163,6 +148,7 @@ describe('EquipmentRowComponent', () => {
   });
 
   it('emits confirmIssue with trimmed note when "Confirm issue" is clicked', async () => {
+    const user = userEvent.setup();
     const confirmIssueFn = vi.fn();
 
     const { fixture, getByRole } = await render(EquipmentRowComponent, {
@@ -171,8 +157,9 @@ describe('EquipmentRowComponent', () => {
       providers: primeNGProviders,
     });
 
-    // Set note with surrounding whitespace — the handler must trim before emitting
-    fixture.componentInstance['noteValue'].set('  screen cracked  ');
+    // Type into the textarea — exercises the onNoteInput handler and trims before emitting.
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, '  screen cracked  ');
     fixture.detectChanges();
 
     const confirmBtn = getByRole('button', { name: /confirm issue for/i });

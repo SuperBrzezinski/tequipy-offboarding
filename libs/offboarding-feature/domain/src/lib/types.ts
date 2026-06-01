@@ -22,12 +22,14 @@ export interface AssignedItem {
   assignedCondition: ReturnCondition;
 }
 
-export interface ReturnItem {
-  item: AssignedItem;
-  status: ItemStatus;
-  returnCondition?: ReturnCondition;
-  note: string;
-}
+export type ReturnItem =
+  | { item: AssignedItem; status: 'Returned'; returnCondition: ReturnCondition; note: string }
+  | {
+      item: AssignedItem;
+      status: 'Pending' | 'Issue';
+      returnCondition?: ReturnCondition;
+      note: string;
+    };
 
 export interface EmployeeSession {
   employeeId: string;
