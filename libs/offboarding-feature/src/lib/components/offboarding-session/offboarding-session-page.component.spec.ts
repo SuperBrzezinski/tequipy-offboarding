@@ -10,6 +10,7 @@ import type {
   Employee,
   IOffboardingRepository,
   ReturnCondition,
+  ReturnItem,
 } from '@org/offboarding-feature/domain';
 import { describe, expect, it, vi } from 'vitest';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
@@ -36,13 +37,71 @@ const ITEMS: AssignedItem[] = [
   },
 ];
 
+/**
+ * Builds a stateful in-memory mock repo so mutation methods actually update
+ * session state. This mirrors what a real HTTP backend would do and lets
+ * component tests exercise the full round-trip (call → update → render).
+ */
 function makeRepo(overrides: Partial<IOffboardingRepository> = {}): IOffboardingRepository {
-  return {
+  const sessions = new Map<string, ReturnItem[]>();
+
+  const base: IOffboardingRepository = {
     getEmployees: vi.fn().mockResolvedValue([EMPLOYEE]),
     getEmployee: vi.fn().mockResolvedValue(EMPLOYEE),
     getAssignedItems: vi.fn().mockResolvedValue(ITEMS),
-    ...overrides,
+
+    getSessionItems: vi.fn((employeeId: string) =>
+      Promise.resolve(sessions.get(employeeId) ?? null),
+    ),
+
+    initSession: vi.fn((employeeId: string, items: AssignedItem[]) => {
+      if (!sessions.has(employeeId)) {
+        sessions.set(
+          employeeId,
+          items.map((ai) => ({ item: ai, status: 'Pending' as const, note: '' })),
+        );
+      }
+      return Promise.resolve();
+    }),
+
+    markItemReturned: vi.fn((employeeId: string, itemId: string, condition: ReturnCondition) => {
+      const current = sessions.get(employeeId) ?? [];
+      const updated = current.map((ri) =>
+        ri.item.id === itemId
+          ? {
+              item: ri.item,
+              status: 'Returned' as const,
+              returnCondition: condition,
+              note: ri.note,
+            }
+          : ri,
+      );
+      sessions.set(employeeId, updated);
+      return Promise.resolve(updated);
+    }),
+
+    markItemIssue: vi.fn((employeeId: string, itemId: string, note: string) => {
+      const current = sessions.get(employeeId) ?? [];
+      const updated = current.map((ri) =>
+        ri.item.id === itemId ? { item: ri.item, status: 'Issue' as const, note } : ri,
+      );
+      sessions.set(employeeId, updated);
+      return Promise.resolve(updated);
+    }),
+
+    revertItem: vi.fn((employeeId: string, itemId: string) => {
+      const current = sessions.get(employeeId) ?? [];
+      const updated = current.map((ri) =>
+        ri.item.id === itemId ? { item: ri.item, status: 'Pending' as const, note: '' } : ri,
+      );
+      sessions.set(employeeId, updated);
+      return Promise.resolve(updated);
+    }),
+
+    completeOffboarding: vi.fn(() => Promise.resolve(new Date().toISOString())),
   };
+
+  return { ...base, ...overrides };
 }
 
 async function renderPage(repo: IOffboardingRepository, employeeId = 'emp-test') {
@@ -57,9 +116,9 @@ async function renderPage(repo: IOffboardingRepository, employeeId = 'emp-test')
   });
 }
 
-// Fires the confirmReturn output of tq-equipment-list — drives an item into Returned status.
-// We bypass the p-select UI because PrimeNG overlays do not position correctly in JSDOM;
-// the condition-select interaction is already covered by equipment-row.component.spec.ts.
+// Fires the confirmReturn output of tq-equipment-list.
+// We bypass the p-select UI because PrimeNG overlays do not position correctly
+// in JSDOM; the condition-select interaction is covered by equipment-row.component.spec.ts.
 function triggerReturn(
   fixture: ComponentFixture<OffboardingSessionPageComponent>,
   itemId: string,
@@ -67,7 +126,6 @@ function triggerReturn(
 ): void {
   const equipList = fixture.debugElement.query(By.directive(EquipmentListComponent));
   equipList.triggerEventHandler('confirmReturn', { itemId, condition });
-  fixture.detectChanges();
 }
 
 // Fires the confirmIssue output of tq-equipment-list.
@@ -78,14 +136,12 @@ function triggerConfirmIssue(
 ): void {
   const equipList = fixture.debugElement.query(By.directive(EquipmentListComponent));
   equipList.triggerEventHandler('confirmIssue', { itemId, note });
-  fixture.detectChanges();
 }
 
-// Fires the complete output of tq-summary-panel (equivalent to the admin clicking the button).
+// Fires the complete output of tq-summary-panel.
 function triggerComplete(fixture: ComponentFixture<OffboardingSessionPageComponent>): void {
   const summaryPanel = fixture.debugElement.query(By.directive(SummaryPanelComponent));
   summaryPanel.triggerEventHandler('complete', null);
-  fixture.detectChanges();
 }
 
 describe('OffboardingSessionPageComponent', () => {
@@ -97,8 +153,6 @@ describe('OffboardingSessionPageComponent', () => {
   });
 
   it('renders equipment items after loading', async () => {
-    // The equipment list (not a placeholder) should show both assigned items.
-    // Query by aria-label on the article element to avoid ambiguity with type tags.
     const repo = makeRepo();
     await renderPage(repo);
 
@@ -137,8 +191,8 @@ describe('OffboardingSessionPageComponent', () => {
       triggerReturn(fixture, 'i-1', 'Good');
 
       expect(confirmSpy).not.toHaveBeenCalled();
-      // Item is now Returned — the DOM shows the return condition
-      expect(screen.getByText(/Return condition: Good/i)).toBeTruthy();
+      // Item is now Returned — wait for async repo call to settle
+      await waitFor(() => expect(screen.getByText(/Return condition: Good/i)).toBeTruthy());
     });
 
     it('shows a condition-downgrade ConfirmDialog when returning with a worse condition', async () => {
@@ -183,10 +237,9 @@ describe('OffboardingSessionPageComponent', () => {
 
       // Admin clicks "Continue"
       acceptCallback?.();
-      fixture.detectChanges();
 
-      // Item is now Returned — return condition appears in DOM
-      expect(screen.getByText(/Return condition: Damaged/i)).toBeTruthy();
+      // Item is now Returned — wait for async repo call
+      await waitFor(() => expect(screen.getByText(/Return condition: Damaged/i)).toBeTruthy());
     });
   });
 
@@ -223,10 +276,14 @@ describe('OffboardingSessionPageComponent', () => {
         'confirm',
       );
 
-      // Put i-1 into Issue with a note so canComplete() is true, but open issues remain.
+      // Put i-1 into Issue with a note, return i-2 — canComplete is true, open issues remain.
       triggerConfirmIssue(fixture, 'i-1', 'Screen cracked');
-      // Return i-2 so there are zero Pending items (completion gate is met).
       triggerReturn(fixture, 'i-2', 'Good');
+
+      // Wait for both async mutations to settle before triggering complete
+      await waitFor(() =>
+        expect(screen.queryByRole('button', { name: /Mark Monitor as returned/i })).toBeNull(),
+      );
 
       triggerComplete(fixture);
 
@@ -253,13 +310,17 @@ describe('OffboardingSessionPageComponent', () => {
       triggerConfirmIssue(fixture, 'i-1', 'Screen cracked');
       triggerReturn(fixture, 'i-2', 'Good');
 
+      await waitFor(() =>
+        expect(screen.queryByRole('button', { name: /Mark Monitor as returned/i })).toBeNull(),
+      );
+
       triggerComplete(fixture);
       // Dialog shown but not confirmed — session should still be In progress
       expect(screen.queryByText(/Offboarding completed/i)).toBeNull();
 
       acceptCallback?.();
-      fixture.detectChanges();
-      expect(screen.getByText(/Offboarding completed/i)).toBeTruthy();
+
+      await waitFor(() => expect(screen.getByText(/Offboarding completed/i)).toBeTruthy());
     });
 
     it('does NOT show ConfirmDialog when all items are Returned (no open issues)', async () => {
@@ -275,20 +336,23 @@ describe('OffboardingSessionPageComponent', () => {
       triggerReturn(fixture, 'i-1', 'Good');
       triggerReturn(fixture, 'i-2', 'Good');
 
+      await waitFor(() =>
+        expect(screen.queryByRole('button', { name: /Mark MacBook as returned/i })).toBeNull(),
+      );
+
       triggerComplete(fixture);
 
       expect(confirmSpy).not.toHaveBeenCalled();
-      expect(screen.getByText(/Offboarding completed/i)).toBeTruthy();
+      await waitFor(() => expect(screen.getByText(/Offboarding completed/i)).toBeTruthy());
     });
   });
 
-  describe('complete flow (integration — real store + mocked repo)', () => {
+  describe('complete flow (integration — real store + stateful mock repo)', () => {
     it('transitions Pending → all Returned → Completed and shows completed banner', async () => {
       const user = userEvent.setup();
       const repo = makeRepo();
       const { fixture } = await renderPage(repo);
 
-      // Wait for the resource to resolve and both item rows to appear.
       await waitFor(() => {
         expect(screen.getByRole('article', { name: 'MacBook' })).toBeTruthy();
         expect(screen.getByRole('article', { name: 'Monitor' })).toBeTruthy();
@@ -301,7 +365,6 @@ describe('OffboardingSessionPageComponent', () => {
       ).toBe(true);
 
       // Drive both items through the return path.
-      // Good → Good: no condition-downgrade dialog fires, store is called directly.
       triggerReturn(fixture, 'i-1', 'Good');
       triggerReturn(fixture, 'i-2', 'Good');
 
@@ -314,7 +377,6 @@ describe('OffboardingSessionPageComponent', () => {
       // Click Complete — no open issues so no confirmation dialog fires.
       await user.click(screen.getByRole('button', { name: /Complete offboarding/i }));
 
-      // Summary panel must switch to the completed banner.
       await waitFor(() => expect(screen.getByText(/Offboarding completed/i)).toBeTruthy());
     });
   });

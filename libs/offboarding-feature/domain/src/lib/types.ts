@@ -11,6 +11,7 @@ export interface Employee {
   email: string;
   offboardingDate: string;
   offboardingStatus: OffboardingStatus;
+  completedAt?: string;
 }
 
 export interface AssignedItem {

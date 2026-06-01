@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `refactor(dev-032)` — self-documenting code pass: removed all WHAT-comments and section dividers; renamed cryptic variables (`sess`→`session`, `ri`→`returnItem`, `n`→`issueCount`, `e`→`employee`/`editingState`, `i`→`item` in all lambdas) across 9 files. (2026-06-01)
+- **Last checkpoint:** `refactor(dev-033)` — repository-as-source-of-truth: moved all session state (item statuses, completion) from `OffboardingStore` into `IOffboardingRepository` + `InMemoryOffboardingRepository`; `OffboardingStore` now holds only `editingItem` UI state; session page uses local signals mirrored from repo mutations; employee list drops `completedEmployeeIds` dependency; ADR-0005 written. (2026-06-01)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (refactored dev-029)
@@ -14,6 +14,16 @@
 - **Dev workflow**: `nx serve shell` / `nx build shell` — no separate prebuild-css step. PostCSS runs inside Angular's esbuild pipeline.
 - **Fonts**: Inter from Google Fonts in `index.html`; PrimeIcons added to `project.json` styles array.
 - **Lint status**: all `@angular-eslint/component-selector` errors resolved in dev-030 (all selectors use `tq-` prefix).
+
+## Architecture addendum (dev-033: repo-as-source-of-truth)
+
+- `IOffboardingRepository` now exposes write methods (`initSession`, `markItemReturned`, `markItemIssue`, `revertItem`, `completeOffboarding`).
+- `InMemoryOffboardingRepository` holds mutable instance-level state — `_employees[]` and `_sessionItems: Map`. Replacing it with an HTTP client requires zero changes elsewhere.
+- `OffboardingStore` owns only `editingItem` + `isDirty`. No `_sessions` map, no `completedEmployeeIds`.
+- `OffboardingSessionPageComponent` mirrors repo state into `_items`, `_offboardingStatus`, `_completedAt` signals. Mutations call repo and update signals from the returned payload.
+- `EmployeeListPageComponent` no longer injects `OffboardingStore`. Completion status comes from `getEmployees()` on the repo (which is updated by `completeOffboarding`).
+- `Employee.completedAt?: string` added to domain type — set by the repo on completion.
+- ADR-0005: `docs/adr/0005-repo-as-source-of-truth.md`
 
 ## Architecture addendum (dev-011 change)
 

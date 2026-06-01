@@ -79,9 +79,9 @@ Mock dataset: ≥ 5 employees; ≥ 2 items each; at least one employee with no e
 assigned (exercises the empty state); at least one employee pre-marked as offboarding
 complete (exercises the read-only state).
 
-### 2.2 Derived session state
+### 2.2 Session state
 
-The application adds the following fields during a session (never persisted to storage):
+Session state is owned by `IOffboardingRepository` (and its in-memory implementation). The component mirrors it into local signals for reactive rendering. See ADR-0005.
 
 ```typescript
 type ItemStatus = 'Pending' | 'Returned' | 'Issue';
@@ -317,7 +317,7 @@ extension point documented in "What's next" in the README.
 
 | # | Assumption | ADR / source |
 |---|-----------|------|
-| A1 | Item state is held in-memory per session. Page refresh resets state. No localStorage. | Confirmed by operator (Q5). |
+| A1 | Item state is held in `InMemoryOffboardingRepository`. Page refresh resets state. No localStorage. On a real backend, the repo methods become HTTP calls with no other changes. | Confirmed by operator (Q5). ADR-0005. |
 | A2 | `Issue → Returned` is legal. `Returned → Pending` undo is also legal (new in v1.1). | [ADR-0002](adr/0002-item-state-machine.md) |
 | A3 | Completion rule: zero Pending AND all Issues have non-empty notes. | [ADR-0002](adr/0002-item-state-machine.md) |
 | A4 | Completion with open Issues requires soft confirm listing item names. Not a hard block. | [ADR-0002](adr/0002-item-state-machine.md) |

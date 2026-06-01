@@ -31,9 +31,9 @@
   </header>
 
   <main class="flex flex-col gap-4" aria-label="Equipment return session">
-    @if (!sessionResource.isLoading() && !sessionResource.error() && session(); as sess) {
+    @if (!sessionResource.isLoading() && !sessionResource.error() && isSessionLoaded()) {
       <tq-equipment-list
-        [items]="sess.items"
+        [items]="items()"
         [editingItem]="store.editingItem()"
         [noteHints]="noteHints()"
         [readOnly]="isCompleted()"
@@ -52,8 +52,8 @@
         [issueCount]="issueCount()"
         [canComplete]="sessionCanComplete()"
         [pendingReason]="pendingReason()"
-        [offboardingStatus]="sess.offboardingStatus"
-        [completedAt]="sess.completedAt"
+        [offboardingStatus]="offboardingStatus()"
+        [completedAt]="completedAt()"
         (complete)="onComplete()"
       />
     }

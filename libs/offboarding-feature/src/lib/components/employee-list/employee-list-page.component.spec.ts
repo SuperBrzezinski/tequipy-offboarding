@@ -1,13 +1,9 @@
-import { Provider, signal } from '@angular/core';
+import { Provider } from '@angular/core';
 import { provideRouter, Router } from '@angular/router';
 import { render, screen, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
-import { OFFBOARDING_REPO, OffboardingStore } from '@org/offboarding-feature/data-access';
-import type {
-  AssignedItem,
-  Employee,
-  IOffboardingRepository,
-} from '@org/offboarding-feature/domain';
+import { OFFBOARDING_REPO } from '@org/offboarding-feature/data-access';
+import type { Employee, IOffboardingRepository } from '@org/offboarding-feature/domain';
 import { describe, expect, it, vi } from 'vitest';
 import { EmployeeListPageComponent } from './employee-list-page.component';
 
@@ -35,6 +31,12 @@ function makeRepo(overrides: Partial<IOffboardingRepository> = {}): IOffboarding
     getEmployees: vi.fn().mockResolvedValue(EMPLOYEES),
     getEmployee: vi.fn().mockResolvedValue(undefined),
     getAssignedItems: vi.fn().mockResolvedValue([]),
+    getSessionItems: vi.fn().mockResolvedValue(null),
+    initSession: vi.fn().mockResolvedValue(undefined),
+    markItemReturned: vi.fn().mockResolvedValue([]),
+    markItemIssue: vi.fn().mockResolvedValue([]),
+    revertItem: vi.fn().mockResolvedValue([]),
+    completeOffboarding: vi.fn().mockResolvedValue(new Date().toISOString()),
     ...overrides,
   };
 }
@@ -44,7 +46,6 @@ function renderList(repo: IOffboardingRepository, extraProviders: Provider[] = [
     providers: [
       provideRouter([]),
       { provide: OFFBOARDING_REPO, useValue: repo },
-      OffboardingStore,
       ...extraProviders,
     ],
   });
@@ -96,29 +97,6 @@ describe('EmployeeListPageComponent', () => {
     await renderList(makeRepo({ getEmployees: vi.fn().mockResolvedValue([]) }));
 
     await waitFor(() => expect(screen.getByText(/No employees to offboard/i)).toBeTruthy());
-  });
-
-  it('reflects store-completed session as Completed on the list (regression)', async () => {
-    // Regression: completeOffboarding() updates only the OffboardingStore, not the repo.
-    // After the session page completes and the admin navigates back, the list must read
-    // the store's completedEmployeeIds to override the stale repo status.
-    //
-    // The list component uses only `store.completedEmployeeIds()`, so we provide a
-    // minimal fake store with emp-a pre-marked as completed. The repo still reports
-    // Alice as 'In progress' — the component must override it with 'Completed'.
-    const completedIds = signal(new Set<string>(['emp-a']));
-
-    await render(EmployeeListPageComponent, {
-      providers: [
-        provideRouter([]),
-        { provide: OFFBOARDING_REPO, useValue: makeRepo() },
-        { provide: OffboardingStore, useValue: { completedEmployeeIds: completedIds } },
-      ],
-    });
-
-    // Both Alice (completed via store) and Bob (pre-completed in repo) must show Completed.
-    await waitFor(() => expect(screen.getAllByText('Completed').length).toBe(2));
-    expect(screen.queryByText('In progress')).toBeNull();
   });
 
   it('renders column headers for Name, Department, Offboarding Date and Status', async () => {
