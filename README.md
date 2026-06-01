@@ -9,6 +9,14 @@ employee offboarding workflow. Built as a Founding Frontend Engineer assessment 
 
 ## Quick start
 
+**Environment (pick one):**
+- **Dev Container (recommended)** — open the repo in VS Code and choose *Reopen in Container*
+  (or **Dev Containers: Reopen in Container** from the Command Palette). Node 24, pnpm, and
+  all VS Code extensions are provisioned automatically.
+- **Local** — ensure Node 24 and pnpm are installed manually.
+
+Then run:
+
 ```bash
 pnpm install
 pnpm nx serve shell                       # http://localhost:4200

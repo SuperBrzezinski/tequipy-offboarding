@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `docs(dev-027)` — README Quick start restructured: Dev Container listed as recommended option with single shared command block below (previously commands were duplicated under a "Manual" heading, which was misleading).
+
 - `docs(dev-026)` — Untracked generated `styles.css` from git (`.gitignore` + `git rm --cached`); README Quick start updated with Tailwind CLI build setup explanation and guidance on adding global styles via `tailwind-input.css`.
 
 - `fix(dev-023)` — Two suggest-note bugs fixed: (1) second click after cancel was silent — `onCancelIssue` now deletes the `noteHints` entry for the editing item before cancelling so the child effect sees `undefined → string` on re-suggest; (2) issue-mode suggestion used `assignedCondition === 'Good'` producing "in good condition" template — `onSuggestNote` now falls back to 'Damaged' when `editMode === 'issue'` and assigned condition is 'Good'. Regression test added to equipment-row spec for the cancel+re-suggest path.

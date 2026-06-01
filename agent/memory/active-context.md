@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `docs(dev-026)` — Untracked generated `styles.css` from git (added to `.gitignore`, removed via `git rm --cached`); added README Quick start notes explaining the Tailwind CLI build setup (`tailwind-input.css` → `styles.css`) and how to add global styles. (2026-05-31)
+- **Last checkpoint:** `docs(dev-027)` — README Quick start restructured: Dev Container option added as recommended path, followed by a single shared command block (not duplicated per path). (2026-06-01)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (dev-017)
