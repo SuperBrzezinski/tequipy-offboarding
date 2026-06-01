@@ -10,7 +10,7 @@ on:
 
 jobs:
   ci:
-    name: Install → Lint → Test → Build
+    name: Install → Lint → Typecheck → Test → Build
     runs-on: ubuntu-latest
 
     steps:
@@ -41,6 +41,9 @@ jobs:
 
       - name: Lint
         run: pnpm nx run-many -t lint --all
+
+      - name: Typecheck
+        run: pnpm nx run-many -t typecheck --all
 
       - name: Test
         run: pnpm nx run-many -t test --all

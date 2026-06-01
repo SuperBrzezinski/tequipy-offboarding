@@ -32,11 +32,12 @@ describe('canDeactivateSession', () => {
 
   it('emits true and calls cancelAnyEdit when admin confirms leaving', async () => {
     // Open an edit to make the store dirty.
-    store.beginReturn('emp-1', 'i-1');
+    store.beginReturn('i-1');
 
     const cancelSpy = vi.spyOn(store, 'cancelAnyEdit');
     vi.spyOn(confirmationService, 'confirm').mockImplementation((opts) => {
       (opts.accept as () => void)();
+      return undefined as unknown as ConfirmationService;
     });
 
     const result = await firstValueFrom(runGuard() as ReturnType<typeof import('rxjs').from>);
@@ -46,10 +47,11 @@ describe('canDeactivateSession', () => {
   });
 
   it('emits false when admin chooses to stay', async () => {
-    store.beginIssue('emp-1', 'i-1');
+    store.beginIssue('i-1');
 
     vi.spyOn(confirmationService, 'confirm').mockImplementation((opts) => {
       (opts.reject as () => void)?.();
+      return undefined as unknown as ConfirmationService;
     });
 
     const result = await firstValueFrom(runGuard() as ReturnType<typeof import('rxjs').from>);
@@ -58,7 +60,7 @@ describe('canDeactivateSession', () => {
   });
 
   it('shows the PrimeNG ConfirmDialog with correct labels when dirty', () => {
-    store.beginReturn('emp-1', 'i-1');
+    store.beginReturn('i-1');
 
     const confirmSpy = vi.spyOn(confirmationService, 'confirm');
 

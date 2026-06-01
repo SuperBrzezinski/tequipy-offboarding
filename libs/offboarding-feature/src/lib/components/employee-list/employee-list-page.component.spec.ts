@@ -31,8 +31,6 @@ function makeRepo(overrides: Partial<IOffboardingRepository> = {}): IOffboarding
     getEmployees: vi.fn().mockResolvedValue(EMPLOYEES),
     getEmployee: vi.fn().mockResolvedValue(undefined),
     getAssignedItems: vi.fn().mockResolvedValue([]),
-    getSessionItems: vi.fn().mockResolvedValue(null),
-    initSession: vi.fn().mockResolvedValue(undefined),
     markItemReturned: vi.fn().mockResolvedValue([]),
     markItemIssue: vi.fn().mockResolvedValue([]),
     revertItem: vi.fn().mockResolvedValue([]),

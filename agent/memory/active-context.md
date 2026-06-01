@@ -1,9 +1,9 @@
 # Active context
 
-- **Project phase:** Refactor complete — ADR-0006 implemented and shipped.
+- **Project phase:** Test quality audit complete — TypeScript errors in specs fixed, typecheck added to CI.
 - **Mode:** dev
 - **Active epic:** none (between epics)
-- **Last checkpoint:** `docs(dev-037)` — documented Q8 assumption: Returned/Issue are mutually exclusive states (2026-06-01)
+- **Last checkpoint:** `fix(dev-038)` — fixed 4 TypeScript errors in spec files (stale after dev-035 refactor), added `typecheck` Nx target + CI step (2026-06-01)
 - **Next action:** Pick the next epic from `agent/memory/backlog.md` — likely UI polish or the demo walkthrough.
 
 ## Tailwind v4 integration details (refactored dev-029)

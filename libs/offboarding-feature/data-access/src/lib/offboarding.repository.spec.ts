@@ -86,7 +86,7 @@ describe('InMemoryOffboardingRepository', () => {
 
     it('returns copies — mutating returned items does not corrupt future calls', async () => {
       const first = await repo.getAssignedItems('emp-001');
-      (first[0] as Record<string, unknown>)['name'] = 'MUTATED';
+      (first[0] as unknown as Record<string, unknown>)['name'] = 'MUTATED';
       const second = await repo.getAssignedItems('emp-001');
       expect(second[0].name).not.toBe('MUTATED');
     });

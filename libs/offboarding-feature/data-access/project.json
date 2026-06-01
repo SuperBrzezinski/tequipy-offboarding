@@ -8,6 +8,13 @@
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "npx tsc --noEmit --project tsconfig.spec.json"
+      }
     }
   }
 }

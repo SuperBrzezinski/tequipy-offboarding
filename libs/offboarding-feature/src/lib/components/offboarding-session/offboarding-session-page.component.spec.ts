@@ -223,6 +223,7 @@ describe('OffboardingSessionPageComponent', () => {
         'confirm',
       ).mockImplementation((opts) => {
         acceptCallback = opts.accept as () => void;
+        return undefined as unknown as ConfirmationService;
       });
 
       triggerReturn(fixture, 'i-1', 'Damaged');
@@ -294,6 +295,7 @@ describe('OffboardingSessionPageComponent', () => {
         'confirm',
       ).mockImplementation((opts) => {
         acceptCallback = opts.accept as () => void;
+        return undefined as unknown as ConfirmationService;
       });
 
       triggerConfirmIssue(fixture, 'i-1', 'Screen cracked');

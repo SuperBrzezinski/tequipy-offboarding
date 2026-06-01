@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `fix(dev-038)` — test quality audit: fixed 4 TypeScript errors in spec files left stale by dev-035 refactor (`getSessionItems`/`initSession` removed from employee-list mock, `beginReturn`/`beginIssue` 2-arg calls → 1-arg in guard spec, `mockImplementation` return type for `ConfirmationService.confirm`, unsafe double-cast in repository spec); added `typecheck` Nx target to all 4 projects and `Typecheck` step to CI — TypeScript errors in spec files are now blocking.
+
 - `docs(dev-037)` — documented Q8 assumption in discovery.md and ADR-0002: `Returned` and `Issue` are mutually exclusive states; `returnCondition` (Damaged/Missing) is the mechanism for flagging problems at physical return; `Issue` is reserved for absent/uncertain physical returns. Confirmed by operator 2026-06-01.
 
 - `chore(dev-036)` — lint/build health check: all 4 projects lint and test clean; increased `maximumWarning` budget from 500 kB → 750 kB in `apps/shell/project.json` to match realistic PrimeNG initial bundle size (~602 kB). No warnings or errors anywhere in the pipeline.
