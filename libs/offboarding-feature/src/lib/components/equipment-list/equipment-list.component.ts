@@ -3,7 +3,7 @@ import type { ReturnCondition, ReturnItem } from '@org/offboarding-feature/domai
 import { EquipmentRowComponent } from '../equipment-row/equipment-row.component';
 
 @Component({
-  selector: 'lib-equipment-list',
+  selector: 'tq-equipment-list',
   imports: [EquipmentRowComponent],
   templateUrl: './equipment-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

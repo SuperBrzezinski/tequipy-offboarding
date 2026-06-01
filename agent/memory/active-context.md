@@ -3,7 +3,7 @@
 - **Project phase:** COMPLETE — All epics shipped + submission audit done.
 - **Mode:** dev
 - **Active epic:** —
-- **Last checkpoint:** `refactor(dev-029)` — Tailwind CSS pipeline migrated from CLI pre-processing to Angular's built-in PostCSS pipeline. `postcss.config.json` + `@tailwindcss/postcss` + `@source` directives in `styles.css`. Removed `prebuild-css` target, `tailwind-input.css`, orphan `styles.scss`, `postcss.config.mjs`. `serve` target merged from `serve-ng` wrapper. README updated. (2026-06-01)
+- **Last checkpoint:** `chore(dev-030)` — housekeeping: removed 5 orphaned `.scss` files (dead BEM code, not referenced by any `@Component`); renamed all `lib-*` component selectors to `tq-*` to satisfy `@angular-eslint/component-selector` prefix rule; updated all template usages and spec comments; added `composite: true` + `data-access` project reference to `offboarding-feature/tsconfig.json` to fix TS Project References error. (2026-06-01)
 - **Next action:** none — project is submission-ready.
 
 ## Tailwind v4 integration details (refactored dev-029)
@@ -13,7 +13,7 @@
 - **`@source` directives** in `styles.css`: `./app/**/*.{html,ts}` and `../../../libs/**/*.{html,ts}` — relative to the CSS file path.
 - **Dev workflow**: `nx serve shell` / `nx build shell` — no separate prebuild-css step. PostCSS runs inside Angular's esbuild pipeline.
 - **Fonts**: Inter from Google Fonts in `index.html`; PrimeIcons added to `project.json` styles array.
-- **Known pre-existing lint issue**: `@angular-eslint/component-selector` errors on `lib-*` selectors (not introduced by this increment; existed in dev-006).
+- **Lint status**: all `@angular-eslint/component-selector` errors resolved in dev-030 (all selectors use `tq-` prefix).
 
 ## Architecture addendum (dev-011 change)
 

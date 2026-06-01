@@ -26,7 +26,7 @@ import { formatDate } from '../utils/format-date';
 import { OffboardingStore } from '@org/offboarding-feature/data-access';
 
 @Component({
-  selector: 'lib-offboarding-session-page',
+  selector: 'tq-offboarding-session-page',
   imports: [EquipmentListComponent, SummaryPanelComponent, SkeletonModule, ButtonModule],
   templateUrl: './offboarding-session-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -9,7 +9,7 @@ const SEVERITY_MAP: Record<ItemStatus, 'warn' | 'success' | 'danger'> = {
 };
 
 @Component({
-  selector: 'lib-status-badge',
+  selector: 'tq-status-badge',
   imports: [TagModule],
   template: `<p-tag [severity]="severity()" [value]="status()" />`,
   changeDetection: ChangeDetectionStrategy.OnPush,

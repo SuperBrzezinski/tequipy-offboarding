@@ -5,7 +5,7 @@ import { TagModule } from 'primeng/tag';
 import { formatDate } from '../utils/format-date';
 
 @Component({
-  selector: 'lib-summary-panel',
+  selector: 'tq-summary-panel',
   imports: [ButtonModule, TagModule],
   templateUrl: './summary-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

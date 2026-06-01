@@ -4,7 +4,7 @@ import type { ReturnCondition } from '@org/offboarding-feature/domain';
 import { TagModule } from 'primeng/tag';
 
 @Component({
-  selector: 'lib-condition-diff-badge',
+  selector: 'tq-condition-diff-badge',
   imports: [TagModule],
   template: `
     @if (hasDiff()) {

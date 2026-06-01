@@ -32,7 +32,7 @@
 
   <main class="flex flex-col gap-4" aria-label="Equipment return session">
     @if (!sessionResource.isLoading() && !sessionResource.error() && session(); as sess) {
-      <lib-equipment-list
+      <tq-equipment-list
         [items]="sess.items"
         [editingItem]="store.editingItem()"
         [noteHints]="noteHints()"
@@ -46,7 +46,7 @@
         (cancelIssue)="onCancelIssue()"
         (suggestNote)="onSuggestNote($event)"
       />
-      <lib-summary-panel
+      <tq-summary-panel
         [pendingCount]="pendingCount()"
         [returnedCount]="returnedCount()"
         [issueCount]="issueCount()"

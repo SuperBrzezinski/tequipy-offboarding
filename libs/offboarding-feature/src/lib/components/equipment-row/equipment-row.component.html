@@ -17,7 +17,7 @@
     @case ('Pending') {
       <div class="flex items-center gap-2 text-sm">
         @if (readOnly()) {
-          <lib-status-badge [status]="'Pending'" />
+          <tq-status-badge [status]="'Pending'" />
         }
         <span class="font-medium text-[var(--p-text-muted-color)]">Assigned condition:</span>
         <span>{{ item().item.assignedCondition }}</span>
@@ -121,13 +121,13 @@
     @case ('Returned') {
       <!-- State D: Returned -->
       <div class="flex items-center flex-wrap gap-2">
-        <lib-status-badge [status]="item().status" />
+        <tq-status-badge [status]="item().status" />
         <span class="text-sm font-medium text-[var(--p-text-muted-color)]">
           Return condition: {{ item().returnCondition }}
         </span>
       </div>
       @if (item().returnCondition) {
-        <lib-condition-diff-badge
+        <tq-condition-diff-badge
           [assignedCondition]="item().item.assignedCondition"
           [returnCondition]="item().returnCondition!"
         />
@@ -149,7 +149,7 @@
     @case ('Issue') {
       <!-- State E: Issue -->
       <div class="flex items-center flex-wrap gap-2">
-        <lib-status-badge [status]="item().status" />
+        <tq-status-badge [status]="item().status" />
         <span class="text-sm font-medium text-[var(--p-text-muted-color)]">
           Assigned condition: {{ item().item.assignedCondition }}
         </span>

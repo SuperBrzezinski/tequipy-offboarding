@@ -11,7 +11,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
 @Component({
-  selector: 'lib-employee-list-page',
+  selector: 'tq-employee-list-page',
   imports: [
     FormsModule,
     TableModule,

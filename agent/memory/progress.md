@@ -2,6 +2,8 @@
 
 Append-only. Newest at the top. One line per shipped increment, referencing the commit scope.
 
+- `chore(dev-030)` — Housekeeping: removed 5 orphaned `.scss` files (dead BEM code never referenced by any `@Component` decorator); renamed all `lib-*` component selectors to `tq-*` across 7 `.ts` decorators, 3 `.html` templates, and spec comments; added `composite: true` + `data-access` project reference in `offboarding-feature/tsconfig.json` to satisfy TS Project References constraint from `apps/shell`.
+
 - `refactor(dev-029)` — Tailwind CSS pipeline migrated from CLI pre-processing to Angular's native PostCSS. Key findings: (1) Angular's `@angular/build:application` reads only `postcss.config.json` (JSON, not `.mjs`/`.js`); (2) `@import "tailwindcss"` without PostCSS resolves to a static CSS file (theme tokens only, no utilities); (3) `@source` directives in CSS are relative to the CSS file path and work correctly when Angular passes `from: filename` to PostCSS. Removed: `prebuild-css` target, `tailwind-input.css`, `styles.scss` orphan, `postcss.config.mjs`, `@tailwindcss/cli` dep. `serve` target simplified (no longer parallel CLI watch). README updated.
 
 - `test(dev-028)` — `offboarding-session-page.component.spec.ts` rewritten: removed all implementation-detail access (`page['privateMethod']`, `page['session']()`, `page['confirmationService']`); replaced with `triggerEventHandler` on child component `DebugElement`s and `injector.get(ConfirmationService)`. 12/12 tests green.

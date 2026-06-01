@@ -5,7 +5,7 @@
 } @else {
   <div class="flex flex-col gap-3">
     @for (returnItem of items(); track returnItem.item.id) {
-      <lib-equipment-row
+      <tq-equipment-row
         [item]="returnItem"
         [isEditing]="isEditing(returnItem.item.id)"
         [editMode]="getEditMode(returnItem.item.id)"

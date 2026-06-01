@@ -57,7 +57,7 @@ async function renderPage(repo: IOffboardingRepository, employeeId = 'emp-test')
   });
 }
 
-// Fires the confirmReturn output of lib-equipment-list — drives an item into Returned status.
+// Fires the confirmReturn output of tq-equipment-list — drives an item into Returned status.
 // We bypass the p-select UI because PrimeNG overlays do not position correctly in JSDOM;
 // the condition-select interaction is already covered by equipment-row.component.spec.ts.
 function triggerReturn(
@@ -70,7 +70,7 @@ function triggerReturn(
   fixture.detectChanges();
 }
 
-// Fires the confirmIssue output of lib-equipment-list.
+// Fires the confirmIssue output of tq-equipment-list.
 function triggerConfirmIssue(
   fixture: ComponentFixture<OffboardingSessionPageComponent>,
   itemId: string,
@@ -81,7 +81,7 @@ function triggerConfirmIssue(
   fixture.detectChanges();
 }
 
-// Fires the complete output of lib-summary-panel (equivalent to the admin clicking the button).
+// Fires the complete output of tq-summary-panel (equivalent to the admin clicking the button).
 function triggerComplete(fixture: ComponentFixture<OffboardingSessionPageComponent>): void {
   const summaryPanel = fixture.debugElement.query(By.directive(SummaryPanelComponent));
   summaryPanel.triggerEventHandler('complete', null);

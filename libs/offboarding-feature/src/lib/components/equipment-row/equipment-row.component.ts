@@ -10,7 +10,7 @@ import { ConditionDiffBadgeComponent } from '../condition-diff-badge/condition-d
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 
 @Component({
-  selector: 'lib-equipment-row',
+  selector: 'tq-equipment-row',
   imports: [
     ButtonModule,
     ConditionDiffBadgeComponent,
